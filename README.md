@@ -40,11 +40,42 @@
 </details>
 
 <details>
-<summary>2. ???</summary>
+<summary>2. Поясни, що таке data-binding в Angular та які є його типи?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Data-binding — це механізм синхронізації даних між компонентом і шаблоном.
+
+#### Типи data-binding в Angular:
+
+1. **Interpolation** — одностороннє відображення даних у HTML:
+
+```html
+<p>{{ userName }}</p>
+```
+
+2. **Property binding** — передача значень у властивості
+   DOM-елементів/компонентів:
+
+```html
+<img [src]="avatarUrl" />
+```
+
+3. **Event binding** — реакція на події DOM:
+
+```html
+<button (click)="onSave()">Save</button>
+```
+
+4. **Two-way binding** — синхронізація стану між шаблоном і компонентом
+   ([(...)]):
+
+```html
+<input [(ngModel)]="email" />
+```
+
+Коротко: в Angular доступні 4 основні типи зв’язування даних — interpolation,
+property binding, event binding, two-way binding.
 
 </details>
 
