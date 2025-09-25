@@ -108,11 +108,52 @@ property binding, event binding, two-way binding.
 </details>
 
 <details>
-<summary>4. ???</summary>
+<summary>4. Що таке компонент в Angular та як він використовується?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Компонент — це основний будівельний блок Angular-додатку, що відповідає за
+  частину UI та пов’язану з нею логіку.
+
+#### Складається з:
+
+- класу (логіка, стан),
+
+- шаблону HTML,
+
+- стилів,
+
+- метаданих (selector, imports тощо).
+
+#### Використання:
+
+```TypeScript
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-user-card',
+  standalone: true,
+  template: `
+    <h3>{{ name() }}</h3>
+    <button (click)="changeName()">Change</button>
+  `
+})
+export class UserCardComponent {
+  name = signal('Viktor');
+  changeName() {
+    this.name.set('Updated Name');
+  }
+}
+```
+
+У шаблоні іншого компонента можна підключити:
+
+```html
+<app-user-card></app-user-card>
+```
+
+Коротко: Компонент = ізольований блок UI + логіка. В Angular він створюється як
+standalone, без NgModules.
 
 </details>
 
