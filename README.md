@@ -246,11 +246,54 @@ export class HeaderComponent {
 </details>
 
 <details>
-<summary>7. ???</summary>
+<summary>7. Поясни, що таке dependency injection (DI) в Angular.</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Dependency Injection (DI) — це механізм Angular, який автоматично створює та
+  надає об’єкти (сервіси, токени) компонентам чи іншим сервісам замість ручного
+  створення через new.
+
+#### Навіщо:
+
+- спрощує тестування (можна підмінити залежності mock-ами),
+
+- забезпечує повторне використання сервісів,
+
+- керує життєвим циклом об’єктів (singleton, scoped).
+
+#### Приклад:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  getData() {
+    return ['item1', 'item2'];
+  }
+}
+```
+
+Використання у компоненті:
+
+```TypeScript
+import { Component, inject } from '@angular/core';
+import { ApiService } from './api.service';
+
+@Component({
+  selector: 'app-list',
+  standalone: true,
+  template: `<li *ngFor="let item of data">{{ item }}</li>`
+})
+export class ListComponent {
+  api = inject(ApiService);
+  data = this.api.getData();
+}
+```
+
+Коротко: DI в Angular = автоматичне надання залежностей (наприклад, сервісів)
+компонентам без `new`.
 
 </details>
 
