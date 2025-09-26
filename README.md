@@ -192,11 +192,56 @@ standalone, без NgModules.
 </details>
 
 <details>
-<summary>6. ???</summary>
+<summary>6. Як створити сервіс в Angular і навіщо його використовують?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Сервіс — це клас із бізнес-логікою або функціоналом, який не пов’язаний
+  напряму з UI.
+
+Використовується для:
+
+- повторного використання коду,
+
+- роботи з API,
+
+- керування станом,
+
+- інкапсуляції логіки поза компонентом.
+
+#### Приклад:
+
+```TypeScript
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  userName = signal('Guest');
+
+  setUser(name: string) {
+    this.userName.set(name);
+  }
+}
+```
+
+#### Використання у компоненті:
+
+```TypeScript
+import { Component, inject } from '@angular/core';
+import { UserService } from './user.service';
+
+@Component({
+  selector: 'app-header',
+  standalone: true,
+  template: `<h2>Welcome, {{ userService.userName() }}</h2>`
+})
+export class HeaderComponent {
+  userService = inject(UserService);
+}
+```
+
+Коротко: сервіс створюють через `@Injectable`, а використовують для
+бізнес-логіки та спільного стану між компонентами.
 
 </details>
 
