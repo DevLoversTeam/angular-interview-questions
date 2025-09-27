@@ -400,11 +400,50 @@ export class ChildComponent {
 </details>
 
 <details>
-<summary>10. ???</summary>
+<summary>10. Що таке двостороннє зв’язування (two-way binding) і як його реалізувати в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Двостороннє зв’язування — це синхронізація стану між компонентом і шаблоном,
+  коли зміни в UI автоматично оновлюють дані компонента і навпаки.
+
+#### Класичний підхід (з ngModel):
+
+```html
+<input [(ngModel)]="name" />
+<p>Hello, {{ name }}</p>
+```
+
+```TypeScript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-input',
+  standalone: true,
+  template: `<input [(ngModel)]="name" />`
+})
+export class InputComponent {
+  name = 'Viktor';
+}
+```
+
+#### Сучасний Angular 20 з signals:
+
+```TypeScript
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-input',
+  standalone: true,
+  template: `<input [value]="name()" (input)="name.set($any($event.target).value)" />`
+})
+export class InputComponent {
+  name = signal('Viktor');
+}
+```
+
+Коротко: two-way binding = синхронізація стану між UI та компонентом. В Angular
+20 можна робити через [(ngModel)] або signals для сучасної реактивності.
 
 </details>
 
