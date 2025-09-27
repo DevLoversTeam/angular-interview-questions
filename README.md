@@ -340,11 +340,62 @@ standalone компоненти. Їхня головна роль сьогодн
 </details>
 
 <details>
-<summary>9. ???</summary>
+<summary>9. Як обробляти події в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular події обробляються через event binding, тобто підписку на подію DOM
+  або кастомної події компонента.
+
+#### Синтаксис:
+
+```html
+<button (click)="onClick()">Click me</button>
+```
+
+#### У компоненті:
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-button',
+  standalone: true,
+  template: `<button (click)="onClick()">Click me</button>`,
+})
+export class ButtonComponent {
+  onClick() {
+    console.log('Button clicked!');
+  }
+}
+```
+
+#### Кастомна подія (для дочірнього компонента):
+
+```TypeScript
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  template: `<button (click)="notifyParent()">Notify</button>`
+})
+export class ChildComponent {
+  @Output() notify = new EventEmitter<string>();
+  notifyParent() {
+    this.notify.emit('Hello from child');
+  }
+}
+```
+
+#### У батьківському компоненті:
+
+```html
+<app-child (notify)="onNotify($event)"></app-child>
+```
+
+Коротко: в Angular події обробляються через `(eventName)="handler()"` для DOM та
+через `@Output` + `EventEmitter` для кастомних подій.
 
 </details>
 
