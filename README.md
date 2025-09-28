@@ -605,20 +605,91 @@ template-driven та reactive. Для простих форм можна бра�
 </details>
 
 <details>
-<summary>14. ???</summary>
+<summary>14. Що таке Angular CLI і для чого його використовують?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- **Angular CLI** — це офіційний інструмент командного рядка для створення та
+  керування Angular-проєктами.
+
+#### Основні можливості:
+
+- `ng new` → створення нового застосунку
+
+- `ng serve` → локальний дев-сервер з hot reload
+
+- `ng generate (ng g)` → генерація компонентів, сервісів, пайпів, директив
+
+- `ng build` → продакшн-білд з оптимізацією
+
+- `ng test, ng e2e` → запуск тестів
+
+- `ng add` → інтеграція бібліотек (напр. Angular Material)
+
+- `ng update` → оновлення Angular до нової версії
+
+Коротко: Angular CLI = швидкий старт, генерація коду, білд і управління життєвим
+циклом проєкту.
 
 </details>
 
 <details>
-<summary>15. ???</summary>
+<summary>15. Як виконувати HTTP-запити в Angular за допомогою HttpClient ?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular для роботи з HTTP використовується HttpClient, який надає методи
+  get, post, put, delete тощо.
+
+#### Кроки:
+
+1. Імпортувати HttpClientModule у bootstrapApplication.
+
+2. Інжектити HttpClient у сервіс чи компонент.
+
+3. Виконати запит і підписатися (або використовувати async pipe).
+
+#### Приклад сервісу:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  constructor(private http: HttpClient) {}
+
+  getUsers() {
+    return this.http.get('https://jsonplaceholder.typicode.com/users');
+  }
+}
+```
+
+#### Використання у компоненті:
+
+```TypeScript
+import { Component, inject } from '@angular/core';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { ApiService } from './api.service';
+
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [NgFor, AsyncPipe],
+  template: `
+    <ul>
+      <li *ngFor="let user of users$ | async">{{ user.name }}</li>
+    </ul>
+  `
+})
+export class UsersComponent {
+  api = inject(ApiService);
+  users$ = this.api.getUsers();
+}
+```
+
+Коротко: в Angular 20 HTTP-запити робляться через HttpClient, а результат часто
+обробляється в шаблоні через async pipe.
 
 </details>
 
