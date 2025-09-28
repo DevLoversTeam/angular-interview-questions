@@ -448,47 +448,248 @@ export class InputComponent {
 </details>
 
 <details>
-<summary>11. ???</summary>
+<summary>11. Поясни різницю між компонентом і директивою в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Компонент
+
+  - це спеціальний тип директиви, який має шаблон (HTML) + стилі + логіку;
+
+  - використовується для створення UI-елементів;
+
+  - приклад: `@Component({ selector: 'app-user', template: '<p>User</p>' })`.
+
+- Директива
+
+  - не має власного шаблону;
+
+  - змінює поведінку або вигляд існуючих елементів/компонентів;
+
+  - може бути structural (`@if`, `@for`) або attribute (`ngClass`, `ngStyle`).
+
+#### Приклад кастомної директиви (attribute):
+
+```TypeScript
+import { Directive, ElementRef, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]',
+  standalone: true
+})
+export class HighlightDirective {
+  constructor(el: ElementRef, r: Renderer2) {
+    r.setStyle(el.nativeElement, 'background', 'yellow');
+  }
+}
+```
+
+Використання у шаблоні:
+
+```html
+<p highlight>Text with highlight</p>
+```
+
+Коротко: компонент = директива + шаблон, а директива = поведінка без власного
+UI.
 
 </details>
 
 <details>
-<summary>12. ???</summary>
+<summary>12. Що таке пайпи (Pipes) в Angular та де їх варто використовувати?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Pipe — це клас, який трансформує дані без зміни їхнього оригінального стану.
+  Використовується у шаблонах для форматування значень.
+
+#### Приклади вбудованих пайпів:
+
+- `date` → форматування дат
+
+- `currency` → вивід валют
+
+- `uppercase` / `lowercase` → зміна регістру
+
+- `async` → робота з Promise / Observable
+
+#### Приклад використання:
+
+```html
+<p>{{ today | date:'dd/MM/yyyy' }}</p>
+<p>{{ price | currency:'USD' }}</p>
+```
+
+#### Кастомний pipe:
+
+```TypeScript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'exclaim',
+  standalone: true
+})
+export class ExclaimPipe implements PipeTransform {
+  transform(value: string): string {
+    return value + '!';
+  }
+}
+```
+
+У шаблоні:
+
+```html
+<p>{{ 'Hello' | exclaim }}</p>
+<!-- Hello! -->
+```
+
+Коротко: Pipes потрібні для форматування та трансформації даних у шаблоні, щоб
+не захаращувати логіку компонента.
 
 </details>
 
 <details>
-<summary>13. ???</summary>
+<summary>13. Як обробляти надсилання форм (form submissions) в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular є два основні підходи:
+
+1. **Template-driven forms** (простий варіант, з `ngModel`):
+
+```html
+<form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+  <input name="email" [(ngModel)]="email" required />
+  <button type="submit">Send</button>
+</form>
+```
+
+```TypeScript
+onSubmit(value: any) {
+  console.log('Form submitted:', value);
+}
+```
+
+2. **Reactive forms** (рекомендований для складних кейсів):
+
+```TypeScript
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input formControlName="email" />
+      <button type="submit">Login</button>
+    </form>
+  `
+})
+export class LoginComponent {
+  form = new FormGroup({
+    email: new FormControl('')
+  });
+
+  onSubmit() {
+    console.log(this.form.value);
+  }
+}
+```
+
+Коротко: форми в Angular обробляються через (`ngSubmit`) і бувають
+template-driven та reactive. Для простих форм можна брати `ngModel`, для великих
+і складних — reactive forms.
 
 </details>
 
 <details>
-<summary>14. ???</summary>
+<summary>14. Що таке Angular CLI і для чого його використовують?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- **Angular CLI** — це офіційний інструмент командного рядка для створення та
+  керування Angular-проєктами.
+
+#### Основні можливості:
+
+- `ng new` → створення нового застосунку
+
+- `ng serve` → локальний дев-сервер з hot reload
+
+- `ng generate (ng g)` → генерація компонентів, сервісів, пайпів, директив
+
+- `ng build` → продакшн-білд з оптимізацією
+
+- `ng test, ng e2e` → запуск тестів
+
+- `ng add` → інтеграція бібліотек (напр. Angular Material)
+
+- `ng update` → оновлення Angular до нової версії
+
+Коротко: Angular CLI = швидкий старт, генерація коду, білд і управління життєвим
+циклом проєкту.
 
 </details>
 
 <details>
-<summary>15. ???</summary>
+<summary>15. Як виконувати HTTP-запити в Angular за допомогою HttpClient ?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular для роботи з HTTP використовується HttpClient, який надає методи
+  get, post, put, delete тощо.
+
+#### Кроки:
+
+1. Імпортувати HttpClientModule у bootstrapApplication.
+
+2. Інжектити HttpClient у сервіс чи компонент.
+
+3. Виконати запит і підписатися (або використовувати async pipe).
+
+#### Приклад сервісу:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  constructor(private http: HttpClient) {}
+
+  getUsers() {
+    return this.http.get('https://jsonplaceholder.typicode.com/users');
+  }
+}
+```
+
+#### Використання у компоненті:
+
+```TypeScript
+import { Component, inject } from '@angular/core';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { ApiService } from './api.service';
+
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [NgFor, AsyncPipe],
+  template: `
+    <ul>
+      <li *ngFor="let user of users$ | async">{{ user.name }}</li>
+    </ul>
+  `
+})
+export class UsersComponent {
+  api = inject(ApiService);
+  users$ = this.api.getUsers();
+}
+```
+
+Коротко: в Angular 20 HTTP-запити робляться через HttpClient, а результат часто
+обробляється в шаблоні через async pipe.
 
 </details>
 
