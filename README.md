@@ -448,11 +448,50 @@ export class InputComponent {
 </details>
 
 <details>
-<summary>11. ???</summary>
+<summary>11. Поясни різницю між компонентом і директивою в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Компонент
+
+  - це спеціальний тип директиви, який має шаблон (HTML) + стилі + логіку;
+
+  - використовується для створення UI-елементів;
+
+  - приклад: `@Component({ selector: 'app-user', template: '<p>User</p>' })`.
+
+- Директива
+
+  - не має власного шаблону;
+
+  - змінює поведінку або вигляд існуючих елементів/компонентів;
+
+  - може бути structural (`@if`, `@for`) або attribute (`ngClass`, `ngStyle`).
+
+#### Приклад кастомної директиви (attribute):
+
+```TypeScript
+import { Directive, ElementRef, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]',
+  standalone: true
+})
+export class HighlightDirective {
+  constructor(el: ElementRef, r: Renderer2) {
+    r.setStyle(el.nativeElement, 'background', 'yellow');
+  }
+}
+```
+
+Використання у шаблоні:
+
+```html
+<p highlight>Text with highlight</p>
+```
+
+Коротко: компонент = директива + шаблон, а директива = поведінка без власного
+UI.
 
 </details>
 
