@@ -549,11 +549,58 @@ export class ExclaimPipe implements PipeTransform {
 </details>
 
 <details>
-<summary>13. ???</summary>
+<summary>13. Як обробляти надсилання форм (form submissions) в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular є два основні підходи:
+
+1. **Template-driven forms** (простий варіант, з `ngModel`):
+
+```html
+<form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+  <input name="email" [(ngModel)]="email" required />
+  <button type="submit">Send</button>
+</form>
+```
+
+```TypeScript
+onSubmit(value: any) {
+  console.log('Form submitted:', value);
+}
+```
+
+2. **Reactive forms** (рекомендований для складних кейсів):
+
+```TypeScript
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input formControlName="email" />
+      <button type="submit">Login</button>
+    </form>
+  `
+})
+export class LoginComponent {
+  form = new FormGroup({
+    email: new FormControl('')
+  });
+
+  onSubmit() {
+    console.log(this.form.value);
+  }
+}
+```
+
+Коротко: форми в Angular обробляються через (`ngSubmit`) і бувають
+template-driven та reactive. Для простих форм можна брати `ngModel`, для великих
+і складних — reactive forms.
 
 </details>
 
