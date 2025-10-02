@@ -743,11 +743,54 @@ export class ParentComponent {
 </details>
 
 <details>
-<summary>17. ???</summary>
+<summary>17. Як передати подію або дані від дочірнього компонента до батьківського?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Для передачі подій вгору використовується @Output() разом із EventEmitter.
+  Дочірній компонент «викидає» подію, а батьківський підписується на неї через
+  (eventName) у шаблоні.
+
+**child.component.ts**
+
+```TypeScript
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  template: `<button (click)="sendMessage()">Send</button>`
+})
+export class ChildComponent {
+  @Output() message = new EventEmitter<string>();
+
+  sendMessage() {
+    this.message.emit('Hello from Child!');
+  }
+}
+```
+
+**parent.component.ts**
+
+```TypeScript
+import { Component } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  standalone: true,
+  imports: [ChildComponent],
+  template: `<app-child (message)="onMessage($event)"></app-child>`
+})
+export class ParentComponent {
+  onMessage(data: string) {
+    console.log('Received from child:', data);
+  }
+}
+```
+
+- Коротко: передача даних child → parent відбувається через @Output() і (event)
+  binding. Дитина емітить подію, батько слухає.
 
 </details>
 
