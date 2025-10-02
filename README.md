@@ -694,7 +694,110 @@ export class UsersComponent {
 </details>
 
 <details>
-<summary>16. ???</summary>
+<summary>16. Як передати дані з батьківського компонента до дочірнього?</summary>
+
+#### Angular
+
+- Передача даних відбувається через input-зв’язування (@Input() декоратор).
+  Батьківський компонент передає значення дочірньому через атрибут у шаблоні.
+
+#### Приклад:
+
+**child.component.ts**
+
+```TypeScript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  template: `<p>Message: {{ message }}</p>`
+})
+export class ChildComponent {
+  @Input() message = '';
+}
+```
+
+**parent.component.ts**
+
+```TypeScript
+import { Component } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  standalone: true,
+  imports: [ChildComponent],
+  template: `<app-child [message]="parentMessage"></app-child>`
+})
+export class ParentComponent {
+  parentMessage = 'Hello from Parent!';
+}
+```
+
+**Коротко:**
+
+- Дані від батька до дитини передаються через @Input() — це property binding
+  [property]="value".
+
+</details>
+
+<details>
+<summary>17. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>18. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>19. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>20. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>21. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>22. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>23. ???</summary>
 
 #### Angular
 
