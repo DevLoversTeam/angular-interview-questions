@@ -694,7 +694,286 @@ export class UsersComponent {
 </details>
 
 <details>
-<summary>16. ???</summary>
+<summary>16. Як передати дані з батьківського компонента до дочірнього?</summary>
+
+#### Angular
+
+- Передача даних відбувається через input-зв’язування (@Input() декоратор).
+  Батьківський компонент передає значення дочірньому через атрибут у шаблоні.
+
+#### Приклад:
+
+**child.component.ts**
+
+```TypeScript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  template: `<p>Message: {{ message }}</p>`
+})
+export class ChildComponent {
+  @Input() message = '';
+}
+```
+
+**parent.component.ts**
+
+```TypeScript
+import { Component } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  standalone: true,
+  imports: [ChildComponent],
+  template: `<app-child [message]="parentMessage"></app-child>`
+})
+export class ParentComponent {
+  parentMessage = 'Hello from Parent!';
+}
+```
+
+**Коротко:**
+
+- Дані від батька до дитини передаються через @Input() — це property binding
+  [property]="value".
+
+</details>
+
+<details>
+<summary>17. Як передати подію або дані від дочірнього компонента до батьківського?</summary>
+
+#### Angular
+
+- Для передачі подій вгору використовується @Output() разом із EventEmitter.
+  Дочірній компонент «викидає» подію, а батьківський підписується на неї через
+  (eventName) у шаблоні.
+
+**child.component.ts**
+
+```TypeScript
+import { Component, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  standalone: true,
+  template: `<button (click)="sendMessage()">Send</button>`
+})
+export class ChildComponent {
+  @Output() message = new EventEmitter<string>();
+
+  sendMessage() {
+    this.message.emit('Hello from Child!');
+  }
+}
+```
+
+**parent.component.ts**
+
+```TypeScript
+import { Component } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  standalone: true,
+  imports: [ChildComponent],
+  template: `<app-child (message)="onMessage($event)"></app-child>`
+})
+export class ParentComponent {
+  onMessage(data: string) {
+    console.log('Received from child:', data);
+  }
+}
+```
+
+- Коротко: передача даних child → parent відбувається через @Output() і (event)
+  binding. Дитина емітить подію, батько слухає.
+
+</details>
+
+<details>
+<summary>18. Які є життєві цикли (lifecycle hooks) компонентів в Angular і що вони означають?</summary>
+
+#### Angular
+
+- Lifecycle hooks — це методи, які Angular викликає на різних етапах «життя»
+  компонента: створення, оновлення, знищення.
+
+#### Основні хуки Angular:
+
+| Хук                         | Коли викликається                                        | Типове використання                                         |
+| --------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| **ngOnChanges(changes)**    | Коли змінюються @Input властивості                       | Реакція на зміни вхідних даних від батьківського компонента |
+| **ngOnInit()**              | Один раз після ініціалізації компоненту                  | Ініціалізація даних, запитів до API                         |
+| **ngDoCheck()**             | На кожній зміні (детекції)                               | Кастомна логіка перевірки змін                              |
+| **ngAfterContentInit()**    | Один раз після вставлення контенту (ng-content)          | Робота з проєктованим контентом                             |
+| **ngAfterContentChecked()** | Після кожної перевірки контенту                          | Оновлення після змін у проєктованому контенті               |
+| **ngAfterViewInit()**       | Один раз після ініціалізації view (дочірніх компонентів) | Доступ до елементів через ViewChild/ViewChildren            |
+| **ngAfterViewChecked()**    | Після кожної перевірки view                              | Оновлення DOM після перевірки                               |
+| **ngOnDestroy()**           | Перед знищенням компоненту                               | Очищення підписок, таймерів, ресурсів                       |
+
+#### Приклад:
+
+```TypeScript
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+@Component({
+  selector: 'app-demo',
+  standalone: true,
+  template: `<p>Lifecycle demo</p>`
+})
+export class DemoComponent implements OnInit, OnDestroy {
+  ngOnInit() {
+    console.log('Component initialized');
+  }
+
+  ngOnDestroy() {
+    console.log('Component destroyed');
+  }
+}
+```
+
+- Коротко: Lifecycle hooks — це хуки життєвого циклу компонента, які дають змогу
+  реагувати на створення, оновлення та знищення елемента.
+
+</details>
+
+<details>
+<summary>19. Що таке ViewEncapsulation в Angular і для чого воно використовується?</summary>
+
+#### Angular
+
+- ViewEncapsulation — це механізм інкапсуляції стилів у Angular, який визначає,
+  як CSS компоненту впливає на DOM (чи лише на цей компонент, чи на весь
+  застосунок).
+
+| Тип інкапсуляції         | Опис                                                                          | Особливість                                     |
+| ------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------- |
+| **Emulated** _(default)_ | Angular імітує поведінку Shadow DOM, додаючи унікальні атрибути до елементів. | Стилі діють лише всередині цього компонента.    |
+| **ShadowDom**            | Використовує нативний Shadow DOM браузера.                                    | Повна ізоляція стилів, немає витоку назовні.    |
+| **None**                 | Без інкапсуляції.                                                             | Стилі поширюються глобально на весь застосунок. |
+
+#### Приклад:
+
+```TypeScript
+import { Component, ViewEncapsulation } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.css'],
+  encapsulation: ViewEncapsulation.ShadowDom
+})
+export class ExampleComponent {}
+```
+
+**Коротко:**
+
+- ViewEncapsulation контролює межі застосування CSS — чи стилі “ізольовані”
+всередині компонента, чи поширюються глобально. У більшості випадків —
+використовується Emulated.
+</details>
+
+<details>
+<summary>20. Як застосовувати умовне (conditional) стилювання в Angular-компонентах?</summary>
+
+#### Angular
+
+- В Angular умовне стилювання реалізується через директиви прив’язки стилів та
+  класів — `ngClass` і `ngStyle`.
+
+| Метод                  | Приклад                                                                 | Опис                                                 |
+| ---------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------- |
+| **[ngClass]**          | `<div [ngClass]="{ 'active': isActive, 'disabled': !isActive }"></div>` | Додає або забирає CSS-класи залежно від умови.       |
+| **[ngStyle]**          | `<div [ngStyle]="{ 'color': isActive ? 'green' : 'red' }"></div>`       | Застосовує стилі напряму через об’єкт.               |
+| **Класова прив’язка**  | `<div [class.active]="isActive"></div>`                                 | Додає клас, якщо умова `true`.                       |
+| **Стильова прив’язка** | `<div [style.backgroundColor]="isActive ? 'blue' : 'gray'"></div>`      | Змінює конкретний CSS-властивість залежно від умови. |
+
+**Коротко:**
+
+- Використовуй `ngClass` для керування класами та `ngStyle` або `[style.prop]`
+  для динамічних inline-стилів. Це дає повний контроль над виглядом елементів
+  залежно від стану компонента.
+
+</details>
+
+<details>
+<summary>21. У чому різниця між структурними та атрибутними директивами в Angular?</summary>
+
+#### Angular
+
+- Директиви в Angular бувають структурні та атрибутні, і вони впливають на DOM
+  по-різному.
+
+| Тип директиви               | Опис                                                           | Приклади                                                                        | Вплив на DOM                                                  |
+| --------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Структурна (Structural)** | Змінює **структуру DOM** — додає, видаляє або змінює елементи. | `*ngIf`, `*ngFor`, `*ngSwitchCase`                                              | Створює або прибирає елементи в дереві DOM.                   |
+| **Атрибутна (Attribute)**   | Змінює **вигляд або поведінку** наявного елемента.             | `ngClass`, `ngStyle`, `ngModel`, кастомні директиви (наприклад, `appHighlight`) | Не змінює структуру DOM, лише властивості або стилі елемента. |
+
+**Коротко:**
+
+- Структурні директиви керують тим, що є в DOM, атрибутні директиви — тим, як це
+  виглядає або поводиться.
+
+</details>
+
+<details>
+<summary>22. Як створити власну структурну директиву в Angular?</summary>
+
+#### Angular
+
+- Структурна директива змінює DOM (додає або видаляє елементи). Щоб створити
+  кастомну структурну директиву:
+
+| Крок | Опис                                                                               |
+| ---- | ---------------------------------------------------------------------------------- |
+| 1    | Створити директиву з декоратором `@Directive` і `standalone: true`.                |
+| 2    | Інжектити `TemplateRef` і `ViewContainerRef` для доступу до шаблону та контейнера. |
+| 3    | Створити метод або сеттер, який вирішує, коли вставляти або видаляти шаблон.       |
+| 4    | Використовувати директиву через `*yourDirective` у шаблоні.                        |
+
+#### Приклад кастомної структурної директиви:
+
+```TypeScript
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]',
+  standalone: true
+})
+export class UnlessDirective {
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
+  ) {}
+
+  @Input() set appUnless(condition: boolean) {
+    this.viewContainer.clear();
+    if (!condition) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+  }
+}
+```
+
+#### Використання у шаблоні:
+
+```html
+<p *appUnless="isLoggedIn">You are not logged in!</p>
+```
+
+**Коротко:**
+
+- Кастомна структурна директива керує DOM через `ViewContainerRef` і
+  `TemplateRef`. Використовується з `*` синтаксисом у шаблоні.
+
+</details>
+
+<details>
+<summary>23. ???</summary>
 
 #### Angular
 
