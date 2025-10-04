@@ -921,11 +921,54 @@ export class ExampleComponent {}
 </details>
 
 <details>
-<summary>22. ???</summary>
+<summary>22. Як створити власну структурну директиву в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Структурна директива змінює DOM (додає або видаляє елементи). Щоб створити
+  кастомну структурну директиву:
+
+| Крок | Опис                                                                               |
+| ---- | ---------------------------------------------------------------------------------- |
+| 1    | Створити директиву з декоратором `@Directive` і `standalone: true`.                |
+| 2    | Інжектити `TemplateRef` і `ViewContainerRef` для доступу до шаблону та контейнера. |
+| 3    | Створити метод або сеттер, який вирішує, коли вставляти або видаляти шаблон.       |
+| 4    | Використовувати директиву через `*yourDirective` у шаблоні.                        |
+
+#### Приклад кастомної структурної директиви:
+
+```TypeScript
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]',
+  standalone: true
+})
+export class UnlessDirective {
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
+  ) {}
+
+  @Input() set appUnless(condition: boolean) {
+    this.viewContainer.clear();
+    if (!condition) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+  }
+}
+```
+
+#### Використання у шаблоні:
+
+```html
+<p *appUnless="isLoggedIn">You are not logged in!</p>
+```
+
+**Коротко:**
+
+- Кастомна структурна директива керує DOM через `ViewContainerRef` і
+  `TemplateRef`. Використовується з `*` синтаксисом у шаблоні.
 
 </details>
 
