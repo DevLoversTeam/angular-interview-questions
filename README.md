@@ -973,7 +973,337 @@ export class UnlessDirective {
 </details>
 
 <details>
-<summary>23. ???</summary>
+<summary>23. Як зробити сервіс singleton в Angular?</summary>
+
+#### Angular
+
+- У Angular singleton-сервіс — це сервіс, який створюється лише один раз і
+  використовується у всьому застосунку. Для цього потрібно вказати, де він
+  надається (provided).
+
+| Спосіб                                      | Приклад                                         | Пояснення                                                                                                     |
+| ------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **1. Через `providedIn: 'root'`**           | `@Injectable({ providedIn: 'root' })`           | Найпоширеніший спосіб. Сервіс реєструється в головному інжекторі, створюється один раз для всього застосунку. |
+| **2. Через модуль (deprecated підхід)**     | Додати в `providers` масив модуля (`@NgModule`) | Використовується рідше. Сервіс буде singleton лише в межах цього модуля.                                      |
+| **3. Через компонент (локальний інжектор)** | Додати в `providers` масив компонента           | Сервіс не буде singleton — створюється новий екземпляр для кожного компонента.                                |
+
+#### Приклад:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private token = '';
+  setToken(t: string) { this.token = t; }
+  getToken() { return this.token; }
+}
+```
+
+**Коротко:**
+
+- Найкраща практика — `@Injectable({ providedIn: 'root' })`, бо це гарантує
+  singleton-поведінку і оптимізує tree-shaking.
+
+</details>
+
+<details>
+<summary>24. Як використовувати Observables у сервісах для обміну даними між компонентами?</summary>
+
+#### Angular
+
+- Observables у сервісах дозволяють реактивно ділитися даними між компонентами —
+  без прямої передачі через `@Input()` чи `@Output()`.
+
+| Підхід              | Опис                                                                             | Типовий випадок використання                                 |
+| ------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Subject**         | Дає змогу як передавати (`next()`), так і підписуватись (`subscribe()`) на дані. | Динамічне оновлення стану між компонентами.                  |
+| **BehaviorSubject** | Зберігає останнє значення, яке автоматично отримують нові підписники.            | Поточний стан (наприклад, авторизація, вибраний користувач). |
+| **ReplaySubject**   | Передає певну кількість останніх значень новим підписникам.                      | Історія подій або кешування даних.                           |
+
+#### Приклад (через BehaviorSubject):
+
+**data.service.ts**
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  private messageSource = new BehaviorSubject<string>('Hello');
+  message$ = this.messageSource.asObservable();
+
+  updateMessage(newMsg: string) {
+    this.messageSource.next(newMsg);
+  }
+}
+```
+
+**component-a.ts**
+
+```TypeScript
+@Component({...})
+export class ComponentA {
+  constructor(private dataService: DataService) {}
+  sendMessage() {
+    this.dataService.updateMessage('Message from A');
+  }
+}
+```
+
+**component-b.ts**
+
+```TypeScript
+@Component({...})
+export class ComponentB {
+  message = '';
+  constructor(private dataService: DataService) {
+    this.dataService.message$.subscribe(msg => this.message = msg);
+  }
+}
+```
+
+**Коротко:**
+
+- Сервіс з `Subject` або `BehaviorSubject` діє як “shared data channel” — один
+  компонент надсилає дані, інші підписуються. Це реактивний і чистий спосіб
+  обміну станом між компонентами.
+
+</details>
+
+<details>
+<summary>25. Які існують способи надання (provide) сервісу в Angular і чим вони відрізняються?</summary>
+
+#### Angular
+
+- У Angular є кілька способів оголосити, де і як створюється сервіс. Від цього
+  залежить область його дії (scope) — чи він буде singleton, чи матиме локальний
+  екземпляр.
+
+| Спосіб                                           | Як реалізується                                    | Область дії                                                         | Коментар                                          |
+| ------------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------- |
+| **1. `providedIn: 'root'`**                      | У декораторі `@Injectable({ providedIn: 'root' })` | Глобальна (один екземпляр у всьому застосунку)                      | ✅ Найкраща практика. Оптимізується tree-shaking. |
+| **2. `providedIn: 'platform'`**                  | Через `@Injectable({ providedIn: 'platform' })`    | Спільний сервіс між кількома Angular застосунками на одній сторінці | Рідко використовується.                           |
+| **3. `providedIn: 'any'`**                       | Через `@Injectable({ providedIn: 'any' })`         | Новий екземпляр для кожного lazy-loaded модуля                      | Корисно для ізольованих модулів.                  |
+| **4. У `providers` масиві модуля (`@NgModule`)** | Додавання сервісу в `providers`                    | Тільки в межах цього модуля                                         | Використовується в legacy-проєктах.               |
+| **5. У `providers` масиві компонента**           | `providers: [MyService]` у декораторі `@Component` | Новий екземпляр для кожного екземпляра компонента                   | Для локального стану або ізольованої логіки.      |
+
+#### Приклад:
+
+```TypeScript
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {}
+```
+
+**або**
+
+```TypeScript
+@Component({
+  selector: 'app-profile',
+  providers: [UserService]
+})
+export class ProfileComponent {}
+```
+
+**Коротко:**
+
+- Найчастіше використовується `providedIn: 'root'` — це дає один спільний
+  екземпляр (singleton). Інші способи — для lazy-loading, ізоляції або особливих
+  випадків.
+
+</details>
+
+<details>
+<summary>26. Поясни, що таке providedIn у сервісах Angular і яку роль воно відіграє?</summary>
+
+#### Angular
+
+- `providedIn` — це параметр у декораторі `@Injectable`, який визначає, де
+  Angular має зареєструвати сервіс у DI (Dependency Injection) системі. Від
+  нього залежить область дії (scope) сервісу та кількість створених екземплярів.
+
+| Значення `providedIn`          | Опис                                                                | Область дії                                | Використання                               |
+| ------------------------------ | ------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
+| `'root'`                       | Сервіс реєструється у головному інжекторі застосунку.               | Глобальна (singleton у всьому застосунку). | ✅ Найпоширеніший і рекомендований спосіб. |
+| `'platform'`                   | Один інжектор для всієї платформи (кілька Angular app на сторінці). | Спільний між застосунками.                 | Рідкісний випадок використання.            |
+| `'any'`                        | Кожен lazy-loaded модуль отримує власний екземпляр.                 | Локальна для модуля або компонента.        | Для незалежних частин застосунку.          |
+| Клас або модуль (`SomeModule`) | Сервіс буде створено лише в межах цього модуля.                     | Локальна.                                  | Використовується для модульної ізоляції.   |
+
+#### Приклад:
+
+```TypeScript
+@Injectable({
+  providedIn: 'root'
+})
+export class LoggerService {
+  log(message: string) {
+    console.log(`[LOG]: ${message}`);
+  }
+}
+```
+
+**Коротко:**
+
+- `providedIn` визначає, де саме Angular створює сервіс і чи буде він спільним
+  (singleton). У більшості випадків використовують `providedIn: 'root'` — це
+  просто, ефективно і підтримує tree-shaking.
+
+</details>
+
+<details>
+<summary>27. Як у Angular використовувати HttpClient для обробки JSON-даних?</summary>
+
+#### Angular
+
+- `HttpClient` — це сервіс Angular для виконання HTTP-запитів. Він автоматично
+  перетворює JSON-відповіді в об’єкти JavaScript, тому додаткового парсингу не
+  потрібно.
+
+| Крок | Опис                                                              |
+| ---- | ----------------------------------------------------------------- |
+| 1    | Імпортуй `HttpClientModule` у кореневий або standalone компонент. |
+| 2    | Інжектуй `HttpClient` у сервіс або компонент.                     |
+| 3    | Використовуй методи `get()`, `post()`, `put()`, `delete()` тощо.  |
+| 4    | Angular автоматично обробляє JSON через RxJS `Observable`.        |
+
+#### Приклад:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
+  }
+
+  addUser(user: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, user);
+  }
+}
+```
+
+**component.ts**
+
+```TypeScript
+@Component({...})
+export class AppComponent {
+  users$ = this.userService.getUsers();
+
+  constructor(private userService: UserService) {}
+}
+```
+
+#### Особливості:
+
+- `HttpClient` автоматично парсить JSON у JS-об’єкти.
+
+- Можна вказати generic тип (`<User[]>`), щоб отримати типізовану відповідь.
+
+- Повертає Observable, тому можна застосовувати оператори RxJS (`map`,
+  `catchError`, тощо).
+
+**Коротко:**
+
+- `HttpClient` — це зручний API для роботи з JSON у Angular. Він типізований,
+  реактивний і не потребує ручного `JSON.parse()`.
+
+</details>
+
+<details>
+<summary>28. Як обробляти REST API-запити та помилки у сервісах Angular?</summary>
+
+#### Angular
+
+- REST-запити в Angular виконуються через `HttpClient`, а обробка помилок —
+  через RxJS оператор `catchError`. Усе це зазвичай інкапсулюється в окремому
+  сервісі, щоб компоненти залишалися “чистими”.
+
+| Крок | Опис                                                             |
+| ---- | ---------------------------------------------------------------- |
+| 1    | Створи сервіс (`@Injectable`) і підключи `HttpClient`.           |
+| 2    | Використовуй методи `get()`, `post()`, `put()`, `delete()`.      |
+| 3    | Обгорни запити у `pipe()` з `catchError()` для обробки помилок.  |
+| 4    | Поверни типізований `Observable`, щоб компонент міг підписатися. |
+
+#### Приклад:
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, throwError, Observable } from 'rxjs';
+
+export interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ProductService {
+  private apiUrl = 'https://api.example.com/products';
+
+  constructor(private http: HttpClient) {}
+
+  getProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  addProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(this.apiUrl, product).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      console.error('Network error:', error.error);
+    } else {
+      console.error(`API returned code ${error.status}:`, error.error);
+    }
+    return throwError(() => new Error('Something went wrong; please try again.'));
+  }
+}
+```
+
+#### Пояснення:
+
+- `catchError()` — RxJS оператор для перехоплення помилок.
+
+- `throwError()` — створює новий стрім з помилкою.
+
+- Обробку логіки (`try again`, `notify user`, `log error`) краще робити
+  всередині сервісу, не в компоненті.
+
+**Коротко:**
+
+- REST API виклики обробляються у сервісі через `HttpClient`. Для помилок
+  використовуй `catchError()` у поєднанні з власним `handleError()` методом — це
+  робить код чистим і передбачуваним.
+
+</details>
+
+<details>
+<summary>29. ???</summary>
 
 #### Angular
 
