@@ -1010,11 +1010,67 @@ export class AuthService {
 </details>
 
 <details>
-<summary>24. ???</summary>
+<summary>24. Як використовувати Observables у сервісах для обміну даними між компонентами?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Observables у сервісах дозволяють реактивно ділитися даними між компонентами —
+  без прямої передачі через `@Input()` чи `@Output()`.
+
+| Підхід              | Опис                                                                             | Типовий випадок використання                                 |
+| ------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Subject**         | Дає змогу як передавати (`next()`), так і підписуватись (`subscribe()`) на дані. | Динамічне оновлення стану між компонентами.                  |
+| **BehaviorSubject** | Зберігає останнє значення, яке автоматично отримують нові підписники.            | Поточний стан (наприклад, авторизація, вибраний користувач). |
+| **ReplaySubject**   | Передає певну кількість останніх значень новим підписникам.                      | Історія подій або кешування даних.                           |
+
+#### Приклад (через BehaviorSubject):
+
+**data.service.ts**
+
+```TypeScript
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  private messageSource = new BehaviorSubject<string>('Hello');
+  message$ = this.messageSource.asObservable();
+
+  updateMessage(newMsg: string) {
+    this.messageSource.next(newMsg);
+  }
+}
+```
+
+**component-a.ts**
+
+```TypeScript
+@Component({...})
+export class ComponentA {
+  constructor(private dataService: DataService) {}
+  sendMessage() {
+    this.dataService.updateMessage('Message from A');
+  }
+}
+```
+
+**component-b.ts**
+
+```TypeScript
+@Component({...})
+export class ComponentB {
+  message = '';
+  constructor(private dataService: DataService) {
+    this.dataService.message$.subscribe(msg => this.message = msg);
+  }
+}
+```
+
+**Коротко:**
+
+- Сервіс з `Subject` або `BehaviorSubject` діє як “shared data channel” — один
+  компонент надсилає дані, інші підписуються. Це реактивний і чистий спосіб
+  обміну станом між компонентами.
 
 </details>
 
