@@ -1547,11 +1547,57 @@ export class UserComponent implements OnInit {
 </details>
 
 <details>
-<summary>34. ???</summary>
+<summary>34. Що таке параметри маршруту в Angular і як до них звертатися?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Параметри маршруту — це змінні частини URL, які визначаються у маршрутах та
+  дозволяють передавати дані у компонент.
+
+#### Приклад:
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { UserComponent } from './user.component';
+
+export const routes: Routes = [
+  { path: 'user/:id', component: UserComponent },
+];
+```
+
+```TypeScript
+// user.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  template: `<p>User ID: {{ userId }}</p>`
+})
+export class UserComponent implements OnInit {
+  userId!: string;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Через snapshot (одноразово)
+    this.userId = this.route.snapshot.paramMap.get('id')!;
+
+    // Через Observable (реактивно при зміні маршруту)
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id')!;
+    });
+  }
+}
+```
+
+**Коротко:**
+
+- Route parameters — частина URL (наприклад, `/user/123` → `id = 123`).
+- Доступ через `ActivatedRoute.snapshot.paramMap` або
+  `ActivatedRoute.paramMap.subscribe()`.
+- Використовуються для динамічного рендерингу контенту.
 
 </details>
 
