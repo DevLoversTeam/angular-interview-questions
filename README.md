@@ -1652,7 +1652,7 @@ ngOnInit() {
 }
 ```
 
-#### Коротко:
+**Коротко:**
 
 - Resolver завантажує дані перед активацією маршруту.
 - Повертає `Observable`, `Promise` або просте значення.
@@ -1661,11 +1661,43 @@ ngOnInit() {
 </details>
 
 <details>
-<summary>36. ???</summary>
+<summary>36. Як реалізувати lazy loading модулів або компонентів у Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Lazy loading дозволяє завантажувати модулі чи компоненти тільки при переході
+  на відповідний маршрут, щоб зменшити початковий розмір bundle.
+
+#### Приклад для модуля (loadChildren):
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then(m => m.AdminModule),
+  },
+];
+```
+
+#### Приклад для standalone-компонента (loadComponent):
+
+```TypeScript
+{
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./dashboard/dashboard.component').then(c => c.DashboardComponent),
+}
+```
+
+**Коротко:**
+
+- `loadChildren` — для lazy loading модулів.
+- `loadComponent` — для lazy loading standalone-компонентів (Angular 15+).
+- Підвищує швидкість старту додатку, завантажуючи код лише за потреби.
 
 </details>
 
