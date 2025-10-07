@@ -1602,11 +1602,61 @@ export class UserComponent implements OnInit {
 </details>
 
 <details>
-<summary>35. ???</summary>
+<summary>35. Як у Angular заздалегідь завантажити дані перед переходом на маршрут (resolve data)?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Для цього використовують **_Route Resolver_** — сервіс, який реалізує
+  інтерфейс `Resolve<T>`. Angular чекає, поки resolver отримає дані, і передає
+  їх у компонент через `ActivatedRoute.data`.
+
+#### Приклад:
+
+```TypeScript
+// user.resolver.ts
+import { Injectable } from '@angular/core';
+import { Resolve } from '@angular/router';
+import { UserService } from './user.service';
+
+@Injectable({ providedIn: 'root' })
+export class UserResolver implements Resolve<any> {
+  constructor(private userService: UserService) {}
+
+  resolve() {
+    return this.userService.getUser(); // може повертати Observable або Promise
+  }
+}
+```
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { UserComponent } from './user.component';
+import { UserResolver } from './user.resolver';
+
+export const routes: Routes = [
+  {
+    path: 'user/:id',
+    component: UserComponent,
+    resolve: { userData: UserResolver }
+  }
+];
+```
+
+```TypeScript
+// user.component.ts
+ngOnInit() {
+  this.route.data.subscribe(data => {
+    console.log(data.userData); // доступ до preload-даних
+  });
+}
+```
+
+#### Коротко:
+
+- Resolver завантажує дані перед активацією маршруту.
+- Повертає `Observable`, `Promise` або просте значення.
+- Дані доступні через `ActivatedRoute.data` у компоненті.
 
 </details>
 
