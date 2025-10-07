@@ -1303,7 +1303,142 @@ export class ProductService {
 </details>
 
 <details>
-<summary>29. ???</summary>
+<summary>29. Як налаштовується маршрутизація (routing) в Angular-застосунках?</summary>
+
+#### Angular
+
+- Routing в Angular визначає, який компонент відображається при переході на
+  певний URL. Він налаштовується через масив маршрутів і RouterModule (або
+  `provideRouter` для standalone API).
+
+| Крок | Опис                                                                                            |
+| ---- | ----------------------------------------------------------------------------------------------- |
+| 1    | Створити масив маршрутів (`Routes[]`), де кожен об’єкт описує шлях і компонент.                 |
+| 2    | Імпортувати `RouterModule.forRoot(routes)` або використати `provideRouter(routes)` у `main.ts`. |
+| 3    | Додати `<router-outlet>` у шаблон, щоб рендерити активний маршрут.                              |
+| 4    | Використовувати директиви `[routerLink]` для навігації.                                         |
+
+#### Приклад (standalone routing):
+
+**app.routes.ts**
+
+```TypeScript
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home.component';
+import { AboutComponent } from './about.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+  { path: '**', redirectTo: '' } // catch-all
+];
+```
+
+**main.ts**
+
+```TypeScript
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { AppComponent } from './app.component';
+import { routes } from './app.routes';
+
+bootstrapApplication(AppComponent, {
+  providers: [provideRouter(routes)]
+});
+```
+
+**app.component.html**
+
+```html
+<nav>
+  <a routerLink="/">Home</a>
+  <a routerLink="/about">About</a>
+</nav>
+
+<router-outlet></router-outlet>
+```
+
+#### Додаткові можливості:
+
+- **Route Guards** (`canActivate`, `canDeactivate`) — для захисту маршрутів.
+
+- **Lazy Loading** — динамічне підвантаження модулів або компонентів.
+
+- **Route Parameters** (`:id`) — для передачі динамічних значень у маршруті.
+
+**Коротко:**
+
+Маршрутизація в Angular конфігурується через масив `Routes` і `RouterModule` або
+provideRouter(). Компоненти рендеряться у `<router-outlet>`, а переходи
+виконуються через `[routerLink]`.
+
+</details>
+
+<details>
+<summary>30. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>31. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>32. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>33. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>34. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>35. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>36. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>37. ???</summary>
 
 #### Angular
 
