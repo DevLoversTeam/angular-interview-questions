@@ -1459,20 +1459,90 @@ export const routes: Routes = [
 </details>
 
 <details>
-<summary>32. ???</summary>
+<summary>32. Як у Angular застосовуються route guards (захисники маршрутів)?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Route guards — це сервіси, які контролюють доступ до маршрутів. Вони
+  реалізують спеціальні інтерфейси (`CanActivate`, `CanDeactivate`, `CanLoad`,
+  `CanMatch`, `Resolve`) і використовуються в конфігурації маршрутизатора.
+
+#### Приклад (CanActivate):
+
+```TypeScript
+// auth.guard.ts
+import { CanActivateFn } from '@angular/router';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const isLoggedIn = !!localStorage.getItem('token');
+  return isLoggedIn; // або redirectUrl при потребі
+};
+```
+
+```TypeScript
+// app.routes.ts
+export const routes = [
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./dashboard/dashboard.component').then(c => c.DashboardComponent),
+  },
+];
+```
+
+**Коротко:**
+
+- Guards перевіряють, чи можна активувати, завантажити або покинути маршрут.
+- Починаючи з Angular 15+, зручно використовувати функціональні guards
+  (`CanActivateFn`) без класів.
+- Повертають `true/false`, `UrlTree`, або `Observable/Promise`.
 
 </details>
 
 <details>
-<summary>33. ???</summary>
+<summary>33. Для чого в Angular використовується ActivatedRoute у маршрутизації?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- `ActivatedRoute` дає доступ до інформації про поточний активний маршрут,
+  включно з параметрами, query-параметрами, фрагментами URL і даними, переданими
+  через `data`. Використовується всередині компонентів для отримання контексту
+  маршруту.
+
+#### Приклад:
+
+```TypeScript
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  template: `<p>User ID: {{ userId }}</p>`
+})
+export class UserComponent implements OnInit {
+  userId!: string;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // отримати параметр з URL
+    this.userId = this.route.snapshot.paramMap.get('id')!;
+
+    // або підписка на зміни параметрів
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id')!;
+    });
+  }
+}
+```
+
+**Коротко:**
+
+- `ActivatedRoute` — доступ до параметрів маршруту, query-параметрів, fragment і
+  data.
+- Потрібен для динамічного завантаження даних залежно від маршруту.
+- Працює як зі snapshot, так і з Observable для реактивного оновлення.
 
 </details>
 
