@@ -1418,11 +1418,43 @@ export const routes: Routes = [
 </details>
 
 <details>
-<summary>31. ???</summary>
+<summary>31. Що таке RouterOutlet в Angular і як його використовують?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- `<router-outlet>` — це директива, яка визначає місце у шаблоні, куди Angular
+  підставляє компонент, що відповідає активному маршруту. Вона є “контейнером”
+  для відображення контенту згідно з конфігурацією маршрутизатора.
+
+#### Приклад:
+
+```html
+<!-- app.component.html -->
+<nav>
+  <a routerLink="/home">Home</a>
+  <a routerLink="/about">About</a>
+</nav>
+
+<router-outlet></router-outlet>
+```
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home.component';
+import { AboutComponent } from './about.component';
+
+export const routes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+];
+```
+
+**Коротко:**
+
+- `RouterOutlet` — точка вставки для компонентів маршруту.
+- Підтримує вкладені маршрути (може бути кілька `router-outlet`).
+- Без нього маршрути не відображаються у DOM.
 
 </details>
 
