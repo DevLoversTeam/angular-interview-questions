@@ -1303,7 +1303,406 @@ export class ProductService {
 </details>
 
 <details>
-<summary>29. ???</summary>
+<summary>29. Як налаштовується маршрутизація (routing) в Angular-застосунках?</summary>
+
+#### Angular
+
+- Routing в Angular визначає, який компонент відображається при переході на
+  певний URL. Він налаштовується через масив маршрутів і RouterModule (або
+  `provideRouter` для standalone API).
+
+| Крок | Опис                                                                                            |
+| ---- | ----------------------------------------------------------------------------------------------- |
+| 1    | Створити масив маршрутів (`Routes[]`), де кожен об’єкт описує шлях і компонент.                 |
+| 2    | Імпортувати `RouterModule.forRoot(routes)` або використати `provideRouter(routes)` у `main.ts`. |
+| 3    | Додати `<router-outlet>` у шаблон, щоб рендерити активний маршрут.                              |
+| 4    | Використовувати директиви `[routerLink]` для навігації.                                         |
+
+#### Приклад (standalone routing):
+
+**app.routes.ts**
+
+```TypeScript
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home.component';
+import { AboutComponent } from './about.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+  { path: '**', redirectTo: '' } // catch-all
+];
+```
+
+**main.ts**
+
+```TypeScript
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { AppComponent } from './app.component';
+import { routes } from './app.routes';
+
+bootstrapApplication(AppComponent, {
+  providers: [provideRouter(routes)]
+});
+```
+
+**app.component.html**
+
+```html
+<nav>
+  <a routerLink="/">Home</a>
+  <a routerLink="/about">About</a>
+</nav>
+
+<router-outlet></router-outlet>
+```
+
+#### Додаткові можливості:
+
+- **Route Guards** (`canActivate`, `canDeactivate`) — для захисту маршрутів.
+
+- **Lazy Loading** — динамічне підвантаження модулів або компонентів.
+
+- **Route Parameters** (`:id`) — для передачі динамічних значень у маршруті.
+
+**Коротко:**
+
+Маршрутизація в Angular конфігурується через масив `Routes` і `RouterModule` або
+provideRouter(). Компоненти рендеряться у `<router-outlet>`, а переходи
+виконуються через `[routerLink]`.
+
+</details>
+
+<details>
+<summary>30. Як у Angular створити маршрут, який динамічно завантажує модуль лише під час доступу до нього (lazy loading)?</summary>
+
+#### Angular
+
+- Так, у сучасному Angular (v16–20) це робиться через **_lazy loading_** з
+  використанням динамічного `import()` у файлі маршрутизації. Це дозволяє не
+  включати модуль у основний bundle, а завантажувати його лише при навігації.
+
+#### Приклад:
+
+```TypeScript
+// app.routes.ts (Angular 17+ standalone API)
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.routes').then(m => m.ADMIN_ROUTES),
+  },
+];
+```
+
+У випадку standalone-компонентів:
+
+```TypeScript
+{
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./dashboard/dashboard.component').then(c => c.DashboardComponent),
+}
+```
+
+**Коротко:**
+
+- `loadChildren` або `loadComponent` використовуються для lazy loading.
+- Модуль/компонент завантажується лише при першому переході на відповідний
+  маршрут.
+- Це оптимізує стартову швидкість застосунку.
+
+</details>
+
+<details>
+<summary>31. Що таке RouterOutlet в Angular і як його використовують?</summary>
+
+#### Angular
+
+- `<router-outlet>` — це директива, яка визначає місце у шаблоні, куди Angular
+  підставляє компонент, що відповідає активному маршруту. Вона є “контейнером”
+  для відображення контенту згідно з конфігурацією маршрутизатора.
+
+#### Приклад:
+
+```html
+<!-- app.component.html -->
+<nav>
+  <a routerLink="/home">Home</a>
+  <a routerLink="/about">About</a>
+</nav>
+
+<router-outlet></router-outlet>
+```
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home.component';
+import { AboutComponent } from './about.component';
+
+export const routes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+];
+```
+
+**Коротко:**
+
+- `RouterOutlet` — точка вставки для компонентів маршруту.
+- Підтримує вкладені маршрути (може бути кілька `router-outlet`).
+- Без нього маршрути не відображаються у DOM.
+
+</details>
+
+<details>
+<summary>32. Як у Angular застосовуються route guards (захисники маршрутів)?</summary>
+
+#### Angular
+
+- Route guards — це сервіси, які контролюють доступ до маршрутів. Вони
+  реалізують спеціальні інтерфейси (`CanActivate`, `CanDeactivate`, `CanLoad`,
+  `CanMatch`, `Resolve`) і використовуються в конфігурації маршрутизатора.
+
+#### Приклад (CanActivate):
+
+```TypeScript
+// auth.guard.ts
+import { CanActivateFn } from '@angular/router';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const isLoggedIn = !!localStorage.getItem('token');
+  return isLoggedIn; // або redirectUrl при потребі
+};
+```
+
+```TypeScript
+// app.routes.ts
+export const routes = [
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./dashboard/dashboard.component').then(c => c.DashboardComponent),
+  },
+];
+```
+
+**Коротко:**
+
+- Guards перевіряють, чи можна активувати, завантажити або покинути маршрут.
+- Починаючи з Angular 15+, зручно використовувати функціональні guards
+  (`CanActivateFn`) без класів.
+- Повертають `true/false`, `UrlTree`, або `Observable/Promise`.
+
+</details>
+
+<details>
+<summary>33. Для чого в Angular використовується ActivatedRoute у маршрутизації?</summary>
+
+#### Angular
+
+- `ActivatedRoute` дає доступ до інформації про поточний активний маршрут,
+  включно з параметрами, query-параметрами, фрагментами URL і даними, переданими
+  через `data`. Використовується всередині компонентів для отримання контексту
+  маршруту.
+
+#### Приклад:
+
+```TypeScript
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  template: `<p>User ID: {{ userId }}</p>`
+})
+export class UserComponent implements OnInit {
+  userId!: string;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // отримати параметр з URL
+    this.userId = this.route.snapshot.paramMap.get('id')!;
+
+    // або підписка на зміни параметрів
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id')!;
+    });
+  }
+}
+```
+
+**Коротко:**
+
+- `ActivatedRoute` — доступ до параметрів маршруту, query-параметрів, fragment і
+  data.
+- Потрібен для динамічного завантаження даних залежно від маршруту.
+- Працює як зі snapshot, так і з Observable для реактивного оновлення.
+
+</details>
+
+<details>
+<summary>34. Що таке параметри маршруту в Angular і як до них звертатися?</summary>
+
+#### Angular
+
+- Параметри маршруту — це змінні частини URL, які визначаються у маршрутах та
+  дозволяють передавати дані у компонент.
+
+#### Приклад:
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { UserComponent } from './user.component';
+
+export const routes: Routes = [
+  { path: 'user/:id', component: UserComponent },
+];
+```
+
+```TypeScript
+// user.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  template: `<p>User ID: {{ userId }}</p>`
+})
+export class UserComponent implements OnInit {
+  userId!: string;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Через snapshot (одноразово)
+    this.userId = this.route.snapshot.paramMap.get('id')!;
+
+    // Через Observable (реактивно при зміні маршруту)
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id')!;
+    });
+  }
+}
+```
+
+**Коротко:**
+
+- Route parameters — частина URL (наприклад, `/user/123` → `id = 123`).
+- Доступ через `ActivatedRoute.snapshot.paramMap` або
+  `ActivatedRoute.paramMap.subscribe()`.
+- Використовуються для динамічного рендерингу контенту.
+
+</details>
+
+<details>
+<summary>35. Як у Angular заздалегідь завантажити дані перед переходом на маршрут (resolve data)?</summary>
+
+#### Angular
+
+- Для цього використовують **_Route Resolver_** — сервіс, який реалізує
+  інтерфейс `Resolve<T>`. Angular чекає, поки resolver отримає дані, і передає
+  їх у компонент через `ActivatedRoute.data`.
+
+#### Приклад:
+
+```TypeScript
+// user.resolver.ts
+import { Injectable } from '@angular/core';
+import { Resolve } from '@angular/router';
+import { UserService } from './user.service';
+
+@Injectable({ providedIn: 'root' })
+export class UserResolver implements Resolve<any> {
+  constructor(private userService: UserService) {}
+
+  resolve() {
+    return this.userService.getUser(); // може повертати Observable або Promise
+  }
+}
+```
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { UserComponent } from './user.component';
+import { UserResolver } from './user.resolver';
+
+export const routes: Routes = [
+  {
+    path: 'user/:id',
+    component: UserComponent,
+    resolve: { userData: UserResolver }
+  }
+];
+```
+
+```TypeScript
+// user.component.ts
+ngOnInit() {
+  this.route.data.subscribe(data => {
+    console.log(data.userData); // доступ до preload-даних
+  });
+}
+```
+
+**Коротко:**
+
+- Resolver завантажує дані перед активацією маршруту.
+- Повертає `Observable`, `Promise` або просте значення.
+- Дані доступні через `ActivatedRoute.data` у компоненті.
+
+</details>
+
+<details>
+<summary>36. Як реалізувати lazy loading модулів або компонентів у Angular?</summary>
+
+#### Angular
+
+- Lazy loading дозволяє завантажувати модулі чи компоненти тільки при переході
+  на відповідний маршрут, щоб зменшити початковий розмір bundle.
+
+#### Приклад для модуля (loadChildren):
+
+```TypeScript
+// app.routes.ts
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then(m => m.AdminModule),
+  },
+];
+```
+
+#### Приклад для standalone-компонента (loadComponent):
+
+```TypeScript
+{
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./dashboard/dashboard.component').then(c => c.DashboardComponent),
+}
+```
+
+**Коротко:**
+
+- `loadChildren` — для lazy loading модулів.
+- `loadComponent` — для lazy loading standalone-компонентів (Angular 15+).
+- Підвищує швидкість старту додатку, завантажуючи код лише за потреби.
+
+</details>
+
+<details>
+<summary>37. ???</summary>
 
 #### Angular
 
