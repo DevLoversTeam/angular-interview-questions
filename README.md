@@ -1702,7 +1702,105 @@ export const routes: Routes = [
 </details>
 
 <details>
-<summary>37. ???</summary>
+<summary>37. Поясни різницю між Template-driven та Reactive формами в Angular.</summary>
+
+#### Angular
+
+- **Template-driven форми** будуються переважно у HTML-шаблоні за допомогою
+  директив (ngModel, ngForm). Вони простіші, підходять для невеликих форм, але
+  менш контрольовані — логіка зосереджена у шаблоні.
+
+- **Reactive форми** створюються в TypeScript-коді за допомогою FormGroup,
+  FormControl, FormBuilder. Вони більш предиктивні, масштабовані й краще
+  підходять для складних форм, валідації та тестування.
+
+#### Приклад:
+
+**Template-driven:**
+
+```html
+<form #form="ngForm">
+  <input name="email" ngModel required />
+</form>
+```
+
+**Reactive:**
+
+```TypeScript
+form = new FormGroup({
+  email: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+});
+```
+
+```html
+<form [formGroup]="form">
+  <input formControlName="email" />
+</form>
+```
+
+**Коротко:**
+
+- Template-driven — декларативний підхід у шаблоні.
+- Reactive — імперативний підхід у коді, з повним контролем над станом форми.
+
+</details>
+
+<details>
+<summary>38. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>39. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>40. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>41. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>42. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>43. ???</summary>
+
+#### Angular
+
+- Coming soon...😎
+
+</details>
+
+<details>
+<summary>44. ???</summary>
 
 #### Angular
 
