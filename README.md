@@ -1806,11 +1806,54 @@ function emailExistsValidator(service: UserService): AsyncValidatorFn {
 </details>
 
 <details>
-<summary>39. ???</summary>
+<summary>39. Як динамічно додавати або видаляти елементи управління (form controls) у Reactive Forms в Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Для динамічної роботи з полями форми використовують `FormArray` або методи
+  `addControl()` / `removeControl()` у `FormGroup`.
+- Це дозволяє створювати або видаляти поля на льоту — наприклад, динамічні
+  списки чи масиви інпутів.
+
+**Приклад із FormArray:**
+
+```TypeScript
+form = new FormGroup({
+  users: new FormArray<FormControl<string>>([])
+});
+
+get users() {
+  return this.form.get('users') as FormArray;
+}
+
+addUser() {
+  this.users.push(new FormControl('', Validators.required));
+}
+
+removeUser(index: number) {
+  this.users.removeAt(index);
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <div formArrayName="users">
+    <div *ngFor="let user of users.controls; let i = index">
+      <input [formControlName]="i" />
+      <button type="button" (click)="removeUser(i)">Remove</button>
+    </div>
+  </div>
+  <button type="button" (click)="addUser()">Add User</button>
+</form>
+```
+
+**Коротко:**
+
+- Використовуй FormArray для списків контролів.
+- Використовуй `addControl()` / `removeControl()` у `FormGroup` для динамічних
+  окремих полів.
 
 </details>
 
