@@ -2003,11 +2003,63 @@ removePhone(index: number) {
 </details>
 
 <details>
-<summary>43. ???</summary>
+<summary>43. Як відправити дані форми з Angular-додатку на бекенд-сервіс?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- У Angular форма зазвичай відправляється через сервіс, який використовує
+  `HttpClient` для HTTP-запиту (`POST`, `PUT` тощо). Після сабміту зчитують
+  `form.value`, перевіряють `form.valid` і викликають метод сервісу.
+
+**Приклад:**
+
+```TypeScript
+// user.service.ts
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  constructor(private http: HttpClient) {}
+
+  submitUser(data: any) {
+    return this.http.post('/api/users', data);
+  }
+}
+```
+
+```TypeScript
+// component.ts
+form = new FormGroup({
+  name: new FormControl('', Validators.required),
+  email: new FormControl('', Validators.email)
+});
+
+constructor(private userService: UserService) {}
+
+onSubmit() {
+  if (this.form.valid) {
+    this.userService.submitUser(this.form.value).subscribe({
+      next: () => console.log('User saved!'),
+      error: err => console.error('Error:', err)
+    });
+  }
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="name" />
+  <input formControlName="email" />
+  <button type="submit">Save</button>
+</form>
+```
+
+**Коротко:**
+
+- Отримуєш `form.value`.
+- Перевіряєш `form.valid`.
+- Відправляєш через `HttpClient` (звичайно через сервіс).
+- Обробляєш відповідь у `subscribe()`.
 
 </details>
 
