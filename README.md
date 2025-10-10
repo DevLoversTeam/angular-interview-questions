@@ -1901,11 +1901,50 @@ Validators.required), email: new FormControl('', Validators.email) }) });
 </details>
 
 <details>
-<summary>41. ???</summary>
+<summary>41. Як створити власні (custom) валідатори у формах Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Кастомний валідатор — це функція, яка приймає `FormControl` або
+  `AbstractControl` і повертає об’єкт помилки `{ [key: string]: any }` або
+  `null`, якщо помилок немає. Її можна використовувати в Reactive Forms або
+  Template-driven.
+
+**Синхронний валідатор (приклад):**
+
+```TypeScript
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
+export function forbiddenWordValidator(control: AbstractControl):
+ValidationErrors | null { const forbidden = control.value?.toLowerCase() ===
+'admin'; return forbidden ? { forbiddenWord: true } : null; }
+```
+
+**Використання:**
+
+```TypeScript
+form = new FormGroup({ username: new FormControl('', [forbiddenWordValidator])
+});
+```
+
+**Асинхронний валідатор (приклад):**
+
+```TypeScript
+export function uniqueEmailValidator(service: UserService) {
+  return (control: AbstractControl) => {
+    return service
+      .checkEmail(control.value)
+      .pipe(map(isTaken => (isTaken ? { emailTaken: true } : null)));
+  };
+}
+```
+
+**Коротко:**
+
+- Кастомний валідатор — це функція, що повертає `{ errorKey: true }` або `null`.
+- Може бути синхронним або асинхронним (через Observable).
+- Підходить для складної бізнес-логіки, якої немає серед стандартних
+  `Validators`.
 
 </details>
 
