@@ -1949,11 +1949,56 @@ export function uniqueEmailValidator(service: UserService) {
 </details>
 
 <details>
-<summary>42. ???</summary>
+<summary>42. Поясни, як використовувати formArrayName для роботи з полями форми типу масиву в Angular.</summary>
 
 #### Angular
 
-- Coming soon...😎
+- `formArrayName` використовується в шаблоні для прив’язки до `FormArray`
+  усередині Reactive Forms. Це дозволяє відображати та керувати динамічними
+  наборами полів (наприклад, списком телефонів, тегів чи користувачів).
+
+**Приклад:**
+
+```TypeScript
+form = new FormGroup({
+  phones: new FormArray<FormControl<string>>([
+    new FormControl('', Validators.required)
+  ])
+});
+
+get phones() {
+  return this.form.get('phones') as FormArray;
+}
+
+addPhone() {
+  this.phones.push(new FormControl('', Validators.required));
+}
+
+removePhone(index: number) {
+  this.phones.removeAt(index);
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <div formArrayName="phones">
+    <div *ngFor="let phone of phones.controls; let i = index">
+      <input [formControlName]="i" placeholder="Phone number" />
+      <button type="button" (click)="removePhone(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addPhone()">Add Phone</button>
+</form>
+```
+
+**Коротко:**
+
+- `formArrayName` — це директива для доступу до `FormArray` у шаблоні.
+- Кожен елемент масиву — окремий FormControl або FormGroup.
+- Використовується для динамічних форм, де кількість полів може змінюватися.
 
 </details>
 
