@@ -1746,11 +1746,62 @@ form = new FormGroup({
 </details>
 
 <details>
-<summary>38. ???</summary>
+<summary>38. Як виконується валідація користувацького введення у формах Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- В Angular є вбудована, кастомна та асинхронна валідація. Валідація
+  визначається або через HTML-атрибути (у Template-driven формах), або через
+  `Validators` у Reactive формах.
+
+**Reactive форма з валідацією:**
+
+```TypeScript
+form = new FormGroup({
+  email: new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.email]
+  }),
+  password: new FormControl('', {
+    validators: [Validators.required, Validators.minLength(6)]
+  })
+});
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <input formControlName="email" />
+  <div *ngIf="form.controls.email.invalid && form.controls.email.touched">
+    Invalid email
+  </div>
+</form>
+```
+
+**Кастомний валідатор (приклад):**
+
+```TypeScript
+function forbiddenNameValidator(control: FormControl) {
+  return control.value === 'admin' ? { forbiddenName: true } : null;
+}
+```
+
+**Асинхронний валідатор (приклад):**
+
+```TypeScript
+function emailExistsValidator(service: UserService): AsyncValidatorFn {
+  return control => service.checkEmail(control.value).pipe(
+    map(exists => (exists ? { emailTaken: true } : null))
+  );
+}
+```
+
+**Коротко:**
+
+- Використовуємо Validators (built-in або custom).
+- Реактивний підхід дає більше контролю й гнучкості для відображення помилок та
+  асинхронних перевірок.
 
 </details>
 
