@@ -1702,7 +1702,369 @@ export const routes: Routes = [
 </details>
 
 <details>
-<summary>37. ???</summary>
+<summary>37. Поясни різницю між Template-driven та Reactive формами в Angular.</summary>
+
+#### Angular
+
+- **Template-driven форми** будуються переважно у HTML-шаблоні за допомогою
+  директив (ngModel, ngForm). Вони простіші, підходять для невеликих форм, але
+  менш контрольовані — логіка зосереджена у шаблоні.
+
+- **Reactive форми** створюються в TypeScript-коді за допомогою FormGroup,
+  FormControl, FormBuilder. Вони більш предиктивні, масштабовані й краще
+  підходять для складних форм, валідації та тестування.
+
+#### Приклад:
+
+**Template-driven:**
+
+```html
+<form #form="ngForm">
+  <input name="email" ngModel required />
+</form>
+```
+
+**Reactive:**
+
+```TypeScript
+form = new FormGroup({
+  email: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+});
+```
+
+```html
+<form [formGroup]="form">
+  <input formControlName="email" />
+</form>
+```
+
+**Коротко:**
+
+- Template-driven — декларативний підхід у шаблоні.
+- Reactive — імперативний підхід у коді, з повним контролем над станом форми.
+
+</details>
+
+<details>
+<summary>38. Як виконується валідація користувацького введення у формах Angular?</summary>
+
+#### Angular
+
+- В Angular є вбудована, кастомна та асинхронна валідація. Валідація
+  визначається або через HTML-атрибути (у Template-driven формах), або через
+  `Validators` у Reactive формах.
+
+**Reactive форма з валідацією:**
+
+```TypeScript
+form = new FormGroup({
+  email: new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.email]
+  }),
+  password: new FormControl('', {
+    validators: [Validators.required, Validators.minLength(6)]
+  })
+});
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <input formControlName="email" />
+  <div *ngIf="form.controls.email.invalid && form.controls.email.touched">
+    Invalid email
+  </div>
+</form>
+```
+
+**Кастомний валідатор (приклад):**
+
+```TypeScript
+function forbiddenNameValidator(control: FormControl) {
+  return control.value === 'admin' ? { forbiddenName: true } : null;
+}
+```
+
+**Асинхронний валідатор (приклад):**
+
+```TypeScript
+function emailExistsValidator(service: UserService): AsyncValidatorFn {
+  return control => service.checkEmail(control.value).pipe(
+    map(exists => (exists ? { emailTaken: true } : null))
+  );
+}
+```
+
+**Коротко:**
+
+- Використовуємо Validators (built-in або custom).
+- Реактивний підхід дає більше контролю й гнучкості для відображення помилок та
+  асинхронних перевірок.
+
+</details>
+
+<details>
+<summary>39. Як динамічно додавати або видаляти елементи управління (form controls) у Reactive Forms в Angular?</summary>
+
+#### Angular
+
+- Для динамічної роботи з полями форми використовують `FormArray` або методи
+  `addControl()` / `removeControl()` у `FormGroup`.
+- Це дозволяє створювати або видаляти поля на льоту — наприклад, динамічні
+  списки чи масиви інпутів.
+
+**Приклад із FormArray:**
+
+```TypeScript
+form = new FormGroup({
+  users: new FormArray<FormControl<string>>([])
+});
+
+get users() {
+  return this.form.get('users') as FormArray;
+}
+
+addUser() {
+  this.users.push(new FormControl('', Validators.required));
+}
+
+removeUser(index: number) {
+  this.users.removeAt(index);
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <div formArrayName="users">
+    <div *ngFor="let user of users.controls; let i = index">
+      <input [formControlName]="i" />
+      <button type="button" (click)="removeUser(i)">Remove</button>
+    </div>
+  </div>
+  <button type="button" (click)="addUser()">Add User</button>
+</form>
+```
+
+**Коротко:**
+
+- Використовуй FormArray для списків контролів.
+- Використовуй `addControl()` / `removeControl()` у `FormGroup` для динамічних
+  окремих полів.
+
+</details>
+
+<details>
+<summary>40. Що таке FormGroup у Angular і як він працює?</summary>
+
+#### Angular
+
+- `FormGroup` — це об’єкт, який об’єднує кілька `FormControl` або навіть інших
+  `FormGroup` у єдину структуру. Він дозволяє керувати станом, значеннями та
+  валідацією всієї групи як одного цілого.
+
+**Ключові моменти:**
+
+- `FormGroup` зберігає набір контролів у вигляді об’єкта.
+
+- Дозволяє отримати стан (`valid`, `dirty`, `touched`) або значення (`value`)
+  всієї групи.
+
+- Може мати групову валідацію (на рівні всієї форми).
+
+**Приклад:**
+
+```TypeScript
+form = new FormGroup({ user: new FormGroup({ name: new FormControl('',
+Validators.required), email: new FormControl('', Validators.email) }) });
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <div formGroupName="user">
+    <input formControlName="name" />
+    <input formControlName="email" />
+  </div>
+</form>
+```
+
+**Коротко:**
+
+- `FormGroup` = контейнер для контролів → дає змогу керувати групою полів як
+  єдиним об’єктом (для валідації, оновлення, сабміту).
+
+</details>
+
+<details>
+<summary>41. Як створити власні (custom) валідатори у формах Angular?</summary>
+
+#### Angular
+
+- Кастомний валідатор — це функція, яка приймає `FormControl` або
+  `AbstractControl` і повертає об’єкт помилки `{ [key: string]: any }` або
+  `null`, якщо помилок немає. Її можна використовувати в Reactive Forms або
+  Template-driven.
+
+**Синхронний валідатор (приклад):**
+
+```TypeScript
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
+export function forbiddenWordValidator(control: AbstractControl):
+ValidationErrors | null { const forbidden = control.value?.toLowerCase() ===
+'admin'; return forbidden ? { forbiddenWord: true } : null; }
+```
+
+**Використання:**
+
+```TypeScript
+form = new FormGroup({ username: new FormControl('', [forbiddenWordValidator])
+});
+```
+
+**Асинхронний валідатор (приклад):**
+
+```TypeScript
+export function uniqueEmailValidator(service: UserService) {
+  return (control: AbstractControl) => {
+    return service
+      .checkEmail(control.value)
+      .pipe(map(isTaken => (isTaken ? { emailTaken: true } : null)));
+  };
+}
+```
+
+**Коротко:**
+
+- Кастомний валідатор — це функція, що повертає `{ errorKey: true }` або `null`.
+- Може бути синхронним або асинхронним (через Observable).
+- Підходить для складної бізнес-логіки, якої немає серед стандартних
+  `Validators`.
+
+</details>
+
+<details>
+<summary>42. Поясни, як використовувати formArrayName для роботи з полями форми типу масиву в Angular.</summary>
+
+#### Angular
+
+- `formArrayName` використовується в шаблоні для прив’язки до `FormArray`
+  усередині Reactive Forms. Це дозволяє відображати та керувати динамічними
+  наборами полів (наприклад, списком телефонів, тегів чи користувачів).
+
+**Приклад:**
+
+```TypeScript
+form = new FormGroup({
+  phones: new FormArray<FormControl<string>>([
+    new FormControl('', Validators.required)
+  ])
+});
+
+get phones() {
+  return this.form.get('phones') as FormArray;
+}
+
+addPhone() {
+  this.phones.push(new FormControl('', Validators.required));
+}
+
+removePhone(index: number) {
+  this.phones.removeAt(index);
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form">
+  <div formArrayName="phones">
+    <div *ngFor="let phone of phones.controls; let i = index">
+      <input [formControlName]="i" placeholder="Phone number" />
+      <button type="button" (click)="removePhone(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addPhone()">Add Phone</button>
+</form>
+```
+
+**Коротко:**
+
+- `formArrayName` — це директива для доступу до `FormArray` у шаблоні.
+- Кожен елемент масиву — окремий FormControl або FormGroup.
+- Використовується для динамічних форм, де кількість полів може змінюватися.
+
+</details>
+
+<details>
+<summary>43. Як відправити дані форми з Angular-додатку на бекенд-сервіс?</summary>
+
+#### Angular
+
+- У Angular форма зазвичай відправляється через сервіс, який використовує
+  `HttpClient` для HTTP-запиту (`POST`, `PUT` тощо). Після сабміту зчитують
+  `form.value`, перевіряють `form.valid` і викликають метод сервісу.
+
+**Приклад:**
+
+```TypeScript
+// user.service.ts
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  constructor(private http: HttpClient) {}
+
+  submitUser(data: any) {
+    return this.http.post('/api/users', data);
+  }
+}
+```
+
+```TypeScript
+// component.ts
+form = new FormGroup({
+  name: new FormControl('', Validators.required),
+  email: new FormControl('', Validators.email)
+});
+
+constructor(private userService: UserService) {}
+
+onSubmit() {
+  if (this.form.valid) {
+    this.userService.submitUser(this.form.value).subscribe({
+      next: () => console.log('User saved!'),
+      error: err => console.error('Error:', err)
+    });
+  }
+}
+```
+
+**HTML:**
+
+```html
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="name" />
+  <input formControlName="email" />
+  <button type="submit">Save</button>
+</form>
+```
+
+**Коротко:**
+
+- Отримуєш `form.value`.
+- Перевіряєш `form.valid`.
+- Відправляєш через `HttpClient` (звичайно через сервіс).
+- Обробляєш відповідь у `subscribe()`.
+
+</details>
+
+<details>
+<summary>44. ???</summary>
 
 #### Angular
 
