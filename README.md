@@ -2090,7 +2090,63 @@ Angular 20+ оновлює UI точково через Signals, а старий
 </details>
 
 <details>
-<summary>45. ???</summary>
+<summary>45. Які основні способи оптимізації продуктивності Angular-застосунку?</summary>
+
+#### Angular
+
+1. **Використання Signals**
+
+Fine-grained reactivity → оновлюється тільки та частина DOM, яка залежить від
+сигналу.
+
+2. **Standalone Components**
+
+Менший бандл, швидший старт, немає модульних оверхедів.
+
+3. **Lazy loading та route-level code splitting**
+
+Завантажувати лише той код, який потрібен на даному маршруті.
+
+4. **OnPush (для legacy компонентів без сигналів)**
+
+Зменшує кількість викликів change detection у старих компонентах.
+
+5. **trackBy у ngFor**
+
+Запобігає перерендеру списків:
+
+```html
+<li *ngFor="let item of items; trackBy: trackById"></li>
+```
+
+6. **Оптимізація RxJS**
+
+takeUntil, shareReplay, уникання непотрібних сабскрипцій.
+
+7. **Async Pipe замість manual subscribe**
+
+Запобігає memory leaks і зайвим CD-циклами.
+
+8. **Оптимізація шаблону**
+
+Мінімізувати важкі обчислення у template (винести в getters або signals).
+
+9. **Preloading strategies**
+
+Оптимізує навігацію між маршрутами (наприклад, PreloadAllModules або custom).
+
+10. **Build-level оптимізації**
+
+ng build --configuration production
+
+minification, treeshaking, локальні i18n-файли
+
+image optimization (WebP/AVIF)
+
+</details>
+
+<details>
+<summary>46. ???</summary>
 
 #### Angular
 
