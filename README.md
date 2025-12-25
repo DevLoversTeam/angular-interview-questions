@@ -2245,3 +2245,126 @@ SEO, швидкий FCP
 Адмінки, real-time dashboards
 
 </details>
+
+<details>
+<summary>48. У чому різниця між Ahead-of-Time (AOT) та Just-in-Time (JIT) компіляцією в Angular і коли використовується кожна з них?</summary>
+
+#### Angular
+
+#### AOT (Ahead-of-Time)
+
+- Компіляція під час білду
+
+- Angular-шаблони → JS до запуску в браузері
+
+- Швидший старт
+
+- Кращий performance
+
+- Менший бандл
+
+- Ранні compile-time помилки
+
+- Безпека (немає runtime compiler)
+
+**Default у production**
+
+#### JIT (Just-in-Time)
+
+- Компіляція в браузері під час виконання
+
+- Потрібен Angular compiler у runtime
+
+- Повільніший старт
+
+- Більший бандл
+
+- Зручно для dev (швидкий rebuild)
+
+**Використовується в dev-режимі**
+
+</details>
+
+<details>
+<summary>49. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>50. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>51. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>52. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>53. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>54. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>55. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>56. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>57. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>58. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>59. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>60. </summary>
+
+#### Angular
+
+</details>
