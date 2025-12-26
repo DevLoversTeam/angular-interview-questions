@@ -2146,10 +2146,102 @@ image optimization (WebP/AVIF)
 </details>
 
 <details>
-<summary>46. ???</summary>
+<summary>46. Що таке зони (Zones) в Angular і яку роль вони відіграють?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Зони (Zone.js) — це механізм, який перехоплює всі асинхронні операції (події,
+  таймери, проміси) і автоматично запускає change detection після їх виконання.
+
+#### Навіщо Angular використовує зони:
+
+Щоб не писати вручну, коли саме оновлювати UI.
+
+Будь-який async виклик → Angular знає, що могли змінитися дані → оновлює вʼю.
+
+#### Як це працює:
+
+Zone.js патчить setTimeout, XHR, addEventListener тощо.
+
+Після завершення async-дії зона викликає Angular change detection.
+
+#### У сучасному Angular 16–20+:
+
+Зони більше не потрібні для реактивного рендерингу (Signals).
+
+Є режим Noop Zone / Zoneless, де Angular оновлює UI точково без глобального CD.
+
+**Коротко:**
+
+Zones — старий механізм для автозапуску change detection. У нових версіях
+Angular його замінює сигнал-базована реактивність.
+
+</details>
+
+<details>
+<summary>47. Як у Angular налаштувати SSR за допомогою Angular Universal</summary>
+
+#### Angular
+
+1. Увімкнення SSR
+
+```bash
+ng add @angular/ssr
+```
+
+Автоматично створюється сервер, SSR bootstrap і hydration.
+
+2. Bootstrap
+
+**Browser**
+
+```TypeScript
+bootstrapApplication(AppComponent, appConfig);
+```
+
+**Server**
+
+```TypeScript
+export default () =>
+  bootstrapApplication(AppComponent, appConfig);
+```
+
+3. Hydration
+
+```TypeScript
+provideClientHydration()
+```
+
+Angular підхоплює HTML, а не рендерить заново.
+
+4. Сервер (Node / Express)
+
+```TypeScript
+renderApplication(bootstrap, { url, document })
+```
+
+5. SSR-safe код
+
+```TypeScript
+isPlatformBrowser(PLATFORM_ID)
+```
+
+без window, document напряму
+
+6. Дані
+
+- API викликаємо **на сервері**
+
+- Передаємо в браузер через `TransferState`
+
+- Signals працюють з SSR без проблем
+
+7. Коли використовувати
+
+SEO, швидкий FCP
+
+8. Коли не використовувати
+
+Адмінки, real-time dashboards
 
 </details>
