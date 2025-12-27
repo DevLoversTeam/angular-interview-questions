@@ -2064,10 +2064,514 @@ onSubmit() {
 </details>
 
 <details>
-<summary>44. ???</summary>
+<summary>44. Що таке виявлення змін (change detection) і як його реалізує Angular?</summary>
 
 #### Angular
 
-- Coming soon...😎
+- Виявлення змін (change detection) — це процес, за допомогою якого Angular
+  визначає, що дані в компоненті змінились, і оновлює відповідні частини UI.
+
+**Як Angular це реалізує:**
+
+- У сучасному Angular механізм базується на **_Signals_** — Angular відслідковує
+  залежності між сигналами та шаблоном і оновлює тільки ті фрагменти DOM, які
+  справді змінились (fine-grained reactivity, без глобального циклу).
+
+- Без **_Signals_** Angular використовує **_Zone.js_**, який перехоплює
+  async-події і запускає перевірку всього дерева компонентів.
+
+- Для ручного контролю можливе використання `ChangeDetectorRef`.
+
+**Коротко:**
+
+Angular 20+ оновлює UI точково через Signals, а старий підхід (Zone.js +
+глобальна перевірка) використовується лише для зворотної сумісності.
+
+</details>
+
+<details>
+<summary>45. Які основні способи оптимізації продуктивності Angular-застосунку?</summary>
+
+#### Angular
+
+1. **Використання Signals**
+
+Fine-grained reactivity → оновлюється тільки та частина DOM, яка залежить від
+сигналу.
+
+2. **Standalone Components**
+
+Менший бандл, швидший старт, немає модульних оверхедів.
+
+3. **Lazy loading та route-level code splitting**
+
+Завантажувати лише той код, який потрібен на даному маршруті.
+
+4. **OnPush (для legacy компонентів без сигналів)**
+
+Зменшує кількість викликів change detection у старих компонентах.
+
+5. **trackBy у ngFor**
+
+Запобігає перерендеру списків:
+
+```html
+<li *ngFor="let item of items; trackBy: trackById"></li>
+```
+
+6. **Оптимізація RxJS**
+
+takeUntil, shareReplay, уникання непотрібних сабскрипцій.
+
+7. **Async Pipe замість manual subscribe**
+
+Запобігає memory leaks і зайвим CD-циклами.
+
+8. **Оптимізація шаблону**
+
+Мінімізувати важкі обчислення у template (винести в getters або signals).
+
+9. **Preloading strategies**
+
+Оптимізує навігацію між маршрутами (наприклад, PreloadAllModules або custom).
+
+10. **Build-level оптимізації**
+
+ng build --configuration production
+
+minification, treeshaking, локальні i18n-файли
+
+image optimization (WebP/AVIF)
+
+</details>
+
+<details>
+<summary>46. Що таке зони (Zones) в Angular і яку роль вони відіграють?</summary>
+
+#### Angular
+
+- Зони (Zone.js) — це механізм, який перехоплює всі асинхронні операції (події,
+  таймери, проміси) і автоматично запускає change detection після їх виконання.
+
+#### Навіщо Angular використовує зони:
+
+Щоб не писати вручну, коли саме оновлювати UI.
+
+Будь-який async виклик → Angular знає, що могли змінитися дані → оновлює вʼю.
+
+#### Як це працює:
+
+Zone.js патчить setTimeout, XHR, addEventListener тощо.
+
+Після завершення async-дії зона викликає Angular change detection.
+
+#### У сучасному Angular 16–20+:
+
+Зони більше не потрібні для реактивного рендерингу (Signals).
+
+Є режим Noop Zone / Zoneless, де Angular оновлює UI точково без глобального CD.
+
+**Коротко:**
+
+Zones — старий механізм для автозапуску change detection. У нових версіях
+Angular його замінює сигнал-базована реактивність.
+
+</details>
+
+<details>
+<summary>47. Як у Angular налаштувати SSR за допомогою Angular Universal</summary>
+
+#### Angular
+
+1. Увімкнення SSR
+
+```bash
+ng add @angular/ssr
+```
+
+Автоматично створюється сервер, SSR bootstrap і hydration.
+
+2. Bootstrap
+
+**Browser**
+
+```TypeScript
+bootstrapApplication(AppComponent, appConfig);
+```
+
+**Server**
+
+```TypeScript
+export default () =>
+  bootstrapApplication(AppComponent, appConfig);
+```
+
+3. Hydration
+
+```TypeScript
+provideClientHydration()
+```
+
+Angular підхоплює HTML, а не рендерить заново.
+
+4. Сервер (Node / Express)
+
+```TypeScript
+renderApplication(bootstrap, { url, document })
+```
+
+5. SSR-safe код
+
+```TypeScript
+isPlatformBrowser(PLATFORM_ID)
+```
+
+без window, document напряму
+
+6. Дані
+
+- API викликаємо **на сервері**
+
+- Передаємо в браузер через `TransferState`
+
+- Signals працюють з SSR без проблем
+
+7. Коли використовувати
+
+SEO, швидкий FCP
+
+8. Коли не використовувати
+
+Адмінки, real-time dashboards
+
+</details>
+
+<details>
+<summary>48. У чому різниця між Ahead-of-Time (AOT) та Just-in-Time (JIT) компіляцією в Angular і коли використовується кожна з них?</summary>
+
+#### Angular
+
+#### AOT (Ahead-of-Time)
+
+- Компіляція під час білду
+
+- Angular-шаблони → JS до запуску в браузері
+
+- Швидший старт
+
+- Кращий performance
+
+- Менший бандл
+
+- Ранні compile-time помилки
+
+- Безпека (немає runtime compiler)
+
+**Default у production**
+
+#### JIT (Just-in-Time)
+
+- Компіляція в браузері під час виконання
+
+- Потрібен Angular compiler у runtime
+
+- Повільніший старт
+
+- Більший бандл
+
+- Зручно для dev (швидкий rebuild)
+
+**Використовується в dev-режимі**
+
+</details>
+
+<details>
+<summary>49. Опишіть декоратори, доступні в Angular.</summary>
+
+#### Angular
+
+Angular використовує TypeScript-декоратори для опису метаданих компонентів,
+директив, сервісів та DI.
+
+1. Класові декоратори
+
+**@Component**
+
+Описує UI-компонент.
+
+```TypeScript
+@Component({ selector: 'app-user', standalone: true, template: `{{ name }}` })
+export class UserComponent { name = 'Viktor'; }
+```
+
+**@Directive**
+
+Створює кастомну директиву (attribute або structural).
+
+```TypeScript
+@Directive({ selector: '[appHighlight]' }) export class HighlightDirective {}
+```
+
+**@Pipe**
+
+Створює pipe для трансформації даних у шаблонах.
+
+```TypeScript
+@Pipe({ name: 'uppercase' }) export class UppercasePipe { transform(value:
+string) { return value.toUpperCase(); } }
+```
+
+**@Injectable**
+
+Позначає клас як сервіс для DI.
+
+```TypeScript
+@Injectable({ providedIn: 'root' }) export class UserService {}
+```
+
+2. Property decorators (взаємодія з шаблоном)
+
+**@Input**
+
+Передача даних у компонент.
+
+```TypeScript
+@Input() title!: string;
+```
+
+**@Output**
+
+Передача подій з компонента.
+
+```TypeScript
+@Output() saved = new EventEmitter<void>();
+```
+
+**@HostBinding**
+
+Байндінг до властивостей host-елемента.
+
+```TypeScript
+@HostBinding('class.active') isActive = true;
+```
+
+**@HostListener**
+
+Підписка на події host-елемента.
+
+```TypeScript
+@HostListener('click') onClick() {}
+```
+
+3. Dependency Injection decorators
+
+**@Inject**
+
+Явна інʼєкція залежності.
+
+```TypeScript
+constructor(@Inject(API_URL) private apiUrl: string) {}
+```
+
+**@Optional**
+
+Залежність може бути відсутня.
+
+```TypeScript
+constructor(@Optional() private logger?: LoggerService) {}
+```
+
+**@Self**, **@SkipSelf**
+
+Контроль області пошуку залежностей.
+
+```TypeScript
+constructor(@Self() private control: NgControl) {}
+```
+
+4. View / Content decorators
+
+**@ViewChild** / **@ViewChildren**
+
+Доступ до елементів власного шаблону.
+
+```TypeScript
+@ViewChild('input') input!: ElementRef;
+```
+
+**@ContentChild** / **@ContentChildren**
+
+Доступ до проєктованого контенту (ng-content).
+
+```TypeScript
+@ContentChild(TemplateRef) tpl!: TemplateRef<any>;
+```
+
+5. Стан у Angular 20+
+
+- Декоратори **все ще підтримуються**
+
+- Але часто замінюються:
+
+  - `inject()` замість constructor DI
+
+  - Signals замість `@Input` + `ngOnChanges`
+
+- **Standalone API не скасовує декоратори**, лише спрощує архітектуру
+
+</details>
+
+<details>
+<summary>50. Як реалізувати анімаційні переходи в Angular-додатку?</summary>
+
+#### Angular
+
+Angular має вбудовану систему анімацій через `@angular/animations`. У Angular
+20+ використовую `provideAnimations()` у конфігурації:
+
+```TypeScript
+// app.config.ts
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideAnimations()]
+};
+```
+
+1. Анімація станів компонента
+
+```TypeScript
+typescriptimport { trigger, state, style, transition, animate } from '@angular/animations';
+
+@Component({
+  template: `<div [@openClose]="isOpen()">Content</div>`,
+  animations: [
+    trigger('openClose', [
+      state('true', style({ height: '200px', opacity: 1 })),
+      state('false', style({ height: '0px', opacity: 0 })),
+      transition('false <=> true', animate('300ms ease-in-out'))
+    ])
+  ]
+})
+export class MyComponent {
+  isOpen = signal(false);
+}
+```
+
+2. Анімація роутів
+
+```TypeScript
+// app.component.ts
+@Component({
+  template: `
+    <div [@routeAnimations]="outlet.activatedRouteData['animation']">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  `,
+  animations: [
+    trigger('routeAnimations', [
+      transition('* <=> *', [
+        query(':enter', [style({ opacity: 0 })], { optional: true }),
+        query(':leave', [animate('200ms', style({ opacity: 0 }))], { optional: true }),
+        query(':enter', [animate('300ms', style({ opacity: 1 }))], { optional: true })
+      ])
+    ])
+  ]
+})
+```
+
+3. Анімація списків (stagger)
+
+```TypeScript
+animations: [
+  trigger('listAnimation', [
+    transition('* => *', [
+      query(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        stagger(100, [
+          animate('300ms', style({ opacity: 1, transform: 'translateY(0)' }))
+        ])
+      ], { optional: true })
+    ])
+  ])
+]
+```
+
+#### Best Practices
+
+- Використовую `transform` та `opacity` для GPU-acceleration
+- `:enter` / `:leave` для появи/зникнення елементів
+- Створюю reusable анімації через `animation()` та `useAnimation()`
+- Відстежую події: `(@trigger.done)="onAnimationDone($event)"`
+
+</details>
+
+<details>
+<summary>51. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>52. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>53. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>54. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>55. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>56. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>57. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>58. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>59. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>60. </summary>
+
+#### Angular
 
 </details>
