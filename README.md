@@ -2286,9 +2286,138 @@ SEO, швидкий FCP
 </details>
 
 <details>
-<summary>49. </summary>
+<summary>49. Опишіть декоратори, доступні в Angular.</summary>
 
 #### Angular
+
+Angular використовує TypeScript-декоратори для опису метаданих компонентів,
+директив, сервісів та DI.
+
+1. Класові декоратори
+
+**@Component**
+
+Описує UI-компонент.
+
+```TypeScript
+@Component({ selector: 'app-user', standalone: true, template: `{{ name }}` })
+export class UserComponent { name = 'Viktor'; }
+```
+
+**@Directive**
+
+Створює кастомну директиву (attribute або structural).
+
+```TypeScript
+@Directive({ selector: '[appHighlight]' }) export class HighlightDirective {}
+```
+
+**@Pipe**
+
+Створює pipe для трансформації даних у шаблонах.
+
+```TypeScript
+@Pipe({ name: 'uppercase' }) export class UppercasePipe { transform(value:
+string) { return value.toUpperCase(); } }
+```
+
+**@Injectable**
+
+Позначає клас як сервіс для DI.
+
+```TypeScript
+@Injectable({ providedIn: 'root' }) export class UserService {}
+```
+
+2. Property decorators (взаємодія з шаблоном)
+
+**@Input**
+
+Передача даних у компонент.
+
+```TypeScript
+@Input() title!: string;
+```
+
+**@Output**
+
+Передача подій з компонента.
+
+```TypeScript
+@Output() saved = new EventEmitter<void>();
+```
+
+**@HostBinding**
+
+Байндінг до властивостей host-елемента.
+
+```TypeScript
+@HostBinding('class.active') isActive = true;
+```
+
+**@HostListener**
+
+Підписка на події host-елемента.
+
+```TypeScript
+@HostListener('click') onClick() {}
+```
+
+3. Dependency Injection decorators
+
+**@Inject**
+
+Явна інʼєкція залежності.
+
+```TypeScript
+constructor(@Inject(API_URL) private apiUrl: string) {}
+```
+
+**@Optional**
+
+Залежність може бути відсутня.
+
+```TypeScript
+constructor(@Optional() private logger?: LoggerService) {}
+```
+
+**@Self**, **@SkipSelf**
+
+Контроль області пошуку залежностей.
+
+```TypeScript
+constructor(@Self() private control: NgControl) {}
+```
+
+4. View / Content decorators
+
+**@ViewChild** / **@ViewChildren**
+
+Доступ до елементів власного шаблону.
+
+```TypeScript
+@ViewChild('input') input!: ElementRef;
+```
+
+**@ContentChild** / **@ContentChildren**
+
+Доступ до проєктованого контенту (ng-content).
+
+```TypeScript
+@ContentChild(TemplateRef) tpl!: TemplateRef<any>;
+```
+
+5. Стан у Angular 20+
+
+- Декоратори **все ще підтримуються**
+
+- Але часто замінюються:
+
+  - `inject()` замість constructor DI
+
+  - Signals замість `@Input` + `ngOnChanges`
+
+- **Standalone API не скасовує декоратори**, лише спрощує архітектуру
 
 </details>
 
