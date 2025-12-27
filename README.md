@@ -2422,9 +2422,87 @@ constructor(@Self() private control: NgControl) {}
 </details>
 
 <details>
-<summary>50. </summary>
+<summary>50. Як реалізувати анімаційні переходи в Angular-додатку?</summary>
 
 #### Angular
+
+Angular має вбудовану систему анімацій через `@angular/animations`. У Angular
+20+ використовую `provideAnimations()` у конфігурації:
+
+```TypeScript
+// app.config.ts
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideAnimations()]
+};
+```
+
+1. Анімація станів компонента
+
+```TypeScript
+typescriptimport { trigger, state, style, transition, animate } from '@angular/animations';
+
+@Component({
+  template: `<div [@openClose]="isOpen()">Content</div>`,
+  animations: [
+    trigger('openClose', [
+      state('true', style({ height: '200px', opacity: 1 })),
+      state('false', style({ height: '0px', opacity: 0 })),
+      transition('false <=> true', animate('300ms ease-in-out'))
+    ])
+  ]
+})
+export class MyComponent {
+  isOpen = signal(false);
+}
+```
+
+2. Анімація роутів
+
+```TypeScript
+// app.component.ts
+@Component({
+  template: `
+    <div [@routeAnimations]="outlet.activatedRouteData['animation']">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  `,
+  animations: [
+    trigger('routeAnimations', [
+      transition('* <=> *', [
+        query(':enter', [style({ opacity: 0 })], { optional: true }),
+        query(':leave', [animate('200ms', style({ opacity: 0 }))], { optional: true }),
+        query(':enter', [animate('300ms', style({ opacity: 1 }))], { optional: true })
+      ])
+    ])
+  ]
+})
+```
+
+3. Анімація списків (stagger)
+
+```TypeScript
+animations: [
+  trigger('listAnimation', [
+    transition('* => *', [
+      query(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        stagger(100, [
+          animate('300ms', style({ opacity: 1, transform: 'translateY(0)' }))
+        ])
+      ], { optional: true })
+    ])
+  ])
+]
+```
+
+#### Best Practices
+
+- Використовую `transform` та `opacity` для GPU-acceleration
+- `:enter` / `:leave` для появи/зникнення елементів
+- Створюю reusable анімації через `animation()` та `useAnimation()`
+- Відстежую події: `(@trigger.done)="onAnimationDone($event)"`
 
 </details>
 
