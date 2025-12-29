@@ -50,27 +50,27 @@
 
 1. **Interpolation** — одностороннє відображення даних у HTML:
 
-```html
+```HTML
 <p>{{ userName }}</p>
 ```
 
 2. **Property binding** — передача значень у властивості
    DOM-елементів/компонентів:
 
-```html
+```HTML
 <img [src]="avatarUrl" />
 ```
 
 3. **Event binding** — реакція на події DOM:
 
-```html
+```HTML
 <button (click)="onSave()">Save</button>
 ```
 
 4. **Two-way binding** — синхронізація стану між шаблоном і компонентом
    ([(...)]):
 
-```html
+```HTML
 <input [(ngModel)]="email" />
 ```
 
@@ -148,7 +148,7 @@ export class UserCardComponent {
 
 У шаблоні іншого компонента можна підключити:
 
-```html
+```HTML
 <app-user-card></app-user-card>
 ```
 
@@ -186,8 +186,8 @@ standalone, без NgModules.
 - **Custom directives** — можна створювати свої для повторного використання
   логіки.
 
-✅ Коротко: директиви в Angular = спосіб керувати DOM. Найчастіше — `@if`,
-`@for`, `ngClass`, `ngStyle`, `ngModel`.
+Коротко: директиви в Angular = спосіб керувати DOM. Найчастіше — `@if`, `@for`,
+`ngClass`, `ngStyle`, `ngModel`.
 
 </details>
 
@@ -196,10 +196,10 @@ standalone, без NgModules.
 
 #### Angular
 
-- Сервіс — це клас із бізнес-логікою або функціоналом, який не пов’язаний
-  напряму з UI.
+Сервіс — це клас із бізнес-логікою або функціоналом, який не пов’язаний напряму
+з UI.
 
-Використовується для:
+#### Використовується для:
 
 - повторного використання коду,
 
@@ -250,9 +250,9 @@ export class HeaderComponent {
 
 #### Angular
 
-- Dependency Injection (DI) — це механізм Angular, який автоматично створює та
-  надає об’єкти (сервіси, токени) компонентам чи іншим сервісам замість ручного
-  створення через new.
+Dependency Injection (DI) — це механізм Angular, який автоматично створює та
+надає об’єкти (сервіси, токени) компонентам чи іншим сервісам замість ручного
+створення через new.
 
 #### Навіщо:
 
@@ -275,7 +275,7 @@ export class ApiService {
 }
 ```
 
-Використання у компоненті:
+#### Використання у компоненті:
 
 ```TypeScript
 import { Component, inject } from '@angular/core';
@@ -344,12 +344,12 @@ standalone компоненти. Їхня головна роль сьогодн
 
 #### Angular
 
-- В Angular події обробляються через event binding, тобто підписку на подію DOM
-  або кастомної події компонента.
+В Angular події обробляються через event binding, тобто підписку на подію DOM
+або кастомної події компонента.
 
 #### Синтаксис:
 
-```html
+```HTML
 <button (click)="onClick()">Click me</button>
 ```
 
@@ -390,7 +390,7 @@ export class ChildComponent {
 
 #### У батьківському компоненті:
 
-```html
+```HTML
 <app-child (notify)="onNotify($event)"></app-child>
 ```
 
@@ -404,12 +404,12 @@ export class ChildComponent {
 
 #### Angular
 
-- Двостороннє зв’язування — це синхронізація стану між компонентом і шаблоном,
-  коли зміни в UI автоматично оновлюють дані компонента і навпаки.
+Двостороннє зв’язування — це синхронізація стану між компонентом і шаблоном,
+коли зміни в UI автоматично оновлюють дані компонента і навпаки.
 
 #### Класичний підхід (з ngModel):
 
-```html
+```HTML
 <input [(ngModel)]="name" />
 <p>Hello, {{ name }}</p>
 ```
@@ -486,7 +486,7 @@ export class HighlightDirective {
 
 Використання у шаблоні:
 
-```html
+```HTML
 <p highlight>Text with highlight</p>
 ```
 
@@ -500,8 +500,8 @@ UI.
 
 #### Angular
 
-- Pipe — це клас, який трансформує дані без зміни їхнього оригінального стану.
-  Використовується у шаблонах для форматування значень.
+Pipe — це клас, який трансформує дані без зміни їхнього оригінального стану.
+Використовується у шаблонах для форматування значень.
 
 #### Приклади вбудованих пайпів:
 
@@ -515,7 +515,7 @@ UI.
 
 #### Приклад використання:
 
-```html
+```HTML
 <p>{{ today | date:'dd/MM/yyyy' }}</p>
 <p>{{ price | currency:'USD' }}</p>
 ```
@@ -538,7 +538,7 @@ export class ExclaimPipe implements PipeTransform {
 
 У шаблоні:
 
-```html
+```HTML
 <p>{{ 'Hello' | exclaim }}</p>
 <!-- Hello! -->
 ```
@@ -553,11 +553,11 @@ export class ExclaimPipe implements PipeTransform {
 
 #### Angular
 
-- В Angular є два основні підходи:
+В Angular є два основні підходи:
 
 1. **Template-driven forms** (простий варіант, з `ngModel`):
 
-```html
+```HTML
 <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
   <input name="email" [(ngModel)]="email" required />
   <button type="submit">Send</button>
@@ -609,8 +609,8 @@ template-driven та reactive. Для простих форм можна бра�
 
 #### Angular
 
-- **Angular CLI** — це офіційний інструмент командного рядка для створення та
-  керування Angular-проєктами.
+**Angular CLI** — це офіційний інструмент командного рядка для створення та
+керування Angular-проєктами.
 
 #### Основні можливості:
 
@@ -638,8 +638,8 @@ template-driven та reactive. Для простих форм можна бра�
 
 #### Angular
 
-- В Angular для роботи з HTTP використовується HttpClient, який надає методи
-  get, post, put, delete тощо.
+В Angular для роботи з HTTP використовується HttpClient, який надає методи get,
+post, put, delete тощо.
 
 #### Кроки:
 
@@ -698,8 +698,8 @@ export class UsersComponent {
 
 #### Angular
 
-- Передача даних відбувається через input-зв’язування (@Input() декоратор).
-  Батьківський компонент передає значення дочірньому через атрибут у шаблоні.
+Передача даних відбувається через input-зв’язування (@Input() декоратор).
+Батьківський компонент передає значення дочірньому через атрибут у шаблоні.
 
 #### Приклад:
 
@@ -747,9 +747,9 @@ export class ParentComponent {
 
 #### Angular
 
-- Для передачі подій вгору використовується @Output() разом із EventEmitter.
-  Дочірній компонент «викидає» подію, а батьківський підписується на неї через
-  (eventName) у шаблоні.
+Для передачі подій вгору використовується @Output() разом із EventEmitter.
+Дочірній компонент «викидає» подію, а батьківський підписується на неї через
+(eventName) у шаблоні.
 
 **child.component.ts**
 
@@ -789,8 +789,8 @@ export class ParentComponent {
 }
 ```
 
-- Коротко: передача даних child → parent відбувається через @Output() і (event)
-  binding. Дитина емітить подію, батько слухає.
+Коротко: передача даних child → parent відбувається через @Output() і (event)
+binding. Дитина емітить подію, батько слухає.
 
 </details>
 
@@ -799,8 +799,8 @@ export class ParentComponent {
 
 #### Angular
 
-- Lifecycle hooks — це методи, які Angular викликає на різних етапах «життя»
-  компонента: створення, оновлення, знищення.
+Lifecycle hooks — це методи, які Angular викликає на різних етапах «життя»
+компонента: створення, оновлення, знищення.
 
 #### Основні хуки Angular:
 
@@ -836,8 +836,8 @@ export class DemoComponent implements OnInit, OnDestroy {
 }
 ```
 
-- Коротко: Lifecycle hooks — це хуки життєвого циклу компонента, які дають змогу
-  реагувати на створення, оновлення та знищення елемента.
+Коротко: Lifecycle hooks — це хуки життєвого циклу компонента, які дають змогу
+реагувати на створення, оновлення та знищення елемента.
 
 </details>
 
@@ -846,9 +846,8 @@ export class DemoComponent implements OnInit, OnDestroy {
 
 #### Angular
 
-- ViewEncapsulation — це механізм інкапсуляції стилів у Angular, який визначає,
-  як CSS компоненту впливає на DOM (чи лише на цей компонент, чи на весь
-  застосунок).
+ViewEncapsulation — це механізм інкапсуляції стилів у Angular, який визначає, як
+CSS компоненту впливає на DOM (чи лише на цей компонент, чи на весь застосунок).
 
 | Тип інкапсуляції         | Опис                                                                          | Особливість                                     |
 | ------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------- |
@@ -863,7 +862,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-example',
-  templateUrl: './example.component.html',
+  templateUrl: './example.component.HTML',
   styleUrls: ['./example.component.css'],
   encapsulation: ViewEncapsulation.ShadowDom
 })
@@ -872,9 +871,10 @@ export class ExampleComponent {}
 
 **Коротко:**
 
-- ViewEncapsulation контролює межі застосування CSS — чи стилі “ізольовані”
+ViewEncapsulation контролює межі застосування CSS — чи стилі “ізольовані”
 всередині компонента, чи поширюються глобально. У більшості випадків —
 використовується Emulated.
+
 </details>
 
 <details>
@@ -894,9 +894,9 @@ export class ExampleComponent {}
 
 **Коротко:**
 
-- Використовуй `ngClass` для керування класами та `ngStyle` або `[style.prop]`
-  для динамічних inline-стилів. Це дає повний контроль над виглядом елементів
-  залежно від стану компонента.
+Використовуй `ngClass` для керування класами та `ngStyle` або `[style.prop]` для
+динамічних inline-стилів. Це дає повний контроль над виглядом елементів залежно
+від стану компонента.
 
 </details>
 
@@ -915,8 +915,8 @@ export class ExampleComponent {}
 
 **Коротко:**
 
-- Структурні директиви керують тим, що є в DOM, атрибутні директиви — тим, як це
-  виглядає або поводиться.
+Структурні директиви керують тим, що є в DOM, атрибутні директиви — тим, як це
+виглядає або поводиться.
 
 </details>
 
@@ -925,8 +925,8 @@ export class ExampleComponent {}
 
 #### Angular
 
-- Структурна директива змінює DOM (додає або видаляє елементи). Щоб створити
-  кастомну структурну директиву:
+Структурна директива змінює DOM (додає або видаляє елементи). Щоб створити
+кастомну структурну директиву:
 
 | Крок | Опис                                                                               |
 | ---- | ---------------------------------------------------------------------------------- |
@@ -961,14 +961,14 @@ export class UnlessDirective {
 
 #### Використання у шаблоні:
 
-```html
+```HTML
 <p *appUnless="isLoggedIn">You are not logged in!</p>
 ```
 
 **Коротко:**
 
-- Кастомна структурна директива керує DOM через `ViewContainerRef` і
-  `TemplateRef`. Використовується з `*` синтаксисом у шаблоні.
+Кастомна структурна директива керує DOM через `ViewContainerRef` і
+`TemplateRef`. Використовується з `*` синтаксисом у шаблоні.
 
 </details>
 
@@ -977,9 +977,9 @@ export class UnlessDirective {
 
 #### Angular
 
-- У Angular singleton-сервіс — це сервіс, який створюється лише один раз і
-  використовується у всьому застосунку. Для цього потрібно вказати, де він
-  надається (provided).
+У Angular singleton-сервіс — це сервіс, який створюється лише один раз і
+використовується у всьому застосунку. Для цього потрібно вказати, де він
+надається (provided).
 
 | Спосіб                                      | Приклад                                         | Пояснення                                                                                                     |
 | ------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -1004,8 +1004,8 @@ export class AuthService {
 
 **Коротко:**
 
-- Найкраща практика — `@Injectable({ providedIn: 'root' })`, бо це гарантує
-  singleton-поведінку і оптимізує tree-shaking.
+Найкраща практика — `@Injectable({ providedIn: 'root' })`, бо це гарантує
+singleton-поведінку і оптимізує tree-shaking.
 
 </details>
 
@@ -1014,8 +1014,8 @@ export class AuthService {
 
 #### Angular
 
-- Observables у сервісах дозволяють реактивно ділитися даними між компонентами —
-  без прямої передачі через `@Input()` чи `@Output()`.
+Observables у сервісах дозволяють реактивно ділитися даними між компонентами —
+без прямої передачі через `@Input()` чи `@Output()`.
 
 | Підхід              | Опис                                                                             | Типовий випадок використання                                 |
 | ------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -1068,9 +1068,9 @@ export class ComponentB {
 
 **Коротко:**
 
-- Сервіс з `Subject` або `BehaviorSubject` діє як “shared data channel” — один
-  компонент надсилає дані, інші підписуються. Це реактивний і чистий спосіб
-  обміну станом між компонентами.
+Сервіс з `Subject` або `BehaviorSubject` діє як “shared data channel” — один
+компонент надсилає дані, інші підписуються. Це реактивний і чистий спосіб обміну
+станом між компонентами.
 
 </details>
 
@@ -1112,9 +1112,9 @@ export class ProfileComponent {}
 
 **Коротко:**
 
-- Найчастіше використовується `providedIn: 'root'` — це дає один спільний
-  екземпляр (singleton). Інші способи — для lazy-loading, ізоляції або особливих
-  випадків.
+Найчастіше використовується `providedIn: 'root'` — це дає один спільний
+екземпляр (singleton). Інші способи — для lazy-loading, ізоляції або особливих
+випадків.
 
 </details>
 
@@ -1149,9 +1149,9 @@ export class LoggerService {
 
 **Коротко:**
 
-- `providedIn` визначає, де саме Angular створює сервіс і чи буде він спільним
-  (singleton). У більшості випадків використовують `providedIn: 'root'` — це
-  просто, ефективно і підтримує tree-shaking.
+`providedIn` визначає, де саме Angular створює сервіс і чи буде він спільним
+(singleton). У більшості випадків використовують `providedIn: 'root'` — це
+просто, ефективно і підтримує tree-shaking.
 
 </details>
 
@@ -1160,9 +1160,9 @@ export class LoggerService {
 
 #### Angular
 
-- `HttpClient` — це сервіс Angular для виконання HTTP-запитів. Він автоматично
-  перетворює JSON-відповіді в об’єкти JavaScript, тому додаткового парсингу не
-  потрібно.
+`HttpClient` — це сервіс Angular для виконання HTTP-запитів. Він автоматично
+перетворює JSON-відповіді в об’єкти JavaScript, тому додаткового парсингу не
+потрібно.
 
 | Крок | Опис                                                              |
 | ---- | ----------------------------------------------------------------- |
@@ -1222,8 +1222,8 @@ export class AppComponent {
 
 **Коротко:**
 
-- `HttpClient` — це зручний API для роботи з JSON у Angular. Він типізований,
-  реактивний і не потребує ручного `JSON.parse()`.
+`HttpClient` — це зручний API для роботи з JSON у Angular. Він типізований,
+реактивний і не потребує ручного `JSON.parse()`.
 
 </details>
 
@@ -1307,9 +1307,9 @@ export class ProductService {
 
 #### Angular
 
-- Routing в Angular визначає, який компонент відображається при переході на
-  певний URL. Він налаштовується через масив маршрутів і RouterModule (або
-  `provideRouter` для standalone API).
+Routing в Angular визначає, який компонент відображається при переході на певний
+URL. Він налаштовується через масив маршрутів і RouterModule (або
+`provideRouter` для standalone API).
 
 | Крок | Опис                                                                                            |
 | ---- | ----------------------------------------------------------------------------------------------- |
@@ -1347,9 +1347,9 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-**app.component.html**
+**app.component.HTML**
 
-```html
+```HTML
 <nav>
   <a routerLink="/">Home</a>
   <a routerLink="/about">About</a>
@@ -1379,9 +1379,9 @@ provideRouter(). Компоненти рендеряться у `<router-outlet>
 
 #### Angular
 
-- Так, у сучасному Angular (v16–20) це робиться через **_lazy loading_** з
-  використанням динамічного `import()` у файлі маршрутизації. Це дозволяє не
-  включати модуль у основний bundle, а завантажувати його лише при навігації.
+Так, у сучасному Angular (v16–20) це робиться через **_lazy loading_** з
+використанням динамічного `import()` у файлі маршрутизації. Це дозволяє не
+включати модуль у основний bundle, а завантажувати його лише при навігації.
 
 #### Приклад:
 
@@ -1428,8 +1428,8 @@ export const routes: Routes = [
 
 #### Приклад:
 
-```html
-<!-- app.component.html -->
+```HTML
+<!-- app.component.HTML -->
 <nav>
   <a routerLink="/home">Home</a>
   <a routerLink="/about">About</a>
@@ -1505,10 +1505,9 @@ export const routes = [
 
 #### Angular
 
-- `ActivatedRoute` дає доступ до інформації про поточний активний маршрут,
-  включно з параметрами, query-параметрами, фрагментами URL і даними, переданими
-  через `data`. Використовується всередині компонентів для отримання контексту
-  маршруту.
+`ActivatedRoute` дає доступ до інформації про поточний активний маршрут, включно
+з параметрами, query-параметрами, фрагментами URL і даними, переданими через
+`data`. Використовується всередині компонентів для отримання контексту маршруту.
 
 #### Приклад:
 
@@ -1551,8 +1550,8 @@ export class UserComponent implements OnInit {
 
 #### Angular
 
-- Параметри маршруту — це змінні частини URL, які визначаються у маршрутах та
-  дозволяють передавати дані у компонент.
+Параметри маршруту — це змінні частини URL, які визначаються у маршрутах та
+дозволяють передавати дані у компонент.
 
 #### Приклад:
 
@@ -1606,9 +1605,9 @@ export class UserComponent implements OnInit {
 
 #### Angular
 
-- Для цього використовують **_Route Resolver_** — сервіс, який реалізує
-  інтерфейс `Resolve<T>`. Angular чекає, поки resolver отримає дані, і передає
-  їх у компонент через `ActivatedRoute.data`.
+Для цього використовують **_Route Resolver_** — сервіс, який реалізує інтерфейс
+`Resolve<T>`. Angular чекає, поки resolver отримає дані, і передає їх у
+компонент через `ActivatedRoute.data`.
 
 #### Приклад:
 
@@ -1665,8 +1664,8 @@ ngOnInit() {
 
 #### Angular
 
-- Lazy loading дозволяє завантажувати модулі чи компоненти тільки при переході
-  на відповідний маршрут, щоб зменшити початковий розмір bundle.
+Lazy loading дозволяє завантажувати модулі чи компоненти тільки при переході на
+відповідний маршрут, щоб зменшити початковий розмір bundle.
 
 #### Приклад для модуля (loadChildren):
 
@@ -1718,7 +1717,7 @@ export const routes: Routes = [
 
 **Template-driven:**
 
-```html
+```HTML
 <form #form="ngForm">
   <input name="email" ngModel required />
 </form>
@@ -1732,7 +1731,7 @@ form = new FormGroup({
 });
 ```
 
-```html
+```HTML
 <form [formGroup]="form">
   <input formControlName="email" />
 </form>
@@ -1750,9 +1749,9 @@ form = new FormGroup({
 
 #### Angular
 
-- В Angular є вбудована, кастомна та асинхронна валідація. Валідація
-  визначається або через HTML-атрибути (у Template-driven формах), або через
-  `Validators` у Reactive формах.
+В Angular є вбудована, кастомна та асинхронна валідація. Валідація визначається
+або через HTML-атрибути (у Template-driven формах), або через `Validators` у
+Reactive формах.
 
 **Reactive форма з валідацією:**
 
@@ -1770,7 +1769,7 @@ form = new FormGroup({
 
 **HTML:**
 
-```html
+```HTML
 <form [formGroup]="form">
   <input formControlName="email" />
   <div *ngIf="form.controls.email.invalid && form.controls.email.touched">
@@ -1837,7 +1836,7 @@ removeUser(index: number) {
 
 **HTML:**
 
-```html
+```HTML
 <form [formGroup]="form">
   <div formArrayName="users">
     <div *ngFor="let user of users.controls; let i = index">
@@ -1884,7 +1883,7 @@ Validators.required), email: new FormControl('', Validators.email) }) });
 
 **HTML:**
 
-```html
+```HTML
 <form [formGroup]="form">
   <div formGroupName="user">
     <input formControlName="name" />
@@ -1905,10 +1904,10 @@ Validators.required), email: new FormControl('', Validators.email) }) });
 
 #### Angular
 
-- Кастомний валідатор — це функція, яка приймає `FormControl` або
-  `AbstractControl` і повертає об’єкт помилки `{ [key: string]: any }` або
-  `null`, якщо помилок немає. Її можна використовувати в Reactive Forms або
-  Template-driven.
+Кастомний валідатор — це функція, яка приймає `FormControl` або
+`AbstractControl` і повертає об’єкт помилки `{ [key: string]: any }` або `null`,
+якщо помилок немає. Її можна використовувати в Reactive Forms або
+Template-driven.
 
 **Синхронний валідатор (приклад):**
 
@@ -1981,7 +1980,7 @@ removePhone(index: number) {
 
 **HTML:**
 
-```html
+```HTML
 <form [formGroup]="form">
   <div formArrayName="phones">
     <div *ngFor="let phone of phones.controls; let i = index">
@@ -2046,7 +2045,7 @@ onSubmit() {
 
 **HTML:**
 
-```html
+```HTML
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <input formControlName="name" />
   <input formControlName="email" />
@@ -2068,8 +2067,8 @@ onSubmit() {
 
 #### Angular
 
-- Виявлення змін (change detection) — це процес, за допомогою якого Angular
-  визначає, що дані в компоненті змінились, і оновлює відповідні частини UI.
+Виявлення змін (change detection) — це процес, за допомогою якого Angular
+визначає, що дані в компоненті змінились, і оновлює відповідні частини UI.
 
 **Як Angular це реалізує:**
 
@@ -2115,7 +2114,7 @@ Fine-grained reactivity → оновлюється тільки та части�
 
 Запобігає перерендеру списків:
 
-```html
+```HTML
 <li *ngFor="let item of items; trackBy: trackById"></li>
 ```
 
@@ -2150,8 +2149,8 @@ image optimization (WebP/AVIF)
 
 #### Angular
 
-- Зони (Zone.js) — це механізм, який перехоплює всі асинхронні операції (події,
-  таймери, проміси) і автоматично запускає change detection після їх виконання.
+Зони (Zone.js) — це механізм, який перехоплює всі асинхронні операції (події,
+таймери, проміси) і автоматично запускає change detection після їх виконання.
 
 #### Навіщо Angular використовує зони:
 
@@ -2507,65 +2506,791 @@ animations: [
 </details>
 
 <details>
-<summary>51. </summary>
+<summary>51. Як створюються власні директиви в Angular?</summary>
 
 #### Angular
+
+1. Типи директив
+
+- **Attribute directive** — змінює поведінку або вигляд елемента приклад:
+  highlight, tooltip
+
+- **Structural directive** — змінює структуру DOM приклад: *ngIf, *ngFor
+
+2. Attribute directive
+
+**Приклад: директива підсвічування**
+
+```TypeScript
+import { Directive, ElementRef, Input, effect, signal } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+  standalone: true,
+})
+export class HighlightDirective {
+  color = signal('yellow');
+
+  constructor(private el: ElementRef) {
+    effect(() => {
+      this.el.nativeElement.style.backgroundColor = this.color();
+    });
+  }
+
+  @Input()
+  set appHighlight(value: string) {
+    this.color.set(value);
+  }
+}
+```
+
+**Використання**
+
+```HTML
+<p appHighlight="lightblue">Highlighted text</p>
+```
+
+3. Structural directive
+
+**Приклад: кастомний `*appIf`**
+
+```TypeScript
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appIf]',
+  standalone: true,
+})
+export class AppIfDirective {
+  constructor(
+    private tpl: TemplateRef<unknown>,
+    private vcr: ViewContainerRef
+  ) {}
+
+  @Input()
+  set appIf(condition: boolean) {
+    this.vcr.clear();
+    if (condition) {
+      this.vcr.createEmbeddedView(this.tpl);
+    }
+  }
+}
+```
+
+**Використання**
+
+```HTML
+<div *appIf="isVisible">Visible content</div>
+```
+
+4. Best practices
+
+- Використовуйте standalone директиви
+
+- Для реактивності — signals + effect
+
+- Уникайте прямої роботи з DOM (краще Renderer2, якщо потрібно)
+
+- Мінімізуйте side-effects у constructor
+
+- Structural директиви завжди працюють через TemplateRef + ViewContainerRef
+
+**Коротко**
+
+Власні директиви створюються через @Directive, бувають attribute та structural і
+в Angular 20+ зазвичай є standalone з реактивністю на signals.
 
 </details>
 
 <details>
-<summary>52. </summary>
+<summary>52. Чи можете ви пояснити використання директив ngClass та ngStyle?</summary>
 
 #### Angular
+
+Використання директив `ngClass` та `ngStyle` в Angular
+
+#### `ngClass`
+
+Директива `ngClass` використовується для **динамічного додавання або видалення
+CSS-класів** на елементі.
+
+#### Основні форми використання
+
+1. Обʼєкт (найпоширеніше)
+
+```HTML
+<div [ngClass]="{ active: isActive, disabled: isDisabled }"></div>
+```
+
+2. Масив
+
+```HTML
+<div [ngClass]="['card', isDark ? 'dark' : 'light']"></div>
+```
+
+3. Рядок
+
+```HTML
+<div [ngClass]="dynamicClass"></div>
+```
+
+#### Best practices
+
+- Використовуйте для умовної стилізації
+
+- Працює ефективно з `ChangeDetectionStrategy.OnPush`
+
+- Добре поєднується з signals
+
+```TypeScript
+isActive = signal(true);
+```
+
+#### `ngStyle`
+
+Директива `ngStyle` використовується для динамічного задання inline-стилів.
+
+#### Приклад
+
+```HTML
+<div [ngStyle]="{ color: textColor, fontSize: fontSize + 'px' }"></div>
+```
+
+```TypeScript
+textColor = 'red';
+fontSize = 16;
+```
+
+#### Best practices
+
+- Використовуйте лише коли стилі не можна описати класами
+
+- Уникайте великої кількості inline-стилів (performance + maintainability)
+
+#### Angular 20+ рекомендації
+
+- Віддавайте перевагу `ngClass`
+
+- Для складної логіки — computed signals
+
+- Для дизайн-систем — класи + CSS variables
+
+#### Коротке резюме
+
+- `ngClass` — для керування CSS-класами,
+- `ngStyle` — для динамічних inline-стилів.
 
 </details>
 
 <details>
-<summary>53. </summary>
+<summary>53. Як ви взаємодієте з DOM безпосередньо за допомогою директив?</summary>
 
 #### Angular
+
+Взаємодія з DOM за допомогою директив в Angular
+
+#### Основні способи
+
+1. `ElementRef` (обмежено)
+
+Дає доступ до нативного DOM-елемента.
+
+```TypeScript
+constructor(private el: ElementRef) {
+  this.el.nativeElement.focus();
+}
+```
+
+**Недолік:** прямий доступ до DOM Не рекомендовано для SSR та безпеки
+
+2. Renderer2 (рекомендовано)
+
+Абстракція над DOM — безпечна та SSR-friendly.
+
+```TypeScript
+constructor(
+  private el: ElementRef,
+  private renderer: Renderer2
+) {}
+
+ngOnInit() {
+  this.renderer.setStyle(
+    this.el.nativeElement,
+    'background-color',
+    'yellow'
+  );
+}
+```
+
+- Працює з SSR
+- Безпечний (XSS)
+- Кросплатформений
+
+3. @HostBinding Біндінг до властивостей host-елемента.
+
+```TypeScript
+@HostBinding('class.active') isActive = true;
+```
+
+- Чисто
+- Без прямого DOM-доступу
+
+4. @HostListener
+
+Підписка на події host-елемента.
+
+```TypeScript
+@HostListener('mouseenter')
+onHover() {
+  this.isActive = true;
+}
+```
+
+#### Angular 20+ підхід (best practice)
+
+- Уникати nativeElement напряму
+
+- Використовувати Renderer2
+
+- Для стилів і класів — @HostBinding
+
+- Для подій — @HostListener
+
+- Для реактивності — signals + effect
+
+- Перевіряти платформу (isPlatformBrowser) при роботі з DOM API
+
+**Коротко**
+
+У Angular взаємодія з DOM у директивах має відбуватись через Renderer2 або
+host-декоратори, а не через прямий доступ до nativeElement.
 
 </details>
 
 <details>
-<summary>54. </summary>
+<summary>54. Коли слід використовувати Renderer2 і які його переваги?</summary>
 
 #### Angular
+
+Коли слід використовувати `Renderer2` і які його переваги
+
+#### Коли використовувати `Renderer2`
+
+Використовуйте `Renderer2`, коли потрібно:
+
+- Динамічно змінювати **стилі**, **класи**, **атрибути**
+- Додавати або видаляти **DOM-елементи**
+- Працювати з **подіями** зсередини директив
+- Забезпечити **SSR-сумісність**
+- Уникнути **XSS-ризиків**
+- Писати **кросплатформений** код (browser / server / web workers)
+
+## Приклад використання
+
+```TypeScript
+import { Directive, ElementRef, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+  standalone: true,
+})
+export class HighlightDirective {
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2
+  ) {
+    this.renderer.setStyle(
+      this.el.nativeElement,
+      'background-color',
+      'yellow'
+    );
+  }
+}
+```
+
+#### Переваги `Renderer2`
+
+1. Безпека
+
+- Захищає від XSS
+- Не дозволяє небезпечні DOM-операції напряму
+
+2. SSR-friendly
+
+- Працює коректно при Server-Side Rendering
+- Не ламається через відсутність window / document
+
+3. Абстракція над DOM
+
+- Angular вирішує як саме застосувати зміни
+- Підтримує різні платформи
+
+4. Краща підтримка Angular lifecycle
+
+- Інтегрується з change detection
+- Менше побічних ефектів
+
+#### Коли НЕ варто використовувати `Renderer2`
+
+- Для простого керування класами → краще ngClass
+- Для обробки подій → краще @HostListener
+- Для стилів → @HostBinding
+- Для читання значень (read-only) → допустимо ElementRef
+
+#### Angular 20+ рекомендації
+
+- Не використовувати nativeElement напряму
+- Renderer2 — стандарт для директив
+- Поєднувати з signals для реактивності
+- Перевіряти платформу при складних DOM-операціях
+
+**Коротко**
+
+Renderer2 — це безпечний, SSR-сумісний та кросплатформений спосіб взаємодії з
+DOM, який слід використовувати замість прямого доступу до nativeElement.
 
 </details>
 
 <details>
-<summary>55. </summary>
+<summary>55. Як створити власний канал в Angular?</summary>
 
 #### Angular
+
+Як створити власний Pipe (канал) в Angular
+
+1. Створення pipe
+
+Приклад: простий pipe для форматування імені
+
+```TypeScript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'capitalize',
+  standalone: true,
+})
+export class CapitalizePipe implements PipeTransform {
+  transform(value: string): string {
+    if (!value) return '';
+    return value[0].toUpperCase() + value.slice(1);
+  }
+}
+```
+
+2. Використання в шаблоні
+
+```HTML
+<p>{{ 'angular' | capitalize }}</p>
+```
+
+3. Pure vs Impure pipes
+
+**Pure pipe (за замовчуванням)**
+
+- Викликається лише при зміні input
+
+- Краща продуктивність
+
+```TypeScript
+@Pipe({ name: 'myPipe', pure: true })
+```
+
+**Impure pipe**
+
+- Викликається на кожен change detection
+
+- Використовувати обережно
+
+```TypeScript
+@Pipe({ name: 'myPipe', pure: false })
+```
+
+4. Pipe з параметрами
+
+```TypeScript
+@Pipe({ name: 'truncate', standalone: true })
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, limit = 10): string {
+    return value.length > limit ? value.slice(0, limit) + '…' : value;
+  }
+}
+```
+
+```HTML
+<p>{{ text | truncate:20 }}</p>
+```
+
+5. Best practices (Angular 20+)
+
+- Використовуйте standalone pipes
+
+- Тримайте pipes pure
+
+- Без side-effects
+
+- Не використовуйте pipes для складної бізнес-логіки
+
+- Для реактивних сценаріїв — signals або computed values
+
+**Коротко**
+
+Pipe в Angular створюється через @Pipe, реалізує PipeTransform і
+використовується для декларативної трансформації даних у шаблоні.
 
 </details>
 
 <details>
-<summary>56. </summary>
+<summary>56. Опишіть чисті та нечисті канали.</summary>
 
 #### Angular
+
+Чисті (Pure) та нечисті (Impure) канали в Angular
+
+#### Чисті канали (Pure Pipes)
+
+#### Характеристики
+
+- Викликаються **лише тоді**, коли змінюється **посилання на input**
+- Значення кешується Angular
+- Висока продуктивність
+- Повністю детерміновані (без side-effects)
+
+```TypeScript
+@Pipe({
+  name: 'uppercase',
+  standalone: true,
+  pure: true, // default
+})
+export class UppercasePipe {}
+```
+
+#### Приклад використання
+
+```HTML
+<p>{{ name | uppercase }}</p>
+```
+
+#### Коли використовувати
+
+- Форматування рядків
+
+- Обчислення на основі immutable-даних
+
+- 99% кейсів
+
+#### Нечисті канали (Impure Pipes)
+
+#### Характеристики
+
+- Викликаються на кожен цикл change detection
+- Не кешуються
+- Значно гірша продуктивність
+- Можуть мати side-effects (небажано)
+
+```TypeScript
+Копіювати код
+@Pipe({
+  name: 'timeAgo',
+  standalone: true,
+  pure: false,
+})
+export class TimeAgoPipe {}
+```
+
+#### Приклад використання
+
+```HTML
+<p>{{ timestamp | timeAgo }}</p>
+```
+
+#### Angular 20+ рекомендації
+
+- Завжди починайте з pure pipe
+
+- Уникайте impure pipes
+
+- Для реактивних сценаріїв:
+
+  - Signals (`computed`)
+
+  - RxJS + `async`
+
+- Impure pipe — останній варіант
+
+**Коротко**
+
+Pure pipes — швидкі та безпечні, Impure pipes — повільні й використовуються лише
+у виняткових випадках.
 
 </details>
 
 <details>
-<summary>57. </summary>
+<summary>57. Що таке асинхронний канал і як він використовується?</summary>
 
 #### Angular
+
+Асинхронний канал (`AsyncPipe`) в Angular
+
+#### Що таке `async` pipe
+
+`async` — це **вбудований Angular pipe**, який:
+
+- підписується на `Observable` або `Promise`
+- автоматично оновлює шаблон при нових значеннях
+- **сам відписується** при знищенні компонента
+
+#### Приклад з `Observable`
+
+```TypeScript
+users$ = this.userService.getUsers();
+```
+
+```HTML
+<ul>
+  <li *ngFor="let user of users$ | async">
+    {{ user.name }}
+  </li>
+</ul>
+```
+
+#### Приклад з Promise
+
+```TypeScript
+dataPromise = fetchData();
+```
+
+```HTML
+<p>{{ dataPromise | async }}</p>
+```
+
+#### Як працює під капотом
+
+- Підписується на джерело даних
+- Тригерить change detection при нових значеннях
+- Відписується автоматично при destroy компонента
+
+Усунення memory leaks без ngOnDestroy
+
+#### Переваги async pipe
+
+- Менше коду
+- Немає ручних subscribe / unsubscribe
+- Краще читається шаблон
+- Ідеально працює з OnPush
+- SSR та signals-friendly
+
+#### async pipe + signals (Angular 20+)
+
+```TypeScript
+import { toSignal } from
+'@angular/core/rxjs-interop';
+
+users = toSignal(this.userService.getUsers()); html Копіювати код
+```
+
+```HTML
+<li *ngFor="let user of users()">
+```
+
+#### Коли використовувати
+
+- Для роботи з HTTP-запитами
+- Для стрімів даних (RxJS)
+- Для реактивних UI-станів
+
+#### Коли НЕ використовувати
+
+- Якщо значення потрібне лише в TS, а не в шаблоні
+- Для складної бізнес-логіки (краще в сервісах)
+
+**Коротко**
+
+async pipe — стандартний і безпечний спосіб роботи з асинхронними даними в
+шаблонах Angular без memory leaks.
 
 </details>
 
 <details>
-<summary>58. </summary>
+<summary>58. Що таке NgRx і як він допомагає в управлінні станом?</summary>
 
 #### Angular
+
+Що таке NgRx і як він допомагає в управлінні станом
+
+#### Що таке NgRx
+
+**NgRx** — це бібліотека для **state management** в Angular, побудована на:
+
+- патерні **Redux**
+- **RxJS**
+- односпрямованому потоці даних (unidirectional data flow)
+
+NgRx забезпечує **єдине джерело правди (single source of truth)** для стану
+застосунку.
+
+#### Основні складові NgRx
+
+1. Store
+
+Глобальний immutable-стан застосунку.
+
+```TypeScript
+export interface AppState {
+  users: User[];
+}
+```
+
+2. Actions
+
+Описують що сталося.
+
+```TypeScript
+export const loadUsers = createAction('[Users] Load');
+```
+
+3. Reducers
+
+Описують як змінюється стан.
+
+```TypeScript
+export const usersReducer = createReducer( [],
+on(loadUsersSuccess, (\_, { users }) => users) );
+```
+
+4. Selectors
+
+Ефективне отримання даних зі store.
+
+```TypeScript
+export const selectUsers = createSelector( selectUsersState,
+users => users );
+```
+
+5. Effects
+
+Робота з side-effects (HTTP, storage, navigation).
+
+```TypeScript
+loadUsers$ = createEffect(() => this.actions$.pipe(
+ofType(loadUsers), switchMap(() => this.api.getUsers()) ) );
+```
+
+#### Як NgRx допомагає керувати станом
+
+- Централізує стан
+- Робить змінюваність передбачуваною
+- Полегшує debugging (Redux DevTools)
+- Спрощує тестування
+- Добре масштабується для великих команд
+
+#### Коли використовувати NgRx
+
+- Великі застосунки
+- Складний shared-state
+- Багато асинхронних side-effects
+- Потрібен time-travel debugging
+
+#### Коли НЕ використовувати NgRx
+
+- Маленькі застосунки
+- Простий локальний стан
+- Overhead без потреби
+
+#### Angular 20+ контекст
+
+- NgRx не замінює signals
+
+- Часто комбінується:
+
+  - NgRx Store → глобальний стан
+
+  - Signals → локальний UI-стан
+
+- Для простіших кейсів:
+
+  - Signals
+
+  - Component Store
+
+  - Services + RxJS
+
+**Коротко**
+
+NgRx — це потужний, але важкий інструмент для управління станом, який варто
+використовувати лише тоді, коли складність застосунку цього вимагає.
 
 </details>
 
 <details>
-<summary>59. </summary>
+<summary>59. Поясніть концепції дій, редукторів та ефектів у NgRx.</summary>
 
 #### Angular
+
+Дії, редуктори та ефекти в NgRx
+
+1. Actions (Дії)
+
+**Actions** описують **що сталося** в застосунку.  
+Це прості обʼєкти з обовʼязковим полем `type`.
+
+```TypeScript
+export const loadUsers = createAction('[Users] Load');
+export const loadUsersSuccess = createAction(
+  '[Users] Load Success',
+  props<{ users: User[] }>()
+);
+```
+
+####Призначення
+
+- Тригерять зміну стану
+- Сигналізують про події (UI, API, router)
+
+2. Reducers (Редуктори)
+
+Reducers — чисті функції, які визначають як змінюється стан у відповідь на
+action.
+
+```TypeScript
+export const usersReducer = createReducer( initialState,
+on(loadUsersSuccess, (state, { users }) => ({ ...state, users, })) );
+```
+
+#### Ключові правила
+
+- Без side-effects
+- Без мутацій
+- Повертають новий immutable-стан
+
+3. Effects (Ефекти)
+
+Effects обробляють side-effects (HTTP, storage, navigation) і працюють поза
+reducer.
+
+```TypeScript
+loadUsers$ = createEffect(() => this.actions$.pipe(
+ofType(loadUsers), switchMap(() => this.api.getUsers().pipe( map(users =>
+loadUsersSuccess({ users })) ) ) ) );
+```
+
+#### Призначення
+
+- Асинхронні операції
+- Взаємодія з зовнішніми API
+- Dispatch нових actions
+
+#### Angular 20+ рекомендації
+
+- Reducers — максимально прості
+- Вся асинхронність — тільки в Effects
+- Signals можна використовувати поверх select
+- Для локального стану — ComponentStore
+
+**Коротко**
+
+**Actions** описують події, **Reducers** — змінюють стан, **Effects** —
+обробляють побічні ефекти, разом утворюючи передбачуваний односпрямований потік
+даних.
 
 </details>
 
