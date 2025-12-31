@@ -3295,8 +3295,165 @@ loadUsersSuccess({ users })) ) ) ) );
 </details>
 
 <details>
-<summary>60. </summary>
+<summary>60. Як би ви зберігали стан програми після оновлення сторінки?</summary>
+
+#### Angular
+
+Основний підхід: Persist + Rehydrate
+
+#### Зберігати стан у browser storage
+
+- `localStorage` — довготривалий стан
+- `sessionStorage` — лише на сесію
+- `IndexedDB` — великі обʼєми даних
+
+#### Варіант 1: NgRx + Meta-Reducers (рекомендовано)
+
+Persist + Rehydrate через `ngrx-store-localstorage`
+
+```TypeScript
+import { localStorageSync } from 'ngrx-store-localstorage';
+
+export const metaReducer: MetaReducer = reducer =>
+  localStorageSync({
+    keys: ['auth', 'settings'],
+    rehydrate: true,
+  })(reducer);
+```
+
+- Автоматичне відновлення
+- Контроль, які slice зберігати
+- Production-ready
+
+#### Варіант 2: NgRx вручну (simple case)
+
+```TypeScript
+const savedState = JSON.parse(localStorage.getItem('appState') || '{}');
+```
+
+```TypeScript
+StoreModule.forRoot(reducers, {
+  initialState: savedState,
+});
+```
+
+#### Варіант 3: Без NgRx (Signals + Service)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppStateService {
+  theme = signal(
+    localStorage.getItem('theme') ?? 'light'
+  );
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem('theme', this.theme());
+    });
+  }
+}
+```
+
+- Мінімальний оверхед
+- Підходить для невеликого стану
+
+#### Що зберігати / не зберігати
+
+**Зберігати**
+
+- Auth / refresh tokens
+- User preferences
+- Filters, feature state
+
+**Не зберігати**
+
+- Derived / computed state
+- Тимчасовий UI-стан
+- Великі API-колекції
+
+#### Angular 20+ best practices
+
+- Persist тільки потрібні slices
+- Не зберігати sensitive data без шифрування
+- Для SSR — використовувати isPlatformBrowser
+- Signals — для локального стану
+- NgRx — для глобального
+
+**Коротко**
+
+Я зберігаю стан через persisting у browser storage та rehydration при старті,
+використовуючи NgRx meta-reducers або signals + services залежно від складності
+застосунку.
+
+</details>
+
+<details>
+<summary>61. </summary>
 
 #### Angular
 
 </details>
+
+<details>
+<summary>62. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>63. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>64. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>65. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>66. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>67. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>68. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>69. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>70. </summary>
+
+#### Angular
+
+</details>
+```
