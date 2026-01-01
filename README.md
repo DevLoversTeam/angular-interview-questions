@@ -3464,9 +3464,117 @@ state.user.name = user.name;
 </details>
 
 <details>
-<summary>62. </summary>
+<summary>62. Як тестувати компоненти Angular?</summary>
 
 #### Angular
+
+Основні типи тестування
+
+1. Unit-тести (основні)
+
+Тестують **ізольовану логіку компонента**.
+
+**Інструменти:**
+
+- `TestBed`
+- Jasmine / Jest
+- Karma (або Vite + Vitest)
+
+```TypeScript
+beforeEach(() => {
+  TestBed.configureTestingModule({
+    imports: [MyComponent], // standalone
+  });
+});
+
+it('should create component', () => {
+  const fixture = TestBed.createComponent(MyComponent);
+  expect(fixture.componentInstance).toBeTruthy();
+});
+```
+
+2. Тестування шаблону (DOM)
+
+Перевірка рендерингу та binding’ів.
+
+```TypeScript
+it('should render title', () => {
+  const fixture = TestBed.createComponent(MyComponent);
+  fixture.componentInstance.title = 'Hello';
+  fixture.detectChanges();
+
+  const el = fixture.nativeElement.querySelector('h1');
+  expect(el.textContent).toContain('Hello');
+});
+```
+
+3. Тестування взаємодії (events)
+
+```TypeScript
+it('should emit event on click', () => {
+  spyOn(component.saved, 'emit');
+
+  const button = fixture.nativeElement.querySelector('button');
+  button.click();
+
+  expect(component.saved.emit).toHaveBeenCalled();
+});
+```
+
+#### Mock залежностей
+
+**Mock сервісів**
+
+```TypeScript
+providers: [
+  { provide: UserService, useValue: mockUserService }
+]
+```
+
+**HttpClient**
+
+```TypeScript
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
+providers: [provideHttpClientTesting()]
+```
+
+#### Signals у тестах (Angular 20+)
+
+```TypeScript
+it('should update signal value', () => {
+  component.count.set(1);
+  expect(component.count()).toBe(1);
+});
+```
+
+#### Що тестувати, а що ні
+
+**Тестувати**
+
+- Бізнес-логіку компонента
+- Взаємодію з сервісами
+- Binding’и та events
+
+**Не тестувати**
+
+- Внутрішню реалізацію Angular
+- CSS / стилі
+- Простий boilerplate
+
+**Best practices**
+
+- Використовуйте standalone components у тестах
+- Мінімізуйте TestBed конфіг
+- Mock тільки зовнішні залежності
+- Один тест — одна відповідальність
+- Для UI-флоу — e2e (Cypress / Playwright)
+
+**Коротко**
+
+Компоненти Angular тестуються переважно unit-тестами через TestBed, з моками
+залежностей та перевіркою DOM і взаємодій; у Angular 20+ тести простіші завдяки
+standalone та signals.
 
 </details>
 
