@@ -3925,9 +3925,98 @@ Jasmine пише тести, Karma запускає тести, разом во�
 </details>
 
 <details>
-<summary>67. </summary>
+<summary>67. Які стратегії ви б використали для зменшення часу завантаження програми Angular?</summary>
 
 #### Angular
+
+1. Lazy Loading (критично важливо)
+
+**Lazy routes**
+
+```TypeScript
+{
+  path: 'admin',
+  loadComponent: () =>
+    import('./admin/admin.component').then(m => m.AdminComponent),
+}
+```
+
+- Менший initial bundle
+- Швидший старт
+
+2. Standalone + Tree Shaking
+
+- Використовувати standalone components
+- Імпортувати тільки необхідні залежності
+
+```TypeScript
+@Component({ standalone: true, imports: [CommonModule], })
+```
+
+3. Change Detection Optimization
+
+- ChangeDetectionStrategy.OnPush
+- Signals замість зайвого RxJS
+
+```TypeScript
+changeDetection: ChangeDetectionStrategy.OnPush
+```
+
+4. SSR + Hydration (якщо є SEO)
+
+- SSR для швидкого First Contentful Paint
+- Hydration для уникнення повторного рендеру
+
+```TypeScript
+provideClientHydration()
+```
+
+5. Code Splitting & Dynamic Imports
+
+- Динамічно завантажувати важкі бібліотеки
+
+```TypeScript
+const chart = await import('chart.js');
+```
+
+6. Оптимізація Assets
+
+- Lazy loading зображень
+
+```HTML
+<img src="img.png" loading="lazy" />
+```
+
+- Стиснення (gzip / brotli)
+- Мінімізація шрифтів
+
+7. Zoneless Angular (Angular 20+)
+
+```TypeScript
+provideExperimentalZonelessChangeDetection()
+```
+
+- Менше runtime overhead
+- Потрібна дисципліна в реактивності
+
+8. Preloading стратегія
+
+```TypeScript
+withPreloading(PreloadAllModules)
+```
+
+Завантажує lazy-модулі після старту
+
+9. Видалення зайвого
+
+- Не імпортувати CommonModule без потреби
+- Не використовувати impure pipes
+- Мінімізувати глобальні стилі
+
+**Коротко**
+
+Найбільший ефект дають lazy loading, standalone + OnPush, SSR з hydration та
+code splitting; дрібні оптимізації мають сенс лише після цього.
 
 </details>
 
@@ -3951,3 +4040,4 @@ Jasmine пише тести, Karma запускає тести, разом во�
 #### Angular
 
 </details>
+```
