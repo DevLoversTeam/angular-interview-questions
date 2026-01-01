@@ -4180,7 +4180,89 @@ dynamic imports, що суттєво зменшує initial bundle і покра
 </details>
 
 <details>
-<summary>70. </summary>
+<summary>70. Обговоріть використання опції trackBy в *ngFor для покращення продуктивності.</summary>
+
+#### Angular
+
+`trackBy` дозволяє Angular **ідентифікувати елементи списку за унікальним
+ключем**, а не за позицією в масиві.
+
+**Без `trackBy` Angular:**
+
+- вважає, що всі елементи **нові**
+- перевидаляє та перерендерює весь DOM-список
+
+**З `trackBy` Angular:**
+
+- оновлює **тільки змінені елементи**
+- зберігає існуючі DOM-ноди
+
+#### Синтаксис
+
+```HTML
+<li *ngFor="let user of users; trackBy: trackById">
+  {{ user.name }}
+</li>
+```
+
+```TypeScript
+trackById(index: number, user: User): number {
+  return user.id;
+}
+```
+
+#### Приклад проблеми без trackBy
+
+```TypeScript
+this.users = [...this.users]; // новий reference
+```
+
+- Без trackBy → весь список перерендериться
+- З trackBy → DOM залишиться стабільним
+
+#### Коли trackBy критично важливий
+
+- Великі списки
+- Часті оновлення масиву
+- Реактивні дані (signals / RxJS)
+- OnPush change detection
+- Анімації в списках
+
+#### Що використовувати як ключ
+
+**Добре**
+
+- id
+- унікальний UUID
+- стабільний primary key
+
+**Погано**
+
+- index
+- випадкові значення
+- значення, що можуть змінюватись
+
+#### Angular 20+ контекст
+
+- Signals часто створюють нові references
+- trackBy + immutability = максимальна ефективність
+- Особливо важливо для zoneless Angular
+
+#### Типові помилки
+
+- Не використовувати trackBy взагалі
+- Використовувати index
+- Повертати обʼєкт замість примітива
+
+**Коротко**
+
+trackBy дозволяє Angular оновлювати лише змінені елементи списку, значно
+зменшуючи кількість DOM-операцій і покращуючи продуктивність.
+
+</details>
+
+<details>
+<summary>71. </summary>
 
 #### Angular
 
