@@ -3658,9 +3658,110 @@ TestBed — це тестовий інструмент Angular, який ств�
 </details>
 
 <details>
-<summary>64. </summary>
+<summary>64. Як ви створюєте імітаційний імітаційний код сервісу Angular для цілей тестування?</summary>
 
 #### Angular
+
+#### Навіщо потрібні mock-сервіси
+
+- Ізолювати тест від реальних залежностей (HTTP, storage, API)
+- Зробити тести **швидкими та детермінованими**
+- Тестувати **поведінку**, а не реалізацію
+
+#### Основні способи створення mock-сервісів
+
+1. Простий mock-обʼєкт (найчастіше)
+
+```TypeScript
+const userServiceMock = {
+  getUsers: () => of([{ id: 1, name: 'Test User' }]),
+};
+```
+
+```TypeScript
+TestBed.configureTestingModule({
+  imports: [MyComponent],
+  providers: [
+    { provide: UserService, useValue: userServiceMock },
+  ],
+});
+```
+
+- Просто
+- Швидко
+- Ідеально для unit-тестів
+
+2. Mock-клас
+
+```TypeScript
+class UserServiceMock {
+  getUsers() {
+    return of([]);
+  }
+}
+```
+
+```TypeScript
+providers: [
+  { provide: UserService, useClass: UserServiceMock }
+]
+```
+
+- Краще для складної логіки
+- Більше boilerplate
+
+3. Spy-обʼєкти (Jasmine / Jest)
+
+**Jasmine**
+
+```TypeScript
+const userServiceSpy = jasmine.createSpyObj('UserService', ['getUsers']);
+userServiceSpy.getUsers.and.returnValue(of([]));
+```
+
+**Jest**
+
+```TypeScript
+const userServiceMock = {
+  getUsers: jest.fn().mockReturnValue(of([])),
+};
+```
+
+- Перевірка викликів
+- Контроль поведінки
+
+4. HttpClient mock (для API)
+
+```TypeScript
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
+TestBed.configureTestingModule({
+  providers: [provideHttpClientTesting()],
+});
+```
+
+```TypeScript
+httpMock.expectOne('/api/users').flush([]);
+```
+
+#### Angular 20+ рекомендації
+
+- Mock через useValue — default вибір
+- Не використовуйте реальні HTTP-запити
+- Mock тільки зовнішні залежності
+- Один mock = один тестовий сценарій
+- Для signals — просто викликайте .set()
+
+#### Типові помилки
+
+- Мокати приватні методи
+- Тестувати реалізацію замість поведінки
+- Підміняти весь Store замість slice
+
+**Коротко**
+
+Mock-сервіси в Angular створюються через useValue, useClass або spy-обʼєкти і
+дозволяють ізольовано та надійно тестувати компоненти й сервіси.
 
 </details>
 
