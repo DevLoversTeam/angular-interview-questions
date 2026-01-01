@@ -3579,9 +3579,81 @@ standalone та signals.
 </details>
 
 <details>
-<summary>63. </summary>
+<summary>63. Поясніть, що таке TestBed та його роль у тестуванні Angular.</summary>
 
 #### Angular
+
+#### Що таке TestBed
+
+**TestBed** — це **основний тестовий API Angular**, який:
+
+- створює **ізольоване тестове середовище**
+- емулює Angular **DI, change detection та lifecycle**
+- дозволяє конфігурувати залежності так само, як у реальному застосунку
+
+#### Основні можливості TestBed
+
+1. Конфігурація тестового модуля
+
+```TypeScript
+TestBed.configureTestingModule({
+  imports: [MyComponent], // standalone
+  providers: [MyService],
+});
+```
+
+2. Створення компонента
+
+```TypeScript
+const fixture = TestBed.createComponent(MyComponent);
+const component = fixture.componentInstance;
+```
+
+3. Керування change detection
+
+```TypeScript
+fixture.detectChanges();
+```
+
+4. Доступ до DI
+
+```TypeScript
+const service = TestBed.inject(MyService);
+```
+
+#### TestBed у Angular 20+
+
+- Підтримує standalone components
+- Не потребує NgModule
+- Працює з signals
+- Сумісний з SSR і zoneless режимом
+- Менше boilerplate, ніж у старих версіях
+
+#### Коли використовувати TestBed
+
+**Використовувати**
+
+- Для тестування компонентів
+- Для інтеграційних unit-тестів
+- Коли потрібні DI та lifecycle
+
+**Не обовʼязково**
+
+- Для простих pure-функцій
+- Для логіки без Angular-залежностей
+
+#### Best practices
+
+- Мінімізуйте конфігурацію TestBed
+- Імпортуйте лише тестований standalone-компонент
+- Mock зовнішні залежності
+- Не тестуйте Angular internals
+
+**Коротко**
+
+TestBed — це тестовий інструмент Angular, який створює середовище, максимально
+наближене до реального застосунку, і є основою тестування компонентів та
+сервісів.
 
 </details>
 
