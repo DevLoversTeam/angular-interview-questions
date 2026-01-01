@@ -4087,9 +4087,95 @@ Lazy loading зменшує розмір стартового бандлу, пр
 </details>
 
 <details>
-<summary>69. </summary>
+<summary>69. Як би ви реалізували розділення коду в Angular для покращення продуктивності?</summary>
 
 #### Angular
+
+**Code splitting** — це розбиття JavaScript-коду на **окремі чанки**, які
+завантажуються **за потреби**, а не всі одразу при старті.
+
+1. Lazy loading маршрутів (основний інструмент)
+
+Standalone components
+
+```TypeScript
+{
+  path: 'profile',
+  loadComponent: () =>
+    import('./profile/profile.component')
+      .then(m => m.ProfileComponent),
+}
+```
+
+- Менший initial bundle
+- Швидший старт застосунку
+
+2. Lazy loading feature areas
+
+Розділяйте застосунок по фічах, а не по дрібних компонентах.
+
+```TypeScript
+{
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes')
+      .then(m => m.ADMIN_ROUTES),
+}
+```
+
+3. Динамічні імпорти для важких бібліотек
+
+```TypeScript
+async loadChart() {
+  const { Chart } = await import('chart.js');
+  new Chart(...);
+}
+```
+
+Бібліотека не потрапляє в initial bundle
+
+4. Preloading (баланс між швидкістю і UX)
+
+```TypeScript
+provideRouter(
+  routes,
+  withPreloading(PreloadAllModules)
+);
+```
+
+- Lazy модулі завантажуються після старту
+- Покращує UX без шкоди initial load
+
+5. Standalone + Tree Shaking
+
+- Використовуйте standalone components
+- Імпортуйте тільки необхідні залежності
+
+```TypeScript
+@Component({
+  standalone: true,
+  imports: [CommonModule],
+})
+```
+
+#### Best practices
+
+- Lazy load pages / feature areas
+- Не lazy load critical UI
+- Не дробіть код надто дрібно
+- Поєднувати з OnPush та signals
+- Вимірювати ефект через bundle analyzer
+
+#### Типові помилки
+
+- Lazy loading кожного компонента
+- Lazy loading layout/root
+- Відсутність loading state
+
+**Коротко**
+
+Code splitting в Angular реалізується переважно через lazy loading маршрутів і
+dynamic imports, що суттєво зменшує initial bundle і покращує продуктивність.
 
 </details>
 
