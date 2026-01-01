@@ -4021,9 +4021,68 @@ code splitting; дрібні оптимізації мають сенс лише
 </details>
 
 <details>
-<summary>68. </summary>
+<summary>68. Поясніть ліниве завантаження та як воно покращує продуктивність програми.</summary>
 
 #### Angular
+
+**Lazy loading** — це підхід, за якого частини застосунку завантажуються лише
+тоді, коли вони реально потрібні, а не під час старту.
+
+#### Lazy loading роутів (standalone)
+
+```TypeScript
+{
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./dashboard/dashboard.component')
+      .then(m => m.DashboardComponent),
+}
+```
+
+#### Як це покращує продуктивність
+
+1. Менший initial bundle
+
+- Менше JS на старті
+- Швидший First Load
+
+2. Швидший Time to Interactive (TTI)
+
+- Браузер швидше стає інтерактивним
+
+3. Краще використання мережі
+
+- Код завантажується on demand
+- Менше непотрібних запитів
+
+#### Додаткові оптимізації
+
+**Preloading**
+
+Після старту застосунку Angular може підвантажити lazy-модулі у фоні.
+
+```TypeScript
+withPreloading(PreloadAllModules)
+```
+
+#### Best practices
+
+- Lazy load feature areas, а не дрібні компоненти
+- Не lazy load critical UI
+- Поєднувати з OnPush
+- Використовувати standalone components
+- Lazy load важкі сторонні бібліотеки
+
+#### Типові помилки
+
+- Lazy loading кожного компонента
+- Lazy loading root layout
+- Відсутність fallback UI (loading)
+
+**Коротко**
+
+Lazy loading зменшує розмір стартового бандлу, пришвидшує завантаження та
+покращує UX, завантажуючи код лише тоді, коли він потрібен.
 
 </details>
 
@@ -4040,4 +4099,3 @@ code splitting; дрібні оптимізації мають сенс лише
 #### Angular
 
 </details>
-```
