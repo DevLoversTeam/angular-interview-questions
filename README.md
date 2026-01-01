@@ -3295,7 +3295,974 @@ loadUsersSuccess({ users })) ) ) ) );
 </details>
 
 <details>
-<summary>60. </summary>
+<summary>60. Як би ви зберігали стан програми після оновлення сторінки?</summary>
+
+#### Angular
+
+Основний підхід: Persist + Rehydrate
+
+#### Зберігати стан у browser storage
+
+- `localStorage` — довготривалий стан
+- `sessionStorage` — лише на сесію
+- `IndexedDB` — великі обʼєми даних
+
+#### Варіант 1: NgRx + Meta-Reducers (рекомендовано)
+
+Persist + Rehydrate через `ngrx-store-localstorage`
+
+```TypeScript
+import { localStorageSync } from 'ngrx-store-localstorage';
+
+export const metaReducer: MetaReducer = reducer =>
+  localStorageSync({
+    keys: ['auth', 'settings'],
+    rehydrate: true,
+  })(reducer);
+```
+
+- Автоматичне відновлення
+- Контроль, які slice зберігати
+- Production-ready
+
+#### Варіант 2: NgRx вручну (simple case)
+
+```TypeScript
+const savedState = JSON.parse(localStorage.getItem('appState') || '{}');
+```
+
+```TypeScript
+StoreModule.forRoot(reducers, {
+  initialState: savedState,
+});
+```
+
+#### Варіант 3: Без NgRx (Signals + Service)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppStateService {
+  theme = signal(
+    localStorage.getItem('theme') ?? 'light'
+  );
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem('theme', this.theme());
+    });
+  }
+}
+```
+
+- Мінімальний оверхед
+- Підходить для невеликого стану
+
+#### Що зберігати / не зберігати
+
+**Зберігати**
+
+- Auth / refresh tokens
+- User preferences
+- Filters, feature state
+
+**Не зберігати**
+
+- Derived / computed state
+- Тимчасовий UI-стан
+- Великі API-колекції
+
+#### Angular 20+ best practices
+
+- Persist тільки потрібні slices
+- Не зберігати sensitive data без шифрування
+- Для SSR — використовувати isPlatformBrowser
+- Signals — для локального стану
+- NgRx — для глобального
+
+**Коротко**
+
+Я зберігаю стан через persisting у browser storage та rehydration при старті,
+використовуючи NgRx meta-reducers або signals + services залежно від складності
+застосунку.
+
+</details>
+
+<details>
+<summary>61. Чи можете ви обговорити концепцію незмінності в управлінні станами?</summary>
+
+#### Angular
+
+Концепція незмінності (Immutability) в управлінні станами
+
+#### Що таке незмінність
+
+**Незмінність** означає, що стан **не змінюється напряму**.  
+Кожна зміна створює **новий обʼєкт стану**, а старий залишається незмінним.
+
+```TypeScript
+// Мутація
+state.count++;
+
+// Незмінно
+{ ...state, count: state.count + 1 }
+```
+
+#### Чому це важливо
+
+1. **Передбачуваність**
+
+- Один action → один новий стан
+- Без прихованих побічних ефектів
+
+2. **Продуктивність**
+
+- Angular використовує reference checks
+- Ефективна робота з OnPush та signals
+
+3. **Debugging**
+
+- Time-travel debugging (NgRx DevTools)
+- Легко відстежувати зміни стану
+
+4. **Тестування**
+
+- Reducers — чисті функції
+- Просте unit-тестування
+
+#### Незмінність у NgRx
+
+```TypeScript
+on(updateUser, (state, { user }) => ({
+  ...state,
+  user: { ...state.user, ...user }
+}))
+```
+
+Заборонено:
+
+```TypeScript
+state.user.name = user.name;
+```
+
+#### Angular 20+ контекст
+
+- Signals реагують на зміну посилань
+- computed() перевиконується лише при новому reference
+- Immutability = краща продуктивність UI
+
+#### Типові помилки
+
+- Мутація вкладених обʼєктів
+- Використання .push() / .splice()
+- Зміни state поза reducer / сервісом
+
+**Коротко**
+
+Незмінність — основа надійного state management: вона забезпечує
+передбачуваність, продуктивність і зручне тестування.
+
+</details>
+
+<details>
+<summary>62. Як тестувати компоненти Angular?</summary>
+
+#### Angular
+
+Основні типи тестування
+
+1. Unit-тести (основні)
+
+Тестують **ізольовану логіку компонента**.
+
+**Інструменти:**
+
+- `TestBed`
+- Jasmine / Jest
+- Karma (або Vite + Vitest)
+
+```TypeScript
+beforeEach(() => {
+  TestBed.configureTestingModule({
+    imports: [MyComponent], // standalone
+  });
+});
+
+it('should create component', () => {
+  const fixture = TestBed.createComponent(MyComponent);
+  expect(fixture.componentInstance).toBeTruthy();
+});
+```
+
+2. Тестування шаблону (DOM)
+
+Перевірка рендерингу та binding’ів.
+
+```TypeScript
+it('should render title', () => {
+  const fixture = TestBed.createComponent(MyComponent);
+  fixture.componentInstance.title = 'Hello';
+  fixture.detectChanges();
+
+  const el = fixture.nativeElement.querySelector('h1');
+  expect(el.textContent).toContain('Hello');
+});
+```
+
+3. Тестування взаємодії (events)
+
+```TypeScript
+it('should emit event on click', () => {
+  spyOn(component.saved, 'emit');
+
+  const button = fixture.nativeElement.querySelector('button');
+  button.click();
+
+  expect(component.saved.emit).toHaveBeenCalled();
+});
+```
+
+#### Mock залежностей
+
+**Mock сервісів**
+
+```TypeScript
+providers: [
+  { provide: UserService, useValue: mockUserService }
+]
+```
+
+**HttpClient**
+
+```TypeScript
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
+providers: [provideHttpClientTesting()]
+```
+
+#### Signals у тестах (Angular 20+)
+
+```TypeScript
+it('should update signal value', () => {
+  component.count.set(1);
+  expect(component.count()).toBe(1);
+});
+```
+
+#### Що тестувати, а що ні
+
+**Тестувати**
+
+- Бізнес-логіку компонента
+- Взаємодію з сервісами
+- Binding’и та events
+
+**Не тестувати**
+
+- Внутрішню реалізацію Angular
+- CSS / стилі
+- Простий boilerplate
+
+**Best practices**
+
+- Використовуйте standalone components у тестах
+- Мінімізуйте TestBed конфіг
+- Mock тільки зовнішні залежності
+- Один тест — одна відповідальність
+- Для UI-флоу — e2e (Cypress / Playwright)
+
+**Коротко**
+
+Компоненти Angular тестуються переважно unit-тестами через TestBed, з моками
+залежностей та перевіркою DOM і взаємодій; у Angular 20+ тести простіші завдяки
+standalone та signals.
+
+</details>
+
+<details>
+<summary>63. Поясніть, що таке TestBed та його роль у тестуванні Angular.</summary>
+
+#### Angular
+
+#### Що таке TestBed
+
+**TestBed** — це **основний тестовий API Angular**, який:
+
+- створює **ізольоване тестове середовище**
+- емулює Angular **DI, change detection та lifecycle**
+- дозволяє конфігурувати залежності так само, як у реальному застосунку
+
+#### Основні можливості TestBed
+
+1. Конфігурація тестового модуля
+
+```TypeScript
+TestBed.configureTestingModule({
+  imports: [MyComponent], // standalone
+  providers: [MyService],
+});
+```
+
+2. Створення компонента
+
+```TypeScript
+const fixture = TestBed.createComponent(MyComponent);
+const component = fixture.componentInstance;
+```
+
+3. Керування change detection
+
+```TypeScript
+fixture.detectChanges();
+```
+
+4. Доступ до DI
+
+```TypeScript
+const service = TestBed.inject(MyService);
+```
+
+#### TestBed у Angular 20+
+
+- Підтримує standalone components
+- Не потребує NgModule
+- Працює з signals
+- Сумісний з SSR і zoneless режимом
+- Менше boilerplate, ніж у старих версіях
+
+#### Коли використовувати TestBed
+
+**Використовувати**
+
+- Для тестування компонентів
+- Для інтеграційних unit-тестів
+- Коли потрібні DI та lifecycle
+
+**Не обовʼязково**
+
+- Для простих pure-функцій
+- Для логіки без Angular-залежностей
+
+#### Best practices
+
+- Мінімізуйте конфігурацію TestBed
+- Імпортуйте лише тестований standalone-компонент
+- Mock зовнішні залежності
+- Не тестуйте Angular internals
+
+**Коротко**
+
+TestBed — це тестовий інструмент Angular, який створює середовище, максимально
+наближене до реального застосунку, і є основою тестування компонентів та
+сервісів.
+
+</details>
+
+<details>
+<summary>64. Як ви створюєте імітаційний імітаційний код сервісу Angular для цілей тестування?</summary>
+
+#### Angular
+
+#### Навіщо потрібні mock-сервіси
+
+- Ізолювати тест від реальних залежностей (HTTP, storage, API)
+- Зробити тести **швидкими та детермінованими**
+- Тестувати **поведінку**, а не реалізацію
+
+#### Основні способи створення mock-сервісів
+
+1. Простий mock-обʼєкт (найчастіше)
+
+```TypeScript
+const userServiceMock = {
+  getUsers: () => of([{ id: 1, name: 'Test User' }]),
+};
+```
+
+```TypeScript
+TestBed.configureTestingModule({
+  imports: [MyComponent],
+  providers: [
+    { provide: UserService, useValue: userServiceMock },
+  ],
+});
+```
+
+- Просто
+- Швидко
+- Ідеально для unit-тестів
+
+2. Mock-клас
+
+```TypeScript
+class UserServiceMock {
+  getUsers() {
+    return of([]);
+  }
+}
+```
+
+```TypeScript
+providers: [
+  { provide: UserService, useClass: UserServiceMock }
+]
+```
+
+- Краще для складної логіки
+- Більше boilerplate
+
+3. Spy-обʼєкти (Jasmine / Jest)
+
+**Jasmine**
+
+```TypeScript
+const userServiceSpy = jasmine.createSpyObj('UserService', ['getUsers']);
+userServiceSpy.getUsers.and.returnValue(of([]));
+```
+
+**Jest**
+
+```TypeScript
+const userServiceMock = {
+  getUsers: jest.fn().mockReturnValue(of([])),
+};
+```
+
+- Перевірка викликів
+- Контроль поведінки
+
+4. HttpClient mock (для API)
+
+```TypeScript
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+
+TestBed.configureTestingModule({
+  providers: [provideHttpClientTesting()],
+});
+```
+
+```TypeScript
+httpMock.expectOne('/api/users').flush([]);
+```
+
+#### Angular 20+ рекомендації
+
+- Mock через useValue — default вибір
+- Не використовуйте реальні HTTP-запити
+- Mock тільки зовнішні залежності
+- Один mock = один тестовий сценарій
+- Для signals — просто викликайте .set()
+
+#### Типові помилки
+
+- Мокати приватні методи
+- Тестувати реалізацію замість поведінки
+- Підміняти весь Store замість slice
+
+**Коротко**
+
+Mock-сервіси в Angular створюються через useValue, useClass або spy-обʼєкти і
+дозволяють ізольовано та надійно тестувати компоненти й сервіси.
+
+</details>
+
+<details>
+<summary>65. Чи можна виконувати наскрізне тестування в Angular?</summary>
+
+#### Angular
+
+#### Коротка відповідь
+
+**Так, Angular повністю підтримує E2E (end-to-end) тестування**, але не має
+вбудованого інструмента — використовується зовнішній тест-раннер.
+
+#### Рекомендовані інструменти
+
+**Playwright (рекомендовано)**
+
+- Сучасний стандарт
+- Швидкий і стабільний
+- Працює з SSR та SPA
+- Підтримує multiple browsers
+
+```bash
+npm init playwright@latest
+```
+
+```TypeScript
+test('login flow', async ({ page }) => {
+  await page.goto('/');
+  await page.fill('#email', 'test@mail.com');
+  await page.click('button[type=submit]');
+  await expect(page).toHaveURL('/dashboard');
+});
+```
+
+#### Cypress
+
+- Простий у використанні
+- Чудовий dev experience
+- Менш стабільний для складних SSR-сценаріїв
+
+```TypeScript
+cy.visit('/');
+cy.get('input').type('test@mail.com');
+cy.contains('Submit').click();
+```
+
+#### Protractor
+
+- Deprecated
+- Не рекомендується у сучасних Angular-проєктах
+
+#### Що тестує E2E
+
+- Реальні користувацькі флоу
+- Навігацію
+- Інтеграцію з бекендом
+- Авторизацію
+- SSR + hydration (якщо є)
+
+#### Best practices
+
+- Мінімізувати кількість E2E-тестів
+- Не тестувати дрібну логіку (для цього unit)
+- Використовувати test IDs (data-testid)
+- Мокати бекенд або використовувати test environment
+- Запускати E2E у CI
+
+#### Angular 20+ контекст
+
+- E2E працює з standalone та signals без проблем
+- SSR тестується через Playwright
+- Zoneless режим не впливає на E2E
+
+**Коротко**
+
+Angular не має власного E2E-фреймворку, але відмінно працює з Playwright і
+Cypress для повноцінного наскрізного тестування.
+
+</details>
+
+<details>
+<summary>66. Які відмінності між Jasmine та Karma в контексті тестування Angular?</summary>
+
+#### Angular
+
+#### Коротко
+
+- **Jasmine** — це **фреймворк для написання тестів**
+- **Karma** — це **тест-раннер**, який запускає ці тести в браузерах
+
+Вони **доповнюють**, а не замінюють одне одного.
+
+#### Jasmine
+
+**Що це**
+
+**BDD-тестовий фреймворк**, який надає:
+
+- `describe`, `it`, `beforeEach`
+- `expect`, matchers
+- spies (`spyOn`)
+
+```TypeScript
+describe('Counter', () => {
+  it('should increment', () => {
+    expect(1 + 1).toBe(2);
+  });
+});
+```
+
+**Відповідає за**
+
+- Синтаксис тестів
+- Assertions
+- Mock / Spy логіку
+
+#### Karma
+
+**Що це**
+
+**Test runner**, який:
+
+- Запускає тести
+- Відкриває браузери (Chrome, Firefox, Headless)
+- Відслідковує файли та перезапускає тести
+- Репортує результати
+
+```bash
+ng test
+```
+
+#### Відповідає за
+
+- Середовище виконання
+- Інтеграцію з браузером
+- CI-запуск
+
+#### Angular 20+ контекст
+
+- Jasmine + Karma — legacy default
+- Все частіше замінюються на:
+  - Jest
+  - Vitest (Vite)
+- Karma повільніший, але стабільний
+- Jasmine простий, але менш гнучкий за Jest
+
+#### Best practices
+
+- Для нових проєктів:
+  - Vitest / Jest
+- Для legacy Angular:
+  - Jasmine + Karma — ок
+- Не змішувати відповідальності інструментів
+
+**Коротко**
+
+Jasmine пише тести, Karma запускає тести, разом вони утворюють класичний стек
+тестування Angular.
+
+</details>
+
+<details>
+<summary>67. Які стратегії ви б використали для зменшення часу завантаження програми Angular?</summary>
+
+#### Angular
+
+1. Lazy Loading (критично важливо)
+
+**Lazy routes**
+
+```TypeScript
+{
+  path: 'admin',
+  loadComponent: () =>
+    import('./admin/admin.component').then(m => m.AdminComponent),
+}
+```
+
+- Менший initial bundle
+- Швидший старт
+
+2. Standalone + Tree Shaking
+
+- Використовувати standalone components
+- Імпортувати тільки необхідні залежності
+
+```TypeScript
+@Component({ standalone: true, imports: [CommonModule], })
+```
+
+3. Change Detection Optimization
+
+- ChangeDetectionStrategy.OnPush
+- Signals замість зайвого RxJS
+
+```TypeScript
+changeDetection: ChangeDetectionStrategy.OnPush
+```
+
+4. SSR + Hydration (якщо є SEO)
+
+- SSR для швидкого First Contentful Paint
+- Hydration для уникнення повторного рендеру
+
+```TypeScript
+provideClientHydration()
+```
+
+5. Code Splitting & Dynamic Imports
+
+- Динамічно завантажувати важкі бібліотеки
+
+```TypeScript
+const chart = await import('chart.js');
+```
+
+6. Оптимізація Assets
+
+- Lazy loading зображень
+
+```HTML
+<img src="img.png" loading="lazy" />
+```
+
+- Стиснення (gzip / brotli)
+- Мінімізація шрифтів
+
+7. Zoneless Angular (Angular 20+)
+
+```TypeScript
+provideExperimentalZonelessChangeDetection()
+```
+
+- Менше runtime overhead
+- Потрібна дисципліна в реактивності
+
+8. Preloading стратегія
+
+```TypeScript
+withPreloading(PreloadAllModules)
+```
+
+Завантажує lazy-модулі після старту
+
+9. Видалення зайвого
+
+- Не імпортувати CommonModule без потреби
+- Не використовувати impure pipes
+- Мінімізувати глобальні стилі
+
+**Коротко**
+
+Найбільший ефект дають lazy loading, standalone + OnPush, SSR з hydration та
+code splitting; дрібні оптимізації мають сенс лише після цього.
+
+</details>
+
+<details>
+<summary>68. Поясніть ліниве завантаження та як воно покращує продуктивність програми.</summary>
+
+#### Angular
+
+**Lazy loading** — це підхід, за якого частини застосунку завантажуються лише
+тоді, коли вони реально потрібні, а не під час старту.
+
+#### Lazy loading роутів (standalone)
+
+```TypeScript
+{
+  path: 'dashboard',
+  loadComponent: () =>
+    import('./dashboard/dashboard.component')
+      .then(m => m.DashboardComponent),
+}
+```
+
+#### Як це покращує продуктивність
+
+1. Менший initial bundle
+
+- Менше JS на старті
+- Швидший First Load
+
+2. Швидший Time to Interactive (TTI)
+
+- Браузер швидше стає інтерактивним
+
+3. Краще використання мережі
+
+- Код завантажується on demand
+- Менше непотрібних запитів
+
+#### Додаткові оптимізації
+
+**Preloading**
+
+Після старту застосунку Angular може підвантажити lazy-модулі у фоні.
+
+```TypeScript
+withPreloading(PreloadAllModules)
+```
+
+#### Best practices
+
+- Lazy load feature areas, а не дрібні компоненти
+- Не lazy load critical UI
+- Поєднувати з OnPush
+- Використовувати standalone components
+- Lazy load важкі сторонні бібліотеки
+
+#### Типові помилки
+
+- Lazy loading кожного компонента
+- Lazy loading root layout
+- Відсутність fallback UI (loading)
+
+**Коротко**
+
+Lazy loading зменшує розмір стартового бандлу, пришвидшує завантаження та
+покращує UX, завантажуючи код лише тоді, коли він потрібен.
+
+</details>
+
+<details>
+<summary>69. Як би ви реалізували розділення коду в Angular для покращення продуктивності?</summary>
+
+#### Angular
+
+**Code splitting** — це розбиття JavaScript-коду на **окремі чанки**, які
+завантажуються **за потреби**, а не всі одразу при старті.
+
+1. Lazy loading маршрутів (основний інструмент)
+
+Standalone components
+
+```TypeScript
+{
+  path: 'profile',
+  loadComponent: () =>
+    import('./profile/profile.component')
+      .then(m => m.ProfileComponent),
+}
+```
+
+- Менший initial bundle
+- Швидший старт застосунку
+
+2. Lazy loading feature areas
+
+Розділяйте застосунок по фічах, а не по дрібних компонентах.
+
+```TypeScript
+{
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes')
+      .then(m => m.ADMIN_ROUTES),
+}
+```
+
+3. Динамічні імпорти для важких бібліотек
+
+```TypeScript
+async loadChart() {
+  const { Chart } = await import('chart.js');
+  new Chart(...);
+}
+```
+
+Бібліотека не потрапляє в initial bundle
+
+4. Preloading (баланс між швидкістю і UX)
+
+```TypeScript
+provideRouter(
+  routes,
+  withPreloading(PreloadAllModules)
+);
+```
+
+- Lazy модулі завантажуються після старту
+- Покращує UX без шкоди initial load
+
+5. Standalone + Tree Shaking
+
+- Використовуйте standalone components
+- Імпортуйте тільки необхідні залежності
+
+```TypeScript
+@Component({
+  standalone: true,
+  imports: [CommonModule],
+})
+```
+
+#### Best practices
+
+- Lazy load pages / feature areas
+- Не lazy load critical UI
+- Не дробіть код надто дрібно
+- Поєднувати з OnPush та signals
+- Вимірювати ефект через bundle analyzer
+
+#### Типові помилки
+
+- Lazy loading кожного компонента
+- Lazy loading layout/root
+- Відсутність loading state
+
+**Коротко**
+
+Code splitting в Angular реалізується переважно через lazy loading маршрутів і
+dynamic imports, що суттєво зменшує initial bundle і покращує продуктивність.
+
+</details>
+
+<details>
+<summary>70. Обговоріть використання опції trackBy в *ngFor для покращення продуктивності.</summary>
+
+#### Angular
+
+`trackBy` дозволяє Angular **ідентифікувати елементи списку за унікальним
+ключем**, а не за позицією в масиві.
+
+**Без `trackBy` Angular:**
+
+- вважає, що всі елементи **нові**
+- перевидаляє та перерендерює весь DOM-список
+
+**З `trackBy` Angular:**
+
+- оновлює **тільки змінені елементи**
+- зберігає існуючі DOM-ноди
+
+#### Синтаксис
+
+```HTML
+<li *ngFor="let user of users; trackBy: trackById">
+  {{ user.name }}
+</li>
+```
+
+```TypeScript
+trackById(index: number, user: User): number {
+  return user.id;
+}
+```
+
+#### Приклад проблеми без trackBy
+
+```TypeScript
+this.users = [...this.users]; // новий reference
+```
+
+- Без trackBy → весь список перерендериться
+- З trackBy → DOM залишиться стабільним
+
+#### Коли trackBy критично важливий
+
+- Великі списки
+- Часті оновлення масиву
+- Реактивні дані (signals / RxJS)
+- OnPush change detection
+- Анімації в списках
+
+#### Що використовувати як ключ
+
+**Добре**
+
+- id
+- унікальний UUID
+- стабільний primary key
+
+**Погано**
+
+- index
+- випадкові значення
+- значення, що можуть змінюватись
+
+#### Angular 20+ контекст
+
+- Signals часто створюють нові references
+- trackBy + immutability = максимальна ефективність
+- Особливо важливо для zoneless Angular
+
+#### Типові помилки
+
+- Не використовувати trackBy взагалі
+- Використовувати index
+- Повертати обʼєкт замість примітива
+
+**Коротко**
+
+trackBy дозволяє Angular оновлювати лише змінені елементи списку, значно
+зменшуючи кількість DOM-операцій і покращуючи продуктивність.
+
+</details>
+
+<details>
+<summary>71. </summary>
 
 #### Angular
 
