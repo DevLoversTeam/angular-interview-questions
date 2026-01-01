@@ -3766,9 +3766,80 @@ Mock-сервіси в Angular створюються через useValue, useCl
 </details>
 
 <details>
-<summary>65. </summary>
+<summary>65. Чи можна виконувати наскрізне тестування в Angular?</summary>
 
 #### Angular
+
+#### Коротка відповідь
+
+**Так, Angular повністю підтримує E2E (end-to-end) тестування**, але не має
+вбудованого інструмента — використовується зовнішній тест-раннер.
+
+#### Рекомендовані інструменти
+
+**Playwright (рекомендовано)**
+
+- Сучасний стандарт
+- Швидкий і стабільний
+- Працює з SSR та SPA
+- Підтримує multiple browsers
+
+```bash
+npm init playwright@latest
+```
+
+```TypeScript
+test('login flow', async ({ page }) => {
+  await page.goto('/');
+  await page.fill('#email', 'test@mail.com');
+  await page.click('button[type=submit]');
+  await expect(page).toHaveURL('/dashboard');
+});
+```
+
+#### Cypress
+
+- Простий у використанні
+- Чудовий dev experience
+- Менш стабільний для складних SSR-сценаріїв
+
+```TypeScript
+cy.visit('/');
+cy.get('input').type('test@mail.com');
+cy.contains('Submit').click();
+```
+
+#### Protractor
+
+- Deprecated
+- Не рекомендується у сучасних Angular-проєктах
+
+#### Що тестує E2E
+
+- Реальні користувацькі флоу
+- Навігацію
+- Інтеграцію з бекендом
+- Авторизацію
+- SSR + hydration (якщо є)
+
+#### Best practices
+
+- Мінімізувати кількість E2E-тестів
+- Не тестувати дрібну логіку (для цього unit)
+- Використовувати test IDs (data-testid)
+- Мокати бекенд або використовувати test environment
+- Запускати E2E у CI
+
+#### Angular 20+ контекст
+
+- E2E працює з standalone та signals без проблем
+- SSR тестується через Playwright
+- Zoneless режим не впливає на E2E
+
+**Коротко**
+
+Angular не має власного E2E-фреймворку, але відмінно працює з Playwright і
+Cypress для повноцінного наскрізного тестування.
 
 </details>
 
