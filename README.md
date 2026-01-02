@@ -4459,9 +4459,108 @@ Angular створює окремий build для кожної мови.
 </details>
 
 <details>
-<summary>73. </summary>
+<summary>73. Які найкращі практики безпеки для Angular-застосунків?</summary>
 
 #### Angular
+
+1. Захист від XSS (Cross-Site Scripting)
+
+- Angular **автоматично екранує** дані в шаблонах
+- Не використовуйте `innerHTML` без потреби
+- Якщо потрібно — лише через `DomSanitizer` (обережно)
+
+```TypeScript
+this.safeHtml = sanitizer.bypassSecurityTrustHtml(html);
+```
+
+2. Уникати небезпечних API
+
+```HTML
+<div [innerHTML]="html"></div>
+```
+
+```HTML
+<div>{{ text }}</div>
+```
+
+3. HTTP безпека
+
+- Використовуйте HTTPS
+- Додавайте HTTP Interceptors для:
+  - Authorization headers
+  - CSRF-токенів
+  - Centralized error handling
+
+```TypeScript
+provideHttpClient(withInterceptors([authInterceptor]));
+```
+
+4. Захист від CSRF
+
+- Використовуйте CSRF-токени (на боці бекенду)
+- Angular автоматично підтримує XSRF через cookies
+
+```TypeScript
+HttpClientXsrfModule.withOptions({
+  cookieName: 'XSRF-TOKEN',
+  headerName: 'X-XSRF-TOKEN',
+});
+```
+
+5. Безпечне зберігання даних
+
+Не зберігати sensitive data у localStorage
+
+**Краще:**
+
+- HttpOnly cookies
+- Short-lived tokens
+- Мінімальний client-side state
+
+6. Route Guards і доступ
+
+Захищайте приватні маршрути
+
+```TypeScript
+canActivate: [AuthGuard]
+```
+
+Не довіряйте лише frontend — бекенд обовʼязковий
+
+7. Dependency Security
+
+Регулярно оновлюйте Angular та бібліотеки
+
+**Використовуйте:**
+
+```bash
+npm audit
+```
+
+8. Build та Runtime безпека
+
+**Production build:**
+
+```bash
+ng build --configuration production
+```
+
+- Увімкнений AOT
+- Видалений debug-код
+- Без eval, Function, dynamic scripts
+
+9. Angular 20+ рекомендації
+
+- Standalone components → менша attack surface
+- Signals → менше небезпечних side-effects
+- Zoneless → менше глобальних патчів
+- SSR + hydration → безпечний initial render
+
+**Коротко**
+
+Безпека в Angular базується на вбудованому захисті від XSS, правильній роботі з
+HTTP, обмеженні доступу, безпечному зберіганні даних і регулярному оновленні
+залежностей.
 
 </details>
 
