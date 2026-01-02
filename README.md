@@ -4372,9 +4372,89 @@ ngx-translate / signals (runtime) — вибір залежить від вим�
 </details>
 
 <details>
-<summary>72. </summary>
+<summary>72. Опишіть процес реалізації локалізації Angular.</summary>
 
 #### Angular
+
+1. Увімкнення i18n Angular i18n підтримується з коробки — додаткових бібліотек
+   не потрібно.
+
+```bash
+ng add @angular/localize
+```
+
+2. Позначення текстів у шаблонах
+
+```HTML
+<h1 i18n="@@title">Hello</h1>
+<p i18n>Welcome to our application</p>
+```
+
+- `i18n` — маркер для перекладу
+- `@@title` — стабільний ключ (рекомендовано)
+
+3. Експорт текстів для перекладу
+
+```bash
+ng extract-i18n
+```
+
+Генерується файл messages.xlf (або .json, .arb)
+
+4. Створення файлів перекладу
+
+```text
+messages.en.xlf
+messages.uk.xlf
+messages.pl.xlf
+```
+
+Кожен файл містить переклад для конкретної мови.
+
+5. Налаштування angular.json
+
+```json
+"i18n": {
+  "sourceLocale": "en",
+  "locales": {
+    "uk": "src/locale/messages.uk.xlf",
+    "pl": "src/locale/messages.pl.xlf"
+  }
+}
+```
+
+6. Збірка для різних мов
+
+```bash
+ng build --localize
+```
+
+Angular створює окремий build для кожної мови.
+
+7. Деплой та routing
+
+- Кожна мова має власний bundle
+- Часто використовується префікс у URL: /en, /uk, /pl
+- Для SSR — мова визначається на сервері
+
+#### Angular 20+ особливості
+
+- i18n працює зі standalone components
+- Повністю сумісний з SSR + hydration
+- Немає runtime overhead
+- Максимальна продуктивність і SEO
+
+#### Обмеження built-in i18n
+
+- Немає runtime-перемикання мови
+- Окремий build для кожної мови
+
+Для runtime-перемикання використовують ngx-translate
+
+**Коротко**
+
+Локалізація в Angular реалізується через позначення текстів → експорт → переклад
+→ multi-build, забезпечуючи високу продуктивність і SEO-сумісність.
 
 </details>
 
