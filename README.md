@@ -4262,7 +4262,180 @@ trackBy дозволяє Angular оновлювати лише змінені е
 </details>
 
 <details>
-<summary>71. </summary>
+<summary>71. Як додати підтримку кількох мов у застосунок Angular?</summary>
+
+#### Angular
+
+**Основні підходи**
+
+#### Вбудований Angular i18n (compile-time)
+
+Підходить для **SEO, SSR, статичних мов**.
+
+**Кроки:**
+
+1. Позначити тексти в шаблоні:
+
+```HTML
+<h1 i18n="@@title">Hello</h1>
+```
+
+2. Згенерувати файли перекладів:
+
+```bash
+ng extract-i18n
+```
+
+3. Додати `messages.xx.xlf` (en, uk, pl, тощо)
+
+4. Зібрати для кожної мови:
+
+```bash
+ng build --localize
+```
+
+**Плюси:**
+
+- Максимальна продуктивність
+- SEO-friendly
+- Без runtime overhead
+
+**Мінуси:**
+
+- Немає runtime-перемикання мови
+- Окремий build на кожну мову
+
+#### ngx-translate (runtime i18n)
+
+Підходить для динамічного перемикання мови.
+
+```bash
+npm install @ngx-translate/core @ngx-translate/http-loader
+```
+
+```TypeScript
+translate.use('uk');
+```
+
+```HTML
+<h1>{{ 'TITLE' | translate }}</h1>
+```
+
+**Плюси:**
+
+- Runtime switch
+- Один build
+- Зручно для SPA
+
+**Мінуси:**
+
+- Гірше для SEO без SSR
+- Runtime overhead
+
+#### Signals-based i18n (сучасний lightweight підхід)
+
+```TypeScript
+language = signal<'en' | 'uk'>('en');
+
+translations = { en: { title: 'Hello' }, uk: { title: 'Привіт' }, };
+
+title = computed(() => translations[this.language()].title);
+```
+
+```HTML
+<h1>{{ title() }}</h1>
+```
+
+**Плюси:**
+
+- Мінімальний оверхед
+- Повний контроль
+- Ідеально для UI-стану
+
+**Мінуси:**
+
+- Не підходить для великих словників
+
+#### Best practices
+
+- Не змішувати підходи
+- Ключі перекладів мають бути стабільні
+- Lazy-load translation файлів
+- Для SSR — server-side locale
+
+**Коротко**
+
+У Angular багатомовність реалізується через Angular i18n (compile-time) або
+ngx-translate / signals (runtime) — вибір залежить від вимог до SEO та
+перемикання мов.
+
+</details>
+
+<details>
+<summary>72. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>73. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>74. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>75. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>76. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>77. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>78. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>79. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>80. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>81. </summary>
 
 #### Angular
 
