@@ -4940,9 +4940,96 @@ interface AppState {
 </details>
 
 <details>
-<summary>78. </summary>
+<summary>78. Чи можете ви пояснити використання декораторів у TypeScript, наводячи приклад в Angular?</summary>
 
 #### Angular
+
+**Декоратори** — це спеціальні функції TypeScript, які додають **метадані або
+змінюють поведінку** класів, методів, властивостей або параметрів **під час
+компіляції**.
+
+Angular активно використовує декоратори для опису структури застосунку.
+
+#### Основні типи декораторів у TypeScript
+
+- **Class decorators**
+- **Property decorators**
+- **Method decorators**
+- **Parameter decorators**
+
+#### Приклад у Angular
+
+1. Class decorator — `@Component`
+
+```TypeScript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  standalone: true,
+  template: `<h1>{{ name }}</h1>`,
+})
+export class UserComponent {
+  name = 'Angular';
+}
+```
+
+`@Component` додає метадані, за якими Angular розуміє:
+
+- що це компонент
+- як його рендерити
+- як він інтегрується в DI та change detection
+
+2. Property decorator — @Input
+
+```TypeScript
+@Input() title!: string;
+```
+
+Дозволяє передавати дані в компонент ззовні
+
+3. Method decorator — @HostListener
+
+```TypeScript
+@HostListener('click')
+onClick() {
+  console.log('Clicked');
+}
+```
+
+Підписка на подію host-елемента
+
+4. Parameter decorator — @Inject
+
+```TypeScript
+constructor(@Inject(API_URL) private apiUrl: string) {}
+```
+
+Явна інʼєкція залежності через Angular DI
+
+#### Чому декоратори важливі для Angular
+
+- Формують метадані фреймворку
+- Дозволяють Angular працювати без reflection у runtime
+- Забезпечують:
+  - Dependency Injection
+  - Template binding
+  - Change detection
+- Роблять код декларативним і читабельним
+
+#### Angular 20+ контекст
+
+- Декоратори залишаються актуальними
+- Часто комбінуються з:
+  - inject() (замість constructor DI)
+  - Signals
+- Standalone API не скасовує декоратори
+
+**Коротко**
+
+Декоратори в TypeScript дозволяють Angular описувати компоненти, сервіси та DI
+декларативно; вони є фундаментом архітектури Angular і тісно інтегровані з
+TypeScript.
 
 </details>
 
