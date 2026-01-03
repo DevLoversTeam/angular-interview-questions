@@ -5244,7 +5244,132 @@ Angular їх застосовують переважно в сервісах д�
 </details>
 
 <details>
-<summary>81. </summary>
+<summary>81. Які поширені оператори RxJS та як їх використовувати в Angular?</summary>
+
+#### Angular
+
+1. Оператори трансформації
+
+`map`
+
+Перетворює значення потоку.
+
+```TypeScript
+this.http.get<User[]>('/api/users')
+  .pipe(map(users => users.filter(u => u.active)));
+```
+
+`switchMap`
+
+Перемикається на новий Observable, скасовуючи попередній (ідеально для HTTP + UI
+events).
+
+```TypeScript
+this.search$
+  .pipe(
+    switchMap(term => this.api.search(term))
+  );
+```
+
+`mergeMap`
+
+Паралельні запити, без скасування попередніх.
+
+```TypeScript
+mergeMap(id => this.api.loadById(id))
+```
+
+`concatMap`
+
+Черга запитів, виконує послідовно.
+
+```TypeScript
+concatMap(task => this.api.run(task))
+```
+
+2. Оператори фільтрації
+
+`filter`
+
+```TypeScript
+filter(user => user.isAdmin)
+```
+
+`take`, `takeUntil`
+
+Обмеження кількості емісій / контроль lifecycle.
+
+```TypeScript
+this.stream$
+  .pipe(takeUntilDestroyed())
+  .subscribe();
+```
+
+3. Комбінування потоків
+
+`combineLatest`
+
+```TypeScript
+combineLatest([this.user$, this.settings$])
+```
+
+`withLatestFrom`
+
+```TypeScript
+click$
+  .pipe(withLatestFrom(this.user$))
+```
+
+4. Error handling
+
+`catchError`
+
+```TypeScript
+catchError(() => of([]))
+```
+
+5. Utility-оператори
+
+`tap`
+
+Side-effects (логування, debug).
+
+```TypeScript
+tap(value => console.log(value))
+```
+
+`debounceTime`
+
+Часто для input / search.
+
+```TypeScript
+debounceTime(300)
+```
+
+#### Як використовуються в Angular
+
+- **HttpClient** → map, switchMap, catchError
+- **Forms** → valueChanges.pipe(debounceTime)
+- **Router** → filter, map
+- **NgRx Effects** → switchMap, mergeMap, concatMap
+
+#### Angular 20+ рекомендації
+
+- RxJS — для асинхронних потоків
+- Signals — для локального UI-стану
+- У шаблонах — async pipe
+- Мінімізувати ручні subscribe()
+
+**Коротко**
+
+RxJS-оператори дозволяють трансформувати, комбінувати та контролювати асинхронні
+потоки в Angular; найважливіші — map, switchMap, filter, combineLatest,
+catchError.
+
+</details>
+
+<details>
+<summary>82. </summary>
 
 #### Angular
 
