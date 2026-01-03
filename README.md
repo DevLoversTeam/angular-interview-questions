@@ -4565,9 +4565,105 @@ HTTP, обмеженні доступу, безпечному зберіганн
 </details>
 
 <details>
-<summary>74. </summary>
+<summary>74. Як запобігти міжсайтовому скриптингу (XSS) у застосунках Angular?</summary>
 
 #### Angular
+
+**XSS** — це атака, за якої зловмисник інʼєктує шкідливий JavaScript у сторінку,
+який виконується в браузері користувача.
+
+1. Вбудований захист Angular (основа)
+
+Angular **автоматично екранує всі дані**, що рендеряться в шаблонах.
+
+```HTML
+<!-- Безпечно -->
+<div>{{ userInput }}</div>
+```
+
+HTML і JS не виконуються, а екрануються.
+
+2. Уникати небезпечних bindingʼів
+
+**Небезпечно**
+
+```HTML
+<div [innerHTML]="html"></div>
+```
+
+**Безпечно**
+
+```HTML
+<div>{{ text }}</div>
+```
+
+3. DomSanitizer — тільки за необхідності
+
+Використовувати лише якщо довіряєте джерелу.
+
+```TypeScript
+this.safeHtml =
+  sanitizer.bypassSecurityTrustHtml(trustedHtml);
+```
+
+bypassSecurityTrust\* відключає захист Angular
+
+4. Не виконувати динамічний код
+
+```TypeScript
+eval(userInput);
+new Function(userInput);
+```
+
+**Погано**
+
+```HTML
+<a [href]="userInput">Link</a>
+```
+
+**Добре**
+
+```HTML
+<a [attr.href]="safeUrl">Link</a>
+```
+
+5. Безпечна робота з URL
+
+Angular автоматично блокує:
+
+- javascript:
+- data: (у багатьох контекстах)
+
+```HTML
+<img [src]="imageUrl" />
+```
+
+Angular перевіряє контекст (URL, HTML, style)
+
+6. HTTP + Backend захист
+
+- Завжди валідувати та очищати дані на бекенді
+- Використовувати Content Security Policy (CSP)
+- Не довіряти client-side валідації
+
+7. Angular 20+ best practices
+
+- Не використовувати innerHTML без потреби
+- Не зберігати HTML у state
+- Використовувати standalone components
+- Мінімізувати прямий DOM-доступ
+- Signals + template binding → безпечніше
+
+#### Типові помилки
+
+- Використання bypassSecurityTrustHtml без розуміння
+- Рендеринг HTML з API
+- Зберігання user-generated HTML
+
+**Коротко**
+
+Angular за замовчуванням захищає від XSS, але розробник може сам створити
+вразливість, використовуючи innerHTML, eval або DomSanitizer без потреби.
 
 </details>
 
