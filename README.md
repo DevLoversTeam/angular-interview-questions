@@ -5034,9 +5034,106 @@ TypeScript.
 </details>
 
 <details>
-<summary>79. </summary>
+<summary>79. Як RxJS доповнює застосунки Angular?</summary>
 
 #### Angular
+
+**RxJS** — це бібліотека для **реактивного програмування**, яка працює з:
+
+- потоками даних (streams)
+- асинхронними подіями
+- операторами для трансформації та композиції
+
+Angular використовує RxJS **під капотом**.
+
+#### Ключові інтеграції RxJS в Angular
+
+1. HttpClient
+
+Кожен HTTP-запит повертає `Observable`.
+
+```TypeScript
+this.http.get<User[]>('/api/users')
+  .pipe(map(users => users.filter(u => u.active)));
+```
+
+2. Forms
+
+Reactive Forms побудовані на RxJS.
+
+```TypeScript
+this.form.valueChanges.subscribe(value => {
+  console.log(value);
+});
+```
+
+3. Router
+
+Router надає Observables для навігації.
+
+```TypeScript
+this.router.events
+  .pipe(filter(e => e instanceof NavigationEnd))
+  .subscribe();
+```
+
+4. State Management
+
+NgRx повністю базується на RxJS.
+
+- Actions
+- Effects
+- Selectors
+
+#### Що дає RxJS Angular-додаткам
+
+1. Управління асинхронністю
+
+- HTTP
+- WebSockets
+- User events
+- Timers
+
+2. Комбінування потоків
+
+```TypeScript
+combineLatest([
+  this.user$,
+  this.settings$,
+]).subscribe();
+```
+
+3. Контроль життєвого циклу
+
+```TypeScript
+this.stream$
+  .pipe(takeUntilDestroyed())
+  .subscribe();
+```
+
+#### RxJS + Angular 20+
+
+- RxJS все ще важливий
+- Але:
+  - Signals — для локального UI-стану
+  - RxJS — для async streams та side-effects
+- toSignal() / toObservable() для інтеграції
+
+```TypeScript
+users = toSignal(this.users$);
+```
+
+#### Best practices
+
+- Не підписуватись вручну в шаблонах → async pipe
+- Не зловживати subscribe() в компонентах
+- Виносити RxJS-логіку в сервіси
+- Signals для синхронного стану
+
+**Коротко**
+
+RxJS є фундаментом асинхронності в Angular і доповнює його можливості для роботи
+з потоками даних, тоді як signals спрощують локальний UI-стан.
 
 </details>
 
