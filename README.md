@@ -4262,7 +4262,1114 @@ trackBy дозволяє Angular оновлювати лише змінені е
 </details>
 
 <details>
-<summary>71. </summary>
+<summary>71. Як додати підтримку кількох мов у застосунок Angular?</summary>
+
+#### Angular
+
+**Основні підходи**
+
+#### Вбудований Angular i18n (compile-time)
+
+Підходить для **SEO, SSR, статичних мов**.
+
+**Кроки:**
+
+1. Позначити тексти в шаблоні:
+
+```HTML
+<h1 i18n="@@title">Hello</h1>
+```
+
+2. Згенерувати файли перекладів:
+
+```bash
+ng extract-i18n
+```
+
+3. Додати `messages.xx.xlf` (en, uk, pl, тощо)
+
+4. Зібрати для кожної мови:
+
+```bash
+ng build --localize
+```
+
+**Плюси:**
+
+- Максимальна продуктивність
+- SEO-friendly
+- Без runtime overhead
+
+**Мінуси:**
+
+- Немає runtime-перемикання мови
+- Окремий build на кожну мову
+
+#### ngx-translate (runtime i18n)
+
+Підходить для динамічного перемикання мови.
+
+```bash
+npm install @ngx-translate/core @ngx-translate/http-loader
+```
+
+```TypeScript
+translate.use('uk');
+```
+
+```HTML
+<h1>{{ 'TITLE' | translate }}</h1>
+```
+
+**Плюси:**
+
+- Runtime switch
+- Один build
+- Зручно для SPA
+
+**Мінуси:**
+
+- Гірше для SEO без SSR
+- Runtime overhead
+
+#### Signals-based i18n (сучасний lightweight підхід)
+
+```TypeScript
+language = signal<'en' | 'uk'>('en');
+
+translations = { en: { title: 'Hello' }, uk: { title: 'Привіт' }, };
+
+title = computed(() => translations[this.language()].title);
+```
+
+```HTML
+<h1>{{ title() }}</h1>
+```
+
+**Плюси:**
+
+- Мінімальний оверхед
+- Повний контроль
+- Ідеально для UI-стану
+
+**Мінуси:**
+
+- Не підходить для великих словників
+
+#### Best practices
+
+- Не змішувати підходи
+- Ключі перекладів мають бути стабільні
+- Lazy-load translation файлів
+- Для SSR — server-side locale
+
+**Коротко**
+
+У Angular багатомовність реалізується через Angular i18n (compile-time) або
+ngx-translate / signals (runtime) — вибір залежить від вимог до SEO та
+перемикання мов.
+
+</details>
+
+<details>
+<summary>72. Опишіть процес реалізації локалізації Angular.</summary>
+
+#### Angular
+
+1. Увімкнення i18n Angular i18n підтримується з коробки — додаткових бібліотек
+   не потрібно.
+
+```bash
+ng add @angular/localize
+```
+
+2. Позначення текстів у шаблонах
+
+```HTML
+<h1 i18n="@@title">Hello</h1>
+<p i18n>Welcome to our application</p>
+```
+
+- `i18n` — маркер для перекладу
+- `@@title` — стабільний ключ (рекомендовано)
+
+3. Експорт текстів для перекладу
+
+```bash
+ng extract-i18n
+```
+
+Генерується файл messages.xlf (або .json, .arb)
+
+4. Створення файлів перекладу
+
+```text
+messages.en.xlf
+messages.uk.xlf
+messages.pl.xlf
+```
+
+Кожен файл містить переклад для конкретної мови.
+
+5. Налаштування angular.json
+
+```json
+"i18n": {
+  "sourceLocale": "en",
+  "locales": {
+    "uk": "src/locale/messages.uk.xlf",
+    "pl": "src/locale/messages.pl.xlf"
+  }
+}
+```
+
+6. Збірка для різних мов
+
+```bash
+ng build --localize
+```
+
+Angular створює окремий build для кожної мови.
+
+7. Деплой та routing
+
+- Кожна мова має власний bundle
+- Часто використовується префікс у URL: /en, /uk, /pl
+- Для SSR — мова визначається на сервері
+
+#### Angular 20+ особливості
+
+- i18n працює зі standalone components
+- Повністю сумісний з SSR + hydration
+- Немає runtime overhead
+- Максимальна продуктивність і SEO
+
+#### Обмеження built-in i18n
+
+- Немає runtime-перемикання мови
+- Окремий build для кожної мови
+
+Для runtime-перемикання використовують ngx-translate
+
+**Коротко**
+
+Локалізація в Angular реалізується через позначення текстів → експорт → переклад
+→ multi-build, забезпечуючи високу продуктивність і SEO-сумісність.
+
+</details>
+
+<details>
+<summary>73. Які найкращі практики безпеки для Angular-застосунків?</summary>
+
+#### Angular
+
+1. Захист від XSS (Cross-Site Scripting)
+
+- Angular **автоматично екранує** дані в шаблонах
+- Не використовуйте `innerHTML` без потреби
+- Якщо потрібно — лише через `DomSanitizer` (обережно)
+
+```TypeScript
+this.safeHtml = sanitizer.bypassSecurityTrustHtml(html);
+```
+
+2. Уникати небезпечних API
+
+```HTML
+<div [innerHTML]="html"></div>
+```
+
+```HTML
+<div>{{ text }}</div>
+```
+
+3. HTTP безпека
+
+- Використовуйте HTTPS
+- Додавайте HTTP Interceptors для:
+  - Authorization headers
+  - CSRF-токенів
+  - Centralized error handling
+
+```TypeScript
+provideHttpClient(withInterceptors([authInterceptor]));
+```
+
+4. Захист від CSRF
+
+- Використовуйте CSRF-токени (на боці бекенду)
+- Angular автоматично підтримує XSRF через cookies
+
+```TypeScript
+HttpClientXsrfModule.withOptions({
+  cookieName: 'XSRF-TOKEN',
+  headerName: 'X-XSRF-TOKEN',
+});
+```
+
+5. Безпечне зберігання даних
+
+Не зберігати sensitive data у localStorage
+
+**Краще:**
+
+- HttpOnly cookies
+- Short-lived tokens
+- Мінімальний client-side state
+
+6. Route Guards і доступ
+
+Захищайте приватні маршрути
+
+```TypeScript
+canActivate: [AuthGuard]
+```
+
+Не довіряйте лише frontend — бекенд обовʼязковий
+
+7. Dependency Security
+
+Регулярно оновлюйте Angular та бібліотеки
+
+**Використовуйте:**
+
+```bash
+npm audit
+```
+
+8. Build та Runtime безпека
+
+**Production build:**
+
+```bash
+ng build --configuration production
+```
+
+- Увімкнений AOT
+- Видалений debug-код
+- Без eval, Function, dynamic scripts
+
+9. Angular 20+ рекомендації
+
+- Standalone components → менша attack surface
+- Signals → менше небезпечних side-effects
+- Zoneless → менше глобальних патчів
+- SSR + hydration → безпечний initial render
+
+**Коротко**
+
+Безпека в Angular базується на вбудованому захисті від XSS, правильній роботі з
+HTTP, обмеженні доступу, безпечному зберіганні даних і регулярному оновленні
+залежностей.
+
+</details>
+
+<details>
+<summary>74. Як запобігти міжсайтовому скриптингу (XSS) у застосунках Angular?</summary>
+
+#### Angular
+
+**XSS** — це атака, за якої зловмисник інʼєктує шкідливий JavaScript у сторінку,
+який виконується в браузері користувача.
+
+1. Вбудований захист Angular (основа)
+
+Angular **автоматично екранує всі дані**, що рендеряться в шаблонах.
+
+```HTML
+<!-- Безпечно -->
+<div>{{ userInput }}</div>
+```
+
+HTML і JS не виконуються, а екрануються.
+
+2. Уникати небезпечних bindingʼів
+
+**Небезпечно**
+
+```HTML
+<div [innerHTML]="html"></div>
+```
+
+**Безпечно**
+
+```HTML
+<div>{{ text }}</div>
+```
+
+3. DomSanitizer — тільки за необхідності
+
+Використовувати лише якщо довіряєте джерелу.
+
+```TypeScript
+this.safeHtml =
+  sanitizer.bypassSecurityTrustHtml(trustedHtml);
+```
+
+bypassSecurityTrust\* відключає захист Angular
+
+4. Не виконувати динамічний код
+
+```TypeScript
+eval(userInput);
+new Function(userInput);
+```
+
+**Погано**
+
+```HTML
+<a [href]="userInput">Link</a>
+```
+
+**Добре**
+
+```HTML
+<a [attr.href]="safeUrl">Link</a>
+```
+
+5. Безпечна робота з URL
+
+Angular автоматично блокує:
+
+- javascript:
+- data: (у багатьох контекстах)
+
+```HTML
+<img [src]="imageUrl" />
+```
+
+Angular перевіряє контекст (URL, HTML, style)
+
+6. HTTP + Backend захист
+
+- Завжди валідувати та очищати дані на бекенді
+- Використовувати Content Security Policy (CSP)
+- Не довіряти client-side валідації
+
+7. Angular 20+ best practices
+
+- Не використовувати innerHTML без потреби
+- Не зберігати HTML у state
+- Використовувати standalone components
+- Мінімізувати прямий DOM-доступ
+- Signals + template binding → безпечніше
+
+#### Типові помилки
+
+- Використання bypassSecurityTrustHtml без розуміння
+- Рендеринг HTML з API
+- Зберігання user-generated HTML
+
+**Коротко**
+
+Angular за замовчуванням захищає від XSS, але розробник може сам створити
+вразливість, використовуючи innerHTML, eval або DomSanitizer без потреби.
+
+</details>
+
+<details>
+<summary>75. Чи можна виконувати автентифікацію та авторизацію в застосунках Angular?</summary>
+
+#### Angular
+
+#### Коротка відповідь
+
+**Так.** Angular повністю підтримує обидві концепції, але:
+
+- **автентифікація** зазвичай реалізується спільно з бекендом (JWT, OAuth)
+- **авторизація** — переважно на фронтенді через guards і policy-логіку
+
+1. Автентифікація (Authentication)
+
+Це, перевірка **хто користувач** (login).
+
+#### Типовий підхід
+
+- Login → бекенд
+- Отримання **JWT / session**
+- Збереження токена (HttpOnly cookie або memory)
+
+```TypeScript
+login(credentials) {
+  return this.http.post('/api/login', credentials);
+}
+```
+
+#### Передача токена
+
+Через HTTP Interceptor:
+
+```TypeScript
+export const authInterceptor = (req, next) => {
+  const token = authService.token();
+  return next(
+    req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` },
+    })
+  );
+};
+```
+
+2. Авторизація (Authorization)
+
+Це, перевірка що користувач може робити.
+
+#### Route Guards
+
+```TypeScript
+export const authGuard: CanActivateFn = () => {
+  return authService.isLoggedIn();
+};
+```
+
+```TypeScript
+{
+  path: 'admin',
+  canActivate: [authGuard],
+  loadComponent: () => import('./admin.component'),
+}
+```
+
+3. Ролі та права доступу
+
+```TypeScript
+export const roleGuard: CanActivateFn = () => {
+  return authService.hasRole('admin');
+};
+```
+
+```TypeScript
+{ path: 'admin', canActivate: [roleGuard] }
+```
+
+4. UI-рівень авторизації
+
+```HTML
+<button *ngIf="isAdmin()">Delete</button>
+```
+
+```TypeScript
+isAdmin = computed(() => user()?.role === 'admin');
+```
+
+5. Angular 20+ best practices
+
+- Не довіряти лише frontend-перевіркам
+- Backend завжди має фінальне слово
+- Guards — для routing
+- Interceptors — для токенів
+- Signals — для auth state
+- Не зберігати токени в localStorage (краще HttpOnly cookies)
+
+**Коротко**
+
+Angular дозволяє повноцінно реалізувати автентифікацію через бекенд і
+авторизацію через guards та UI-логіку, дотримуючись чіткої відповідальності між
+frontend і backend.
+
+</details>
+
+<details>
+<summary>76. Чим TypeScript відрізняється від JavaScript і чому він є кращим в Angular?</summary>
+
+#### Angular
+
+#### JavaScript
+
+- Динамічно типізований
+- Типи перевіряються **під час виконання**
+- Гнучкий, але схильний до runtime-помилок
+
+```JavaScript
+function sum(a, b) {
+  return a + b;
+}
+
+sum(1, '2'); // "12" — помилка логіки
+```
+
+#### TypeScript
+
+**TypeScript = JavaScript + типи**
+
+- Статична типізація (на етапі компіляції)
+- Раннє виявлення помилок
+- Краща читабельність і підтримуваність
+
+```TypeScript
+function sum(a: number, b: number): number {
+  return a + b;
+}
+
+// sum(1, '2'); ❌ compile-time error
+```
+
+#### Чому TypeScript кращий для Angular
+
+1. Архітектура та масштабування
+
+Angular — enterprise-фреймворк, TypeScript:
+
+- робить код передбачуваним
+- зручний для великих команд
+
+2. Dependency Injection
+
+Типи дозволяють Angular DI працювати надійно.
+
+```TypeScript
+constructor(private userService: UserService) {}
+```
+
+3. Декоратори та метадані
+
+Angular активно використовує декоратори, які:
+
+- неможливі в чистому JS у такому вигляді
+- добре типізуються в TS
+
+4. Tooling та DX
+
+- Autocomplete
+- Навігація по коду
+- Safe refactoring
+- Strict mode (strict: true)
+
+5. Angular 20+ контекст
+
+- Signals
+- Standalone components
+- Typed forms
+- Typed HttpClient
+
+Усе це максимально виграє від TypeScript
+
+**Коротко**
+
+TypeScript зменшує кількість помилок, покращує підтримуваність і масштабування
+коду, тому є природним і обґрунтованим вибором для Angular.
+
+</details>
+
+<details>
+<summary>77. Які переваги використання інтерфейсів TypeScript у застосунках Angular?</summary>
+
+#### Angular
+
+**Інтерфейси** описують **форму обʼєктів** (structure typing) і використовуються
+лише на етапі компіляції.
+
+```TypeScript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+```
+
+#### Основні переваги
+
+1. Статична типізація
+
+- Помилки виявляються до runtime
+- Менше багів у production
+
+```TypeScript
+function printUser(user: User) {
+  console.log(user.name);
+}
+```
+
+2. Контракти між шарами
+
+Чіткі API між:
+
+- компонентами
+- сервісами
+- бекендом
+
+```TypeScript
+getUser(): Observable<User> {}
+```
+
+3. Краща читабельність і підтримка
+
+- Код самодокументований
+- Легше онбордити нових розробників
+
+4. IDE та DX
+
+- Autocomplete
+- Safe refactoring
+- Навігація по властивостях
+
+5. Інтеграція з Angular API
+
+**HttpClient**
+
+```TypeScript
+this.http.get<User[]>('/api/users');
+```
+
+**Forms**
+
+```TypeScript
+form: FormGroup<UserForm>;
+```
+
+**NgRx**
+
+```TypeScript
+interface AppState {
+  users: User[];
+}
+```
+
+#### Best practices в Angular
+
+- Інтерфейси — для data models
+- Не використовувати для runtime-логіки
+- Тримати окремо (models/, types/)
+- Використовувати разом зі strict mode
+
+**Коротко**
+
+Інтерфейси TypeScript роблять Angular-код типобезпечним, передбачуваним і
+масштабованим, що критично важливо для великих і довготривалих проєктів.
+
+</details>
+
+<details>
+<summary>78. Чи можете ви пояснити використання декораторів у TypeScript, наводячи приклад в Angular?</summary>
+
+#### Angular
+
+**Декоратори** — це спеціальні функції TypeScript, які додають **метадані або
+змінюють поведінку** класів, методів, властивостей або параметрів **під час
+компіляції**.
+
+Angular активно використовує декоратори для опису структури застосунку.
+
+#### Основні типи декораторів у TypeScript
+
+- **Class decorators**
+- **Property decorators**
+- **Method decorators**
+- **Parameter decorators**
+
+#### Приклад у Angular
+
+1. Class decorator — `@Component`
+
+```TypeScript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  standalone: true,
+  template: `<h1>{{ name }}</h1>`,
+})
+export class UserComponent {
+  name = 'Angular';
+}
+```
+
+`@Component` додає метадані, за якими Angular розуміє:
+
+- що це компонент
+- як його рендерити
+- як він інтегрується в DI та change detection
+
+2. Property decorator — @Input
+
+```TypeScript
+@Input() title!: string;
+```
+
+Дозволяє передавати дані в компонент ззовні
+
+3. Method decorator — @HostListener
+
+```TypeScript
+@HostListener('click')
+onClick() {
+  console.log('Clicked');
+}
+```
+
+Підписка на подію host-елемента
+
+4. Parameter decorator — @Inject
+
+```TypeScript
+constructor(@Inject(API_URL) private apiUrl: string) {}
+```
+
+Явна інʼєкція залежності через Angular DI
+
+#### Чому декоратори важливі для Angular
+
+- Формують метадані фреймворку
+- Дозволяють Angular працювати без reflection у runtime
+- Забезпечують:
+  - Dependency Injection
+  - Template binding
+  - Change detection
+- Роблять код декларативним і читабельним
+
+#### Angular 20+ контекст
+
+- Декоратори залишаються актуальними
+- Часто комбінуються з:
+  - inject() (замість constructor DI)
+  - Signals
+- Standalone API не скасовує декоратори
+
+**Коротко**
+
+Декоратори в TypeScript дозволяють Angular описувати компоненти, сервіси та DI
+декларативно; вони є фундаментом архітектури Angular і тісно інтегровані з
+TypeScript.
+
+</details>
+
+<details>
+<summary>79. Як RxJS доповнює застосунки Angular?</summary>
+
+#### Angular
+
+**RxJS** — це бібліотека для **реактивного програмування**, яка працює з:
+
+- потоками даних (streams)
+- асинхронними подіями
+- операторами для трансформації та композиції
+
+Angular використовує RxJS **під капотом**.
+
+#### Ключові інтеграції RxJS в Angular
+
+1. HttpClient
+
+Кожен HTTP-запит повертає `Observable`.
+
+```TypeScript
+this.http.get<User[]>('/api/users')
+  .pipe(map(users => users.filter(u => u.active)));
+```
+
+2. Forms
+
+Reactive Forms побудовані на RxJS.
+
+```TypeScript
+this.form.valueChanges.subscribe(value => {
+  console.log(value);
+});
+```
+
+3. Router
+
+Router надає Observables для навігації.
+
+```TypeScript
+this.router.events
+  .pipe(filter(e => e instanceof NavigationEnd))
+  .subscribe();
+```
+
+4. State Management
+
+NgRx повністю базується на RxJS.
+
+- Actions
+- Effects
+- Selectors
+
+#### Що дає RxJS Angular-додаткам
+
+1. Управління асинхронністю
+
+- HTTP
+- WebSockets
+- User events
+- Timers
+
+2. Комбінування потоків
+
+```TypeScript
+combineLatest([
+  this.user$,
+  this.settings$,
+]).subscribe();
+```
+
+3. Контроль життєвого циклу
+
+```TypeScript
+this.stream$
+  .pipe(takeUntilDestroyed())
+  .subscribe();
+```
+
+#### RxJS + Angular 20+
+
+- RxJS все ще важливий
+- Але:
+  - Signals — для локального UI-стану
+  - RxJS — для async streams та side-effects
+- toSignal() / toObservable() для інтеграції
+
+```TypeScript
+users = toSignal(this.users$);
+```
+
+#### Best practices
+
+- Не підписуватись вручну в шаблонах → async pipe
+- Не зловживати subscribe() в компонентах
+- Виносити RxJS-логіку в сервіси
+- Signals для синхронного стану
+
+**Коротко**
+
+RxJS є фундаментом асинхронності в Angular і доповнює його можливості для роботи
+з потоками даних, тоді як signals спрощують локальний UI-стан.
+
+</details>
+
+<details>
+<summary>80. Поясніть призначення Subjects у RxJS та як вони використовуються в Angular.</summary>
+
+#### Angular
+
+**Subject** — це спеціальний тип `Observable`, який:
+
+- є **одночасно Observable і Observer**
+- дозволяє **емітити значення вручну**
+- підтримує **мультикаст** (один еміс → багато підписників)
+
+```TypeScript
+const subject = new Subject<number>();
+
+subject.subscribe(v => console.log(v));
+subject.next(1);
+```
+
+#### Основні типи Subjects
+
+1. Subject
+
+- Не зберігає значення
+- Нові підписники не отримують попередні емісії
+
+```TypeScript
+const s = new Subject<number>();
+```
+
+2. BehaviorSubject (найпопулярніший)
+
+- Має початкове значення
+- Новий підписник одразу отримує останнє значення
+
+```TypeScript
+const user$ = new BehaviorSubject<User | null>(null);
+```
+
+3. ReplaySubject
+
+Реплеїть N останніх значень
+
+```TypeScript
+const logs$ = new ReplaySubject<string>(3);
+```
+
+4. AsyncSubject
+
+- Віддає останнє значення після complete()
+- Рідко використовується
+
+#### Як використовуються в Angular
+
+Service як data source (поширений патерн)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
+
+  setUser(user: User) {
+    this.userSubject.next(user);
+  }
+}
+```
+
+```HTML
+<span *ngIf="auth.user$ | async as user">
+  {{ user.name }}
+</span>
+```
+
+#### Subjects vs Signals (Angular 20+)
+
+- Subjects — для async streams, events, side-effects
+- Signals — для локального синхронного UI-стану
+
+Інтероп:
+
+```TypeScript
+user = toSignal(this.user$);
+```
+
+#### Best practices
+
+- Не експортуйте Subject напряму → використовуйте asObservable()
+- Для state — BehaviorSubject
+- Не зловживати Subjects для простого UI-стану
+- Виносьте Subjects у сервіси
+- В шаблонах — async pipe
+
+#### Типові помилки
+
+- Використання Subject замість BehaviorSubject для state
+- Ручні subscribe() без відписки
+- Змішування state і events в одному Subject
+
+**Коротко**
+
+Subjects дозволяють вручну керувати потоками даних і мультикастити значення; в
+Angular їх застосовують переважно в сервісах для async-подій та shared-state,
+тоді як signals краще підходять для локального UI-стану.
+
+</details>
+
+<details>
+<summary>81. Які поширені оператори RxJS та як їх використовувати в Angular?</summary>
+
+#### Angular
+
+1. Оператори трансформації
+
+`map`
+
+Перетворює значення потоку.
+
+```TypeScript
+this.http.get<User[]>('/api/users')
+  .pipe(map(users => users.filter(u => u.active)));
+```
+
+`switchMap`
+
+Перемикається на новий Observable, скасовуючи попередній (ідеально для HTTP + UI
+events).
+
+```TypeScript
+this.search$
+  .pipe(
+    switchMap(term => this.api.search(term))
+  );
+```
+
+`mergeMap`
+
+Паралельні запити, без скасування попередніх.
+
+```TypeScript
+mergeMap(id => this.api.loadById(id))
+```
+
+`concatMap`
+
+Черга запитів, виконує послідовно.
+
+```TypeScript
+concatMap(task => this.api.run(task))
+```
+
+2. Оператори фільтрації
+
+`filter`
+
+```TypeScript
+filter(user => user.isAdmin)
+```
+
+`take`, `takeUntil`
+
+Обмеження кількості емісій / контроль lifecycle.
+
+```TypeScript
+this.stream$
+  .pipe(takeUntilDestroyed())
+  .subscribe();
+```
+
+3. Комбінування потоків
+
+`combineLatest`
+
+```TypeScript
+combineLatest([this.user$, this.settings$])
+```
+
+`withLatestFrom`
+
+```TypeScript
+click$
+  .pipe(withLatestFrom(this.user$))
+```
+
+4. Error handling
+
+`catchError`
+
+```TypeScript
+catchError(() => of([]))
+```
+
+5. Utility-оператори
+
+`tap`
+
+Side-effects (логування, debug).
+
+```TypeScript
+tap(value => console.log(value))
+```
+
+`debounceTime`
+
+Часто для input / search.
+
+```TypeScript
+debounceTime(300)
+```
+
+#### Як використовуються в Angular
+
+- **HttpClient** → map, switchMap, catchError
+- **Forms** → valueChanges.pipe(debounceTime)
+- **Router** → filter, map
+- **NgRx Effects** → switchMap, mergeMap, concatMap
+
+#### Angular 20+ рекомендації
+
+- RxJS — для асинхронних потоків
+- Signals — для локального UI-стану
+- У шаблонах — async pipe
+- Мінімізувати ручні subscribe()
+
+**Коротко**
+
+RxJS-оператори дозволяють трансформувати, комбінувати та контролювати асинхронні
+потоки в Angular; найважливіші — map, switchMap, filter, combineLatest,
+catchError.
+
+</details>
+
+<details>
+<summary>82. </summary>
 
 #### Angular
 
