@@ -5138,9 +5138,108 @@ RxJS є фундаментом асинхронності в Angular і допо
 </details>
 
 <details>
-<summary>80. </summary>
+<summary>80. Поясніть призначення Subjects у RxJS та як вони використовуються в Angular.</summary>
 
 #### Angular
+
+**Subject** — це спеціальний тип `Observable`, який:
+
+- є **одночасно Observable і Observer**
+- дозволяє **емітити значення вручну**
+- підтримує **мультикаст** (один еміс → багато підписників)
+
+```TypeScript
+const subject = new Subject<number>();
+
+subject.subscribe(v => console.log(v));
+subject.next(1);
+```
+
+#### Основні типи Subjects
+
+1. Subject
+
+- Не зберігає значення
+- Нові підписники не отримують попередні емісії
+
+```TypeScript
+const s = new Subject<number>();
+```
+
+2. BehaviorSubject (найпопулярніший)
+
+- Має початкове значення
+- Новий підписник одразу отримує останнє значення
+
+```TypeScript
+const user$ = new BehaviorSubject<User | null>(null);
+```
+
+3. ReplaySubject
+
+Реплеїть N останніх значень
+
+```TypeScript
+const logs$ = new ReplaySubject<string>(3);
+```
+
+4. AsyncSubject
+
+- Віддає останнє значення після complete()
+- Рідко використовується
+
+#### Як використовуються в Angular
+
+Service як data source (поширений патерн)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
+
+  setUser(user: User) {
+    this.userSubject.next(user);
+  }
+}
+```
+
+```HTML
+<span *ngIf="auth.user$ | async as user">
+  {{ user.name }}
+</span>
+```
+
+#### Subjects vs Signals (Angular 20+)
+
+- Subjects — для async streams, events, side-effects
+- Signals — для локального синхронного UI-стану
+
+Інтероп:
+
+```TypeScript
+user = toSignal(this.user$);
+```
+
+#### Best practices
+
+- Не експортуйте Subject напряму → використовуйте asObservable()
+- Для state — BehaviorSubject
+- Не зловживати Subjects для простого UI-стану
+- Виносьте Subjects у сервіси
+- В шаблонах — async pipe
+
+#### Типові помилки
+
+- Використання Subject замість BehaviorSubject для state
+- Ручні subscribe() без відписки
+- Змішування state і events в одному Subject
+
+**Коротко**
+
+Subjects дозволяють вручну керувати потоками даних і мультикастити значення; в
+Angular їх застосовують переважно в сервісах для async-подій та shared-state,
+тоді як signals краще підходять для локального UI-стану.
 
 </details>
 
