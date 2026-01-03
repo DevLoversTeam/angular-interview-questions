@@ -4852,9 +4852,90 @@ TypeScript зменшує кількість помилок, покращує п
 </details>
 
 <details>
-<summary>77. </summary>
+<summary>77. Які переваги використання інтерфейсів TypeScript у застосунках Angular?</summary>
 
 #### Angular
+
+**Інтерфейси** описують **форму обʼєктів** (structure typing) і використовуються
+лише на етапі компіляції.
+
+```TypeScript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+```
+
+#### Основні переваги
+
+1. Статична типізація
+
+- Помилки виявляються до runtime
+- Менше багів у production
+
+```TypeScript
+function printUser(user: User) {
+  console.log(user.name);
+}
+```
+
+2. Контракти між шарами
+
+Чіткі API між:
+
+- компонентами
+- сервісами
+- бекендом
+
+```TypeScript
+getUser(): Observable<User> {}
+```
+
+3. Краща читабельність і підтримка
+
+- Код самодокументований
+- Легше онбордити нових розробників
+
+4. IDE та DX
+
+- Autocomplete
+- Safe refactoring
+- Навігація по властивостях
+
+5. Інтеграція з Angular API
+
+**HttpClient**
+
+```TypeScript
+this.http.get<User[]>('/api/users');
+```
+
+**Forms**
+
+```TypeScript
+form: FormGroup<UserForm>;
+```
+
+**NgRx**
+
+```TypeScript
+interface AppState {
+  users: User[];
+}
+```
+
+#### Best practices в Angular
+
+- Інтерфейси — для data models
+- Не використовувати для runtime-логіки
+- Тримати окремо (models/, types/)
+- Використовувати разом зі strict mode
+
+**Коротко**
+
+Інтерфейси TypeScript роблять Angular-код типобезпечним, передбачуваним і
+масштабованим, що критично важливо для великих і довготривалих проєктів.
 
 </details>
 
@@ -4885,4 +4966,3 @@ TypeScript зменшує кількість помилок, покращує п
 #### Angular
 
 </details>
-```
