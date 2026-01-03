@@ -4770,9 +4770,84 @@ frontend і backend.
 </details>
 
 <details>
-<summary>76. </summary>
+<summary>76. Чим TypeScript відрізняється від JavaScript і чому він є кращим в Angular?</summary>
 
 #### Angular
+
+#### JavaScript
+
+- Динамічно типізований
+- Типи перевіряються **під час виконання**
+- Гнучкий, але схильний до runtime-помилок
+
+```JavaScript
+function sum(a, b) {
+  return a + b;
+}
+
+sum(1, '2'); // "12" — помилка логіки
+```
+
+#### TypeScript
+
+**TypeScript = JavaScript + типи**
+
+- Статична типізація (на етапі компіляції)
+- Раннє виявлення помилок
+- Краща читабельність і підтримуваність
+
+```TypeScript
+function sum(a: number, b: number): number {
+  return a + b;
+}
+
+// sum(1, '2'); ❌ compile-time error
+```
+
+#### Чому TypeScript кращий для Angular
+
+1. Архітектура та масштабування
+
+Angular — enterprise-фреймворк, TypeScript:
+
+- робить код передбачуваним
+- зручний для великих команд
+
+2. Dependency Injection
+
+Типи дозволяють Angular DI працювати надійно.
+
+```TypeScript
+constructor(private userService: UserService) {}
+```
+
+3. Декоратори та метадані
+
+Angular активно використовує декоратори, які:
+
+- неможливі в чистому JS у такому вигляді
+- добре типізуються в TS
+
+4. Tooling та DX
+
+- Autocomplete
+- Навігація по коду
+- Safe refactoring
+- Strict mode (strict: true)
+
+5. Angular 20+ контекст
+
+- Signals
+- Standalone components
+- Typed forms
+- Typed HttpClient
+
+Усе це максимально виграє від TypeScript
+
+**Коротко**
+
+TypeScript зменшує кількість помилок, покращує підтримуваність і масштабування
+коду, тому є природним і обґрунтованим вибором для Angular.
 
 </details>
 
@@ -4810,3 +4885,4 @@ frontend і backend.
 #### Angular
 
 </details>
+```
