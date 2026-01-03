@@ -4668,9 +4668,104 @@ Angular за замовчуванням захищає від XSS, але роз
 </details>
 
 <details>
-<summary>75. </summary>
+<summary>75. Чи можна виконувати автентифікацію та авторизацію в застосунках Angular?</summary>
 
 #### Angular
+
+#### Коротка відповідь
+
+**Так.** Angular повністю підтримує обидві концепції, але:
+
+- **автентифікація** зазвичай реалізується спільно з бекендом (JWT, OAuth)
+- **авторизація** — переважно на фронтенді через guards і policy-логіку
+
+1. Автентифікація (Authentication)
+
+Це, перевірка **хто користувач** (login).
+
+#### Типовий підхід
+
+- Login → бекенд
+- Отримання **JWT / session**
+- Збереження токена (HttpOnly cookie або memory)
+
+```TypeScript
+login(credentials) {
+  return this.http.post('/api/login', credentials);
+}
+```
+
+#### Передача токена
+
+Через HTTP Interceptor:
+
+```TypeScript
+export const authInterceptor = (req, next) => {
+  const token = authService.token();
+  return next(
+    req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` },
+    })
+  );
+};
+```
+
+2. Авторизація (Authorization)
+
+Це, перевірка що користувач може робити.
+
+#### Route Guards
+
+```TypeScript
+export const authGuard: CanActivateFn = () => {
+  return authService.isLoggedIn();
+};
+```
+
+```TypeScript
+{
+  path: 'admin',
+  canActivate: [authGuard],
+  loadComponent: () => import('./admin.component'),
+}
+```
+
+3. Ролі та права доступу
+
+```TypeScript
+export const roleGuard: CanActivateFn = () => {
+  return authService.hasRole('admin');
+};
+```
+
+```TypeScript
+{ path: 'admin', canActivate: [roleGuard] }
+```
+
+4. UI-рівень авторизації
+
+```HTML
+<button *ngIf="isAdmin()">Delete</button>
+```
+
+```TypeScript
+isAdmin = computed(() => user()?.role === 'admin');
+```
+
+5. Angular 20+ best practices
+
+- Не довіряти лише frontend-перевіркам
+- Backend завжди має фінальне слово
+- Guards — для routing
+- Interceptors — для токенів
+- Signals — для auth state
+- Не зберігати токени в localStorage (краще HttpOnly cookies)
+
+**Коротко**
+
+Angular дозволяє повноцінно реалізувати автентифікацію через бекенд і
+авторизацію через guards та UI-логіку, дотримуючись чіткої відповідальності між
+frontend і backend.
 
 </details>
 
