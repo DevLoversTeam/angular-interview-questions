@@ -5369,8 +5369,254 @@ catchError.
 </details>
 
 <details>
-<summary>82. </summary>
+<summary>82. Які є найкращі практики для структурування великої програми Angular?</summary>
+
+#### Angular
+
+1. Feature-based структура (ключова)
+
+- Не за типами (`components/`, `services/`)
+- За фічами (domains)
+
+```txt
+src/app/
+ ├─ auth/
+ │   ├─ auth.routes.ts
+ │   ├─ auth.component.ts
+ │   └─ auth.service.ts
+ ├─ dashboard/
+ ├─ shared/
+ └─ core/
+```
+
+Кожна фіча — ізольована та самодостатня
+
+2. Standalone-first підхід (Angular 20+)
+
+- NgModules
+- Standalone components, directives, pipes
+
+```TypeScript
+@Component({
+  standalone: true,
+  imports: [],
+})
+```
+
+Краще tree-shaking і простіша архітектура
+
+3. Lazy Loading фіч
+
+```TypeScript
+{
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes')
+      .then(m => m.ADMIN_ROUTES),
+}
+```
+
+- Менший initial bundle
+- Краще масштабування
+
+4. Core vs Shared
+
+`core/`
+
+- Singleton сервіси
+- Auth, interceptors, guards
+- App-level providers
+
+`shared/`
+
+- UI components
+- Pipes, directives
+- Без бізнес-логіки
+
+5. Чіткий поділ відповідальностей
+
+- Компоненти → UI + orchestration
+- Сервіси → бізнес-логіка
+- Store / signals → стан
+
+Жодної складної логіки в шаблонах
+
+6. Управління станом
+
+- Signals → локальний UI-стан
+- NgRx / ComponentStore → глобальний або shared-стан
+- Не зберігати derived state
+
+7. Узгоджені конвенції
+
+- Naming conventions
+- Folder structure
+- Lint rules
+- Strict TypeScript
+
+```json
+"strict": true
+```
+
+8. Dependency Direction Rule
+
+```text
+feature → shared → core
+```
+
+- core не залежить від feature
+- shared не залежить від core
+
+9. Тестованість з архітектури
+
+- Компоненти легко мокаються
+- Логіка в сервісах → unit tests
+- Мінімальний TestBed setup
+
+10. Масштабування команди
+
+- Чіткі boundaries між фічами
+- Lazy-loaded domains
+- Мінімальні cross-feature залежності
+
+#### Типові помилки
+
+- “God components”
+- Глобальні shared services
+- Barrel-файли з side-effects
+- Відсутність lazy loading
+
+**Коротко**
+
+Великий Angular-застосунок має будуватись за фічами, з standalone + lazy
+loading, чітким поділом відповідальностей і контрольованим управлінням станом —
+це основа масштабованості та підтримуваності.
+
+</details>
+
+<details>
+<summary>83. </summary>
 
 #### Angular
 
 </details>
+
+<details>
+<summary>84. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>85. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>86. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>87. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>88. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>89. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>90. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>91. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>92. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>93. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>94. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>95. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>96. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>97. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>98. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>99. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>100. </summary>
+
+#### Angular
+
+</details>
+```
