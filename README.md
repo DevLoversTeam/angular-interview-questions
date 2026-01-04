@@ -6012,9 +6012,79 @@ Angular CLI дозволяє швидко й консистентно створ
 </details>
 
 <details>
-<summary>88. </summary>
+<summary>88. Які переваги використання інтерфейсу командного рядка Angular для створення каркасів проектів?</summary>
 
 #### Angular
+
+#### Основні переваги Angular CLI
+
+1. Швидкий старт проєкту
+
+```bash
+ng new my-app
+```
+
+- Готова структура
+- Налаштований білд
+- TypeScript, lint, тестування з коробки
+
+2. Консистентна архітектура
+
+- Єдина структура файлів
+- Однакові підходи в усій команді
+- Менше архітектурних помилок
+
+3. Standalone-first (Angular 20+)
+
+- Компоненти, директиви, пайпи — standalone за замовчуванням
+- Менше boilerplate
+- Кращий tree-shaking
+
+4. Автоматичні best practices
+
+- AOT
+- Production configs
+- Environment files
+- Strict TypeScript
+
+5. Інтеграція з tooling
+
+- Vite / build system
+- Testing (unit + e2e)
+- SSR (@angular/ssr)
+- PWA
+- i18n
+
+```bash
+ng add @angular/pwa
+ng add @angular/ssr
+```
+
+6. Продуктивність і безпека
+
+- Оптимізовані production-білди
+- Мінімізація
+- Tree shaking
+- Безпечні дефолтні налаштування
+
+7. Підтримка масштабування
+
+- Lazy loading
+- Feature-based структура
+- Готовність до enterprise-проєктів
+
+#### Що було б без CLI
+
+- Ручна конфігурація білду
+- Непослідовна структура
+- Помилки в налаштуваннях
+- Важкий онбординг нових dev’ів
+
+**Коротко**
+
+Angular CLI прискорює старт, забезпечує консистентну архітектуру, автоматично
+застосовує best practices і робить Angular-проєкти масштабованими та
+підтримуваними з першого дня.
 
 </details>
 
@@ -6101,4 +6171,3 @@ Angular CLI дозволяє швидко й консистентно створ
 #### Angular
 
 </details>
-```
