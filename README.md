@@ -5495,9 +5495,117 @@ loading, чітким поділом відповідальностей і ко�
 </details>
 
 <details>
-<summary>83. </summary>
+<summary>83. Як керувати глобальним станом у програмах Angular?</summary>
 
 #### Angular
+
+**Глобальний стан** — це дані, які:
+
+- використовуються в багатьох фічах
+- мають жити довше за окремий компонент
+- повинні бути єдиним джерелом правди
+
+Приклади: auth, user, settings, feature flags.
+
+#### Основні підходи
+
+1. NgRx Store (enterprise-рішення)
+
+**Коли використовувати**
+
+- Великий застосунок
+- Складна бізнес-логіка
+- Багато асинхронних процесів
+- Потрібен time-travel debugging
+
+```TypeScript
+store.dispatch(loadUser());
+user$ = store.select(selectUser);
+```
+
+**Плюси**
+
+- Чітка архітектура
+- Predictable state
+- DevTools
+
+**Мінуси**
+
+- Великий boilerplate
+- Overhead для малих проєктів
+
+2. NgRx ComponentStore (middle ground)
+
+**Коли використовувати**
+
+- Feature-level state
+- Складний стан, але без глобального store
+
+```TypeScript
+@ComponentStore()
+export class ProfileStore extends ComponentStore<ProfileState> {}
+```
+
+**Плюси**
+
+- Менше boilerplate
+- RxJS-first
+- Добре масштабується
+
+3. Services + RxJS (класичний підхід)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
+}
+```
+
+**Плюси**
+
+- Простота
+- Швидко реалізувати
+
+**Мінуси**
+
+- Легко порушити архітектуру
+- Складно масштабувати
+
+4. Signals (Angular 20+ — рекомендовано)
+
+**Для глобального UI / app-state**
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppState {
+  user = signal<User | null>(null);
+}
+```
+
+**Плюси**
+
+- Мінімальний boilerplate
+- Висока продуктивність
+- Ідеально для UI-стану
+
+**Мінуси**
+
+- Не для складних async flows
+
+#### Angular 20+ best practices
+
+- Не зберігати derived state
+- Immutability
+- Чіткі boundaries
+- Signals для UI
+- NgRx тільки коли справді потрібно
+
+**Коротко**
+
+У Angular глобальний стан керується через Signals, Services або NgRx, і
+правильний вибір залежить від складності застосунку, а не від моди на
+інструмент.
 
 </details>
 
