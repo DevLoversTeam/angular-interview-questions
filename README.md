@@ -5811,9 +5811,101 @@ API.
 </details>
 
 <details>
-<summary>86. </summary>
+<summary>86. Що таке lonic і як він інтегрується з Angular?</summary>
 
 #### Angular
+
+**Ionic** — це фреймворк для створення **кросплатформених застосунків** (iOS,
+Android, Web) на базі **web-технологій**:
+
+- HTML
+- CSS
+- JavaScript / TypeScript
+
+Ionic надає:
+
+- набір **готових UI-компонентів**, стилізованих під iOS та Material Design
+- інтеграцію з native-можливостями через **Capacitor**
+
+#### Як Ionic інтегрується з Angular
+
+Ionic має **офіційну Angular-інтеграцію** (`@ionic/angular`) і працює як UI-шар
+поверх Angular.
+
+```bash
+npm install @ionic/angular
+```
+
+```TypeScript
+import { IonicModule } from '@ionic/angular';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(IonicModule.forRoot())
+  ]
+});
+```
+
+#### Ionic + Angular архітектура
+
+**Angular**
+
+- логіка
+- routing
+- DI
+- state management
+
+**Ionic**
+
+- UI-компоненти (ion-button, ion-list, ion-modal)
+- mobile UX
+- gestures, animations
+
+```HTML
+<ion-button (click)="save()">Save</ion-button>
+```
+
+#### Доступ до native API (через Capacitor)
+
+```bash
+npm install @capacitor/camera
+```
+
+```TypeScript
+import { Camera } from '@capacitor/camera';
+
+const photo = await Camera.getPhoto({
+  resultType: 'uri'
+});
+```
+
+Працює на iOS, Android і Web
+
+#### Переваги Ionic + Angular
+
+- Один код для web + mobile
+- Повна потужність Angular (standalone, signals, RxJS)
+- Велика бібліотека UI
+- Швидка розробка MVP
+
+#### Обмеження
+
+- WebView → не 100% native performance
+- Важчий runtime порівняно з чистим native
+- Не для high-performance 3D / heavy animations
+
+#### Angular 20+ контекст
+
+- Standalone components — повністю підтримуються
+- Signals — покращують продуктивність UI
+- Lazy loading — критично важливий для mobile
+- NgRx / Signals — для state management
+
+**Коротко**
+
+Ionic — це UI-фреймворк для кросплатформених застосунків, який тісно
+інтегрується з Angular, дозволяючи створювати мобільні та web-апки з одного
+код-бейсу.
 
 </details>
 
