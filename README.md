@@ -5369,7 +5369,885 @@ catchError.
 </details>
 
 <details>
-<summary>82. </summary>
+<summary>82. Які є найкращі практики для структурування великої програми Angular?</summary>
+
+#### Angular
+
+1. Feature-based структура (ключова)
+
+- Не за типами (`components/`, `services/`)
+- За фічами (domains)
+
+```txt
+src/app/
+ ├─ auth/
+ │   ├─ auth.routes.ts
+ │   ├─ auth.component.ts
+ │   └─ auth.service.ts
+ ├─ dashboard/
+ ├─ shared/
+ └─ core/
+```
+
+Кожна фіча — ізольована та самодостатня
+
+2. Standalone-first підхід (Angular 20+)
+
+- NgModules
+- Standalone components, directives, pipes
+
+```TypeScript
+@Component({
+  standalone: true,
+  imports: [],
+})
+```
+
+Краще tree-shaking і простіша архітектура
+
+3. Lazy Loading фіч
+
+```TypeScript
+{
+  path: 'admin',
+  loadChildren: () =>
+    import('./admin/admin.routes')
+      .then(m => m.ADMIN_ROUTES),
+}
+```
+
+- Менший initial bundle
+- Краще масштабування
+
+4. Core vs Shared
+
+`core/`
+
+- Singleton сервіси
+- Auth, interceptors, guards
+- App-level providers
+
+`shared/`
+
+- UI components
+- Pipes, directives
+- Без бізнес-логіки
+
+5. Чіткий поділ відповідальностей
+
+- Компоненти → UI + orchestration
+- Сервіси → бізнес-логіка
+- Store / signals → стан
+
+Жодної складної логіки в шаблонах
+
+6. Управління станом
+
+- Signals → локальний UI-стан
+- NgRx / ComponentStore → глобальний або shared-стан
+- Не зберігати derived state
+
+7. Узгоджені конвенції
+
+- Naming conventions
+- Folder structure
+- Lint rules
+- Strict TypeScript
+
+```json
+"strict": true
+```
+
+8. Dependency Direction Rule
+
+```text
+feature → shared → core
+```
+
+- core не залежить від feature
+- shared не залежить від core
+
+9. Тестованість з архітектури
+
+- Компоненти легко мокаються
+- Логіка в сервісах → unit tests
+- Мінімальний TestBed setup
+
+10. Масштабування команди
+
+- Чіткі boundaries між фічами
+- Lazy-loaded domains
+- Мінімальні cross-feature залежності
+
+#### Типові помилки
+
+- “God components”
+- Глобальні shared services
+- Barrel-файли з side-effects
+- Відсутність lazy loading
+
+**Коротко**
+
+Великий Angular-застосунок має будуватись за фічами, з standalone + lazy
+loading, чітким поділом відповідальностей і контрольованим управлінням станом —
+це основа масштабованості та підтримуваності.
+
+</details>
+
+<details>
+<summary>83. Як керувати глобальним станом у програмах Angular?</summary>
+
+#### Angular
+
+**Глобальний стан** — це дані, які:
+
+- використовуються в багатьох фічах
+- мають жити довше за окремий компонент
+- повинні бути єдиним джерелом правди
+
+Приклади: auth, user, settings, feature flags.
+
+#### Основні підходи
+
+1. NgRx Store (enterprise-рішення)
+
+**Коли використовувати**
+
+- Великий застосунок
+- Складна бізнес-логіка
+- Багато асинхронних процесів
+- Потрібен time-travel debugging
+
+```TypeScript
+store.dispatch(loadUser());
+user$ = store.select(selectUser);
+```
+
+**Плюси**
+
+- Чітка архітектура
+- Predictable state
+- DevTools
+
+**Мінуси**
+
+- Великий boilerplate
+- Overhead для малих проєктів
+
+2. NgRx ComponentStore (middle ground)
+
+**Коли використовувати**
+
+- Feature-level state
+- Складний стан, але без глобального store
+
+```TypeScript
+@ComponentStore()
+export class ProfileStore extends ComponentStore<ProfileState> {}
+```
+
+**Плюси**
+
+- Менше boilerplate
+- RxJS-first
+- Добре масштабується
+
+3. Services + RxJS (класичний підхід)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
+}
+```
+
+**Плюси**
+
+- Простота
+- Швидко реалізувати
+
+**Мінуси**
+
+- Легко порушити архітектуру
+- Складно масштабувати
+
+4. Signals (Angular 20+ — рекомендовано)
+
+**Для глобального UI / app-state**
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppState {
+  user = signal<User | null>(null);
+}
+```
+
+**Плюси**
+
+- Мінімальний boilerplate
+- Висока продуктивність
+- Ідеально для UI-стану
+
+**Мінуси**
+
+- Не для складних async flows
+
+#### Angular 20+ best practices
+
+- Не зберігати derived state
+- Immutability
+- Чіткі boundaries
+- Signals для UI
+- NgRx тільки коли справді потрібно
+
+**Коротко**
+
+У Angular глобальний стан керується через Signals, Services або NgRx, і
+правильний вибір залежить від складності застосунку, а не від моди на
+інструмент.
+
+</details>
+
+<details>
+<summary>84. Які є найкращі практики для зв'язку компонентів у великих додатках Angular?</summary>
+
+#### Angular
+
+1. Parent → Child (Input / Signals)
+
+### Коли
+
+- Ієрархічний звʼязок
+- Дані зверху вниз
+
+```TypeScript
+@Input() user!: User;
+```
+
+**Angular 20+**
+
+Для реактивності — signals
+
+```TypeScript
+@Input() user = signal<User | null>(null);
+```
+
+- Простий і прозорий звʼязок
+- Не для далеких компонентів
+
+2. Child → Parent (Output / Events)
+
+Події знизу вгору
+
+```TypeScript
+@Output() saved = new EventEmitter<User>();
+```
+
+```HTML
+<app-form (saved)="onSave($event)" />
+```
+
+- Чітка подієва модель
+- Не масштабувати на багато рівнів
+
+3. Shared Service (рекомендовано для sibling / distant)
+
+- Компоненти не повʼязані ієрархічно
+- Потрібен shared state або events
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class UiStateService {
+  sidebarOpen = signal(false);
+}
+```
+
+```TypeScript
+this.ui.sidebarOpen.set(true);
+```
+
+- Слабке звʼязування
+- Добре масштабується
+
+4. RxJS Subjects (для events / async)
+
+- Event bus
+- Асинхронні події
+
+```TypeScript
+private refresh$ = new Subject<void>();
+refresh = this.refresh$.asObservable();
+```
+
+- Не використовувати як global state
+- Завжди `asObservable()`
+
+5. Global State (NgRx / Signals)
+
+- Дані потрібні в багатьох фічах
+- Довготривалий стан (auth, user)
+
+```TypeScript
+user = this.store.select(selectUser);
+```
+
+або
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppState {
+  user = signal<User | null>(null);
+}
+```
+
+6. Чого НЕ робити (anti-patterns)
+
+- Передача через багато рівнів (prop drilling)
+- Виклик методів іншого компонента
+- Глобальні mutable сервіси
+- Shared state без чітких boundaries
+
+#### Angular 20+ рекомендації
+
+- Signals — default choice для UI-стану
+- RxJS — для async / streams
+- NgRx — тільки для складного глобального стану
+- Компоненти мають бути dumb, логіка — в сервісах
+
+**Коротко**
+
+У великих Angular-додатках звʼязок між компонентами має будуватись через
+Inputs/Outputs для ієрархії, shared services або state-management для віддалених
+компонентів, уникаючи жорстких залежностей.
+
+</details>
+
+<details>
+<summary>85. Чи можна використовувати Angular для створення мобільних застосунків?</summary>
+
+#### Angular
+
+**Так.** Angular можна використовувати для мобільної розробки **трьома основними
+способами**.
+
+1. Hybrid Mobile Apps (Angular + WebView)
+
+- **Ionic + Angular**
+- **Capacitor**
+
+```bash
+npm install @ionic/angular
+```
+
+**Як працює**
+
+- Angular → HTML/CSS/JS
+- Запускається всередині WebView
+- Один код для iOS / Android
+
+**Плюси**
+
+- Швидка розробка
+- Один код-бейс
+- Велика екосистема UI
+
+**Мінуси**
+
+- Обмежена native-продуктивність
+
+2. Progressive Web Apps (PWA)
+
+**Це Angular-додаток, який:**
+
+- працює офлайн
+- встановлюється як мобільний app
+- запускається з home screen
+
+```bash
+ng add @angular/pwa
+```
+
+**Плюси**
+
+- Без App Store
+- Один код для web + mobile
+- Швидке оновлення
+
+**Мінуси**
+
+- Обмежений доступ до native API
+- iOS має обмеження
+
+3. Native Mobile Apps (через сторонні фреймворки)
+
+**NativeScript + Angular**
+
+- Angular + справжні native UI компоненти
+
+**Плюси**
+
+- Максимальна продуктивність
+- Native look & feel
+
+**Мінуси**
+
+- Складніша розробка
+- Менша спільнота
+
+#### Angular 20+ контекст
+
+- Standalone components добре працюють з Ionic
+- Signals → краща продуктивність UI
+- RxJS → async flows (network, sensors)
+- Один Angular-код → web + mobile
+
+**Коротко**
+
+Angular підходить для мобільної розробки через Ionic (hybrid), PWA або
+NativeScript, і вибір залежить від вимог до продуктивності та доступу до native
+API.
+
+</details>
+
+<details>
+<summary>86. Що таке lonic і як він інтегрується з Angular?</summary>
+
+#### Angular
+
+**Ionic** — це фреймворк для створення **кросплатформених застосунків** (iOS,
+Android, Web) на базі **web-технологій**:
+
+- HTML
+- CSS
+- JavaScript / TypeScript
+
+Ionic надає:
+
+- набір **готових UI-компонентів**, стилізованих під iOS та Material Design
+- інтеграцію з native-можливостями через **Capacitor**
+
+#### Як Ionic інтегрується з Angular
+
+Ionic має **офіційну Angular-інтеграцію** (`@ionic/angular`) і працює як UI-шар
+поверх Angular.
+
+```bash
+npm install @ionic/angular
+```
+
+```TypeScript
+import { IonicModule } from '@ionic/angular';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(IonicModule.forRoot())
+  ]
+});
+```
+
+#### Ionic + Angular архітектура
+
+**Angular**
+
+- логіка
+- routing
+- DI
+- state management
+
+**Ionic**
+
+- UI-компоненти (ion-button, ion-list, ion-modal)
+- mobile UX
+- gestures, animations
+
+```HTML
+<ion-button (click)="save()">Save</ion-button>
+```
+
+#### Доступ до native API (через Capacitor)
+
+```bash
+npm install @capacitor/camera
+```
+
+```TypeScript
+import { Camera } from '@capacitor/camera';
+
+const photo = await Camera.getPhoto({
+  resultType: 'uri'
+});
+```
+
+Працює на iOS, Android і Web
+
+#### Переваги Ionic + Angular
+
+- Один код для web + mobile
+- Повна потужність Angular (standalone, signals, RxJS)
+- Велика бібліотека UI
+- Швидка розробка MVP
+
+#### Обмеження
+
+- WebView → не 100% native performance
+- Важчий runtime порівняно з чистим native
+- Не для high-performance 3D / heavy animations
+
+#### Angular 20+ контекст
+
+- Standalone components — повністю підтримуються
+- Signals — покращують продуктивність UI
+- Lazy loading — критично важливий для mobile
+- NgRx / Signals — для state management
+
+**Коротко**
+
+Ionic — це UI-фреймворк для кросплатформених застосунків, який тісно
+інтегрується з Angular, дозволяючи створювати мобільні та web-апки з одного
+код-бейсу.
+
+</details>
+
+<details>
+<summary>87. Як додати новий компонент, сервіс або модуль за допомогою інтерфейсу командного рядка Angular?</summary>
+
+#### Angular
+
+1. Створення компонента
+
+Standalone компонент (default у Angular 20+)
+
+```bash
+ng generate component user
+# або коротко
+ng g c user
+```
+
+**Створюється:**
+
+- user.component.ts
+
+- user.component.html
+
+- user.component.css
+
+- user.component.spec.ts
+
+Компонент standalone за замовчуванням, без NgModule.
+
+**Без HTML / CSS (inline)**
+
+```bash
+ng g c user --inline-template --inline-style
+```
+
+2. Створення сервісу
+
+```bash
+ng generate service user
+# або
+ng g s user
+```
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class UserService {}
+```
+
+Сервіс автоматично реєструється в DI.
+
+3. Створення модуля (legacy / специфічні кейси)
+
+```bash
+ng generate module admin
+# або
+ng g m admin
+```
+
+У Angular 20+ NgModule використовується рідко, перевага — standalone.
+
+#### Створення інших сутностей
+
+**Директива**
+
+```bash
+ng g directive highlight
+```
+
+**Pipe**
+
+```bash
+ng g pipe capitalize
+```
+
+**Guard**
+
+```bash
+ng g guard auth
+```
+
+**Resolver**
+
+```bash
+ng g resolver user
+```
+
+#### Best practices (Angular 20+)
+
+- Використовувати standalone components
+
+- Генерувати через CLI для консистентності
+
+- Не створювати NgModule без потреби
+
+- Створювати за feature-структурою
+
+**Коротко**
+
+Angular CLI дозволяє швидко й консистентно створювати компоненти, сервіси та
+інші сутності; у Angular 20+ standalone-підхід є стандартом, а NgModule
+використовується лише у виняткових випадках.
+
+</details>
+
+<details>
+<summary>88. Які переваги використання інтерфейсу командного рядка Angular для створення каркасів проектів?</summary>
+
+#### Angular
+
+#### Основні переваги Angular CLI
+
+1. Швидкий старт проєкту
+
+```bash
+ng new my-app
+```
+
+- Готова структура
+- Налаштований білд
+- TypeScript, lint, тестування з коробки
+
+2. Консистентна архітектура
+
+- Єдина структура файлів
+- Однакові підходи в усій команді
+- Менше архітектурних помилок
+
+3. Standalone-first (Angular 20+)
+
+- Компоненти, директиви, пайпи — standalone за замовчуванням
+- Менше boilerplate
+- Кращий tree-shaking
+
+4. Автоматичні best practices
+
+- AOT
+- Production configs
+- Environment files
+- Strict TypeScript
+
+5. Інтеграція з tooling
+
+- Vite / build system
+- Testing (unit + e2e)
+- SSR (@angular/ssr)
+- PWA
+- i18n
+
+```bash
+ng add @angular/pwa
+ng add @angular/ssr
+```
+
+6. Продуктивність і безпека
+
+- Оптимізовані production-білди
+- Мінімізація
+- Tree shaking
+- Безпечні дефолтні налаштування
+
+7. Підтримка масштабування
+
+- Lazy loading
+- Feature-based структура
+- Готовність до enterprise-проєктів
+
+#### Що було б без CLI
+
+- Ручна конфігурація білду
+- Непослідовна структура
+- Помилки в налаштуваннях
+- Важкий онбординг нових dev’ів
+
+**Коротко**
+
+Angular CLI прискорює старт, забезпечує консистентну архітектуру, автоматично
+застосовує best practices і робить Angular-проєкти масштабованими та
+підтримуваними з першого дня.
+
+</details>
+
+<details>
+<summary>89. Як оновити додаток на Angular до останньої версії за допомогою інтерфейсу командного рядка?</summary>
+
+#### Angular
+
+1. Перевірити поточну версію
+
+```bash
+ng version
+```
+
+2. Оновити Angular CLI глобально
+
+```bash
+npm install -g @angular/cli@latest
+```
+
+Перевірити:
+
+```bash
+ng version
+```
+
+3. Оновити Angular core та CLI в проєкті
+
+```bash
+ng update @angular/core @angular/cli
+```
+
+**CLI:**
+
+- оновить package.json
+- застосує automated migrations
+- покаже breaking changes (якщо є)
+
+4. Оновити додаткові пакети Angular
+
+```bash
+ng update @angular/material
+ng update @ngrx/store
+```
+
+(за потреби)
+
+5. Запустити та перевірити застосунок
+
+```bash
+ng serve
+ng test
+ng build
+```
+
+6. Мажорні оновлення (best practice)
+
+Якщо оновлення через кілька major-версій:
+
+```bash
+ng update @angular/core@19 @angular/cli@19
+ng update @angular/core@20 @angular/cli@20
+```
+
+Не стрибати через major-версії
+
+#### Важливі рекомендації
+
+- Перед оновленням зробити commit
+- Читати output CLI (warnings / TODO)
+- Не оновлювати вручну package.json
+- Використовувати офіційні migrations
+
+#### Angular 20+ після оновлення
+
+**Рекомендується:**
+
+- перейти на standalone components
+- перевірити deprecated API
+- оновити RxJS
+- увімкнути stricter TypeScript
+- переглянути zone / zoneless можливості
+
+**Коротко**
+
+Оновлення Angular виконується через ng update, яке автоматично застосовує
+міграції, оновлює залежності та допомагає безпечно перейти на останню версію
+фреймворку.
+
+</details>
+
+<details>
+<summary>90. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>91. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>92. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>93. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>94. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>95. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>96. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>97. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>98. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>99. </summary>
+
+#### Angular
+
+</details>
+
+<details>
+<summary>100. </summary>
 
 #### Angular
 
