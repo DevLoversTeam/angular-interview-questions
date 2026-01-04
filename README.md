@@ -5610,9 +5610,116 @@ export class AppState {
 </details>
 
 <details>
-<summary>84. </summary>
+<summary>84. Які є найкращі практики для зв'язку компонентів у великих додатках Angular?</summary>
 
 #### Angular
+
+1. Parent → Child (Input / Signals)
+
+### Коли
+
+- Ієрархічний звʼязок
+- Дані зверху вниз
+
+```TypeScript
+@Input() user!: User;
+```
+
+**Angular 20+**
+
+Для реактивності — signals
+
+```TypeScript
+@Input() user = signal<User | null>(null);
+```
+
+- Простий і прозорий звʼязок
+- Не для далеких компонентів
+
+2. Child → Parent (Output / Events)
+
+Події знизу вгору
+
+```TypeScript
+@Output() saved = new EventEmitter<User>();
+```
+
+```HTML
+<app-form (saved)="onSave($event)" />
+```
+
+- Чітка подієва модель
+- Не масштабувати на багато рівнів
+
+3. Shared Service (рекомендовано для sibling / distant)
+
+- Компоненти не повʼязані ієрархічно
+- Потрібен shared state або events
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class UiStateService {
+  sidebarOpen = signal(false);
+}
+```
+
+```TypeScript
+this.ui.sidebarOpen.set(true);
+```
+
+- Слабке звʼязування
+- Добре масштабується
+
+4. RxJS Subjects (для events / async)
+
+- Event bus
+- Асинхронні події
+
+```TypeScript
+private refresh$ = new Subject<void>();
+refresh = this.refresh$.asObservable();
+```
+
+- Не використовувати як global state
+- Завжди `asObservable()`
+
+5. Global State (NgRx / Signals)
+
+- Дані потрібні в багатьох фічах
+- Довготривалий стан (auth, user)
+
+```TypeScript
+user = this.store.select(selectUser);
+```
+
+або
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppState {
+  user = signal<User | null>(null);
+}
+```
+
+6. Чого НЕ робити (anti-patterns)
+
+- Передача через багато рівнів (prop drilling)
+- Виклик методів іншого компонента
+- Глобальні mutable сервіси
+- Shared state без чітких boundaries
+
+#### Angular 20+ рекомендації
+
+- Signals — default choice для UI-стану
+- RxJS — для async / streams
+- NgRx — тільки для складного глобального стану
+- Компоненти мають бути dumb, логіка — в сервісах
+
+**Коротко**
+
+У великих Angular-додатках звʼязок між компонентами має будуватись через
+Inputs/Outputs для ієрархії, shared services або state-management для віддалених
+компонентів, уникаючи жорстких залежностей.
 
 </details>
 
