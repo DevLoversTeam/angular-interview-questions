@@ -5724,9 +5724,89 @@ Inputs/Outputs для ієрархії, shared services або state-management 
 </details>
 
 <details>
-<summary>85. </summary>
+<summary>85. Чи можна використовувати Angular для створення мобільних застосунків?</summary>
 
 #### Angular
+
+**Так.** Angular можна використовувати для мобільної розробки **трьома основними
+способами**.
+
+1. Hybrid Mobile Apps (Angular + WebView)
+
+- **Ionic + Angular**
+- **Capacitor**
+
+```bash
+npm install @ionic/angular
+```
+
+**Як працює**
+
+- Angular → HTML/CSS/JS
+- Запускається всередині WebView
+- Один код для iOS / Android
+
+**Плюси**
+
+- Швидка розробка
+- Один код-бейс
+- Велика екосистема UI
+
+**Мінуси**
+
+- Обмежена native-продуктивність
+
+2. Progressive Web Apps (PWA)
+
+**Це Angular-додаток, який:**
+
+- працює офлайн
+- встановлюється як мобільний app
+- запускається з home screen
+
+```bash
+ng add @angular/pwa
+```
+
+**Плюси**
+
+- Без App Store
+- Один код для web + mobile
+- Швидке оновлення
+
+**Мінуси**
+
+- Обмежений доступ до native API
+- iOS має обмеження
+
+3. Native Mobile Apps (через сторонні фреймворки)
+
+**NativeScript + Angular**
+
+- Angular + справжні native UI компоненти
+
+**Плюси**
+
+- Максимальна продуктивність
+- Native look & feel
+
+**Мінуси**
+
+- Складніша розробка
+- Менша спільнота
+
+#### Angular 20+ контекст
+
+- Standalone components добре працюють з Ionic
+- Signals → краща продуктивність UI
+- RxJS → async flows (network, sensors)
+- Один Angular-код → web + mobile
+
+**Коротко**
+
+Angular підходить для мобільної розробки через Ionic (hybrid), PWA або
+NativeScript, і вибір залежить від вимог до продуктивності та доступу до native
+API.
 
 </details>
 
