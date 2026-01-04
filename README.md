@@ -5910,9 +5910,104 @@ Ionic — це UI-фреймворк для кросплатформених з�
 </details>
 
 <details>
-<summary>87. </summary>
+<summary>87. Як додати новий компонент, сервіс або модуль за допомогою інтерфейсу командного рядка Angular?</summary>
 
 #### Angular
+
+1. Створення компонента
+
+Standalone компонент (default у Angular 20+)
+
+```bash
+ng generate component user
+# або коротко
+ng g c user
+```
+
+**Створюється:**
+
+- user.component.ts
+
+- user.component.html
+
+- user.component.css
+
+- user.component.spec.ts
+
+Компонент standalone за замовчуванням, без NgModule.
+
+**Без HTML / CSS (inline)**
+
+```bash
+ng g c user --inline-template --inline-style
+```
+
+2. Створення сервісу
+
+```bash
+ng generate service user
+# або
+ng g s user
+```
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class UserService {}
+```
+
+Сервіс автоматично реєструється в DI.
+
+3. Створення модуля (legacy / специфічні кейси)
+
+```bash
+ng generate module admin
+# або
+ng g m admin
+```
+
+У Angular 20+ NgModule використовується рідко, перевага — standalone.
+
+#### Створення інших сутностей
+
+**Директива**
+
+```bash
+ng g directive highlight
+```
+
+**Pipe**
+
+```bash
+ng g pipe capitalize
+```
+
+**Guard**
+
+```bash
+ng g guard auth
+```
+
+**Resolver**
+
+```bash
+ng g resolver user
+```
+
+#### Best practices (Angular 20+)
+
+- Використовувати standalone components
+
+- Генерувати через CLI для консистентності
+
+- Не створювати NgModule без потреби
+
+- Створювати за feature-структурою
+
+**Коротко**
+
+Angular CLI дозволяє швидко й консистентно створювати компоненти, сервіси та
+інші сутності; у Angular 20+ standalone-підхід є стандартом, а NgModule
+використовується лише у виняткових випадках.
 
 </details>
 
