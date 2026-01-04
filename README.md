@@ -6089,9 +6089,90 @@ Angular CLI прискорює старт, забезпечує консисте
 </details>
 
 <details>
-<summary>89. </summary>
+<summary>89. Як оновити додаток на Angular до останньої версії за допомогою інтерфейсу командного рядка?</summary>
 
 #### Angular
+
+1. Перевірити поточну версію
+
+```bash
+ng version
+```
+
+2. Оновити Angular CLI глобально
+
+```bash
+npm install -g @angular/cli@latest
+```
+
+Перевірити:
+
+```bash
+ng version
+```
+
+3. Оновити Angular core та CLI в проєкті
+
+```bash
+ng update @angular/core @angular/cli
+```
+
+**CLI:**
+
+- оновить package.json
+- застосує automated migrations
+- покаже breaking changes (якщо є)
+
+4. Оновити додаткові пакети Angular
+
+```bash
+ng update @angular/material
+ng update @ngrx/store
+```
+
+(за потреби)
+
+5. Запустити та перевірити застосунок
+
+```bash
+ng serve
+ng test
+ng build
+```
+
+6. Мажорні оновлення (best practice)
+
+Якщо оновлення через кілька major-версій:
+
+```bash
+ng update @angular/core@19 @angular/cli@19
+ng update @angular/core@20 @angular/cli@20
+```
+
+Не стрибати через major-версії
+
+#### Важливі рекомендації
+
+- Перед оновленням зробити commit
+- Читати output CLI (warnings / TODO)
+- Не оновлювати вручну package.json
+- Використовувати офіційні migrations
+
+#### Angular 20+ після оновлення
+
+**Рекомендується:**
+
+- перейти на standalone components
+- перевірити deprecated API
+- оновити RxJS
+- увімкнути stricter TypeScript
+- переглянути zone / zoneless можливості
+
+**Коротко**
+
+Оновлення Angular виконується через ng update, яке автоматично застосовує
+міграції, оновлює залежності та допомагає безпечно перейти на останню версію
+фреймворку.
 
 </details>
 
