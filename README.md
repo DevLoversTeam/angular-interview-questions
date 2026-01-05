@@ -6290,9 +6290,122 @@ export class ChartService {
 </details>
 
 <details>
-<summary>91. </summary>
+<summary>91. Що таке змінні середовища в Angular і як їх використовувати?</summary>
 
 #### Angular
+
+У Angular змінні середовища — це **конфігураційні значення**, які:
+
+- відрізняються між `development`, `production`, `staging`
+- використовуються для:
+  - API URLs
+  - feature flags
+  - логування
+  - інтеграцій із сервісами
+
+#### Класичний механізм Angular (environment files)
+
+### Файли середовищ
+
+```txt
+src/environments/
+ ├─ environment.ts
+ └─ environment.prod.ts
+```
+
+#### Приклад environment.ts
+
+```TypeScript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000',
+};
+```
+
+#### Приклад environment.prod.ts
+
+```TypeScript
+export const environment = {
+  production: true,
+  apiUrl: 'https://api.example.com',
+};
+```
+
+#### Використання в коді
+
+```TypeScript
+import { environment } from '../environments/environment';
+
+this.http.get(`${environment.apiUrl}/users`);
+```
+
+Angular підміняє файл автоматично під час build.
+
+#### Як відбувається підміна
+
+**У angular.json:**
+
+```json
+"configurations": {
+  "production": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.prod.ts"
+      }
+    ]
+  }
+}
+```
+
+#### Angular 20+ контекст (сучасний підхід)
+
+**Build-time змінні**
+
+- Environment файли — build-time
+- Після білду значення зашиті в JS
+- Не можна змінити без нового build
+
+#### Runtime environment (для SSR / Docker)
+
+Для великих систем часто використовують runtime config:
+
+```TypeScript
+window.__env = {
+  apiUrl: 'https://api.example.com'
+};
+```
+
+```TypeScript
+export const API_URL = window.__env.apiUrl;
+```
+
+- Один build → різні середовища
+- Підходить для SSR / Kubernetes
+
+#### Чого НЕ варто робити
+
+- Зберігати секрети (API keys, passwords)
+- Вважати environment secure
+- Міняти env без rebuild (build-time vars)
+
+#### Best practices
+
+- Environment → тільки публічна конфігурація
+- Secrets → тільки на бекенді
+- Для enterprise:
+  - Runtime config + SSR
+- Типізуйте environment
+
+```TypeScript
+interface Env { production: boolean; apiUrl: string; }
+```
+
+**Коротко**
+
+Змінні середовища в Angular — це build-time конфігурація, яка дозволяє
+використовувати різні налаштування для dev/prod; для складних систем
+застосовують runtime environment, але секрети ніколи не зберігають у frontend.
 
 </details>
 
