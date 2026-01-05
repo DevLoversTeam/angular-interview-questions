@@ -6410,9 +6410,101 @@ interface Env { production: boolean; apiUrl: string; }
 </details>
 
 <details>
-<summary>92. </summary>
+<summary>92. Чи можна використовувати веб-воркери в застосунках Angular і як?</summary>
 
 #### Angular
+
+**Так.** Angular підтримує Web Workers і дозволяє виконувати **важкі обчислення
+у фоновому потоці**, не блокуючи UI.
+
+#### Навіщо Web Workers
+
+- Винести **CPU-heavy задачі** з main thread
+- Уникнути фризів UI
+- Покращити responsiveness
+
+**Типові кейси:**
+
+- Обробка великих масивів
+- Криптографія
+- Парсинг файлів
+- Data processing (charts, analytics)
+
+#### Створення Web Worker через Angular CLI
+
+```bash
+ng generate web-worker app
+# або
+ng g web-worker app
+```
+
+Створюється файл:
+
+```txt
+src/app/app.worker.ts
+```
+
+#### Код Web Worker
+
+```TypeScript
+// <reference lib="webworker" />
+
+addEventListener('message', ({ data }) => {
+  const result = data * 2; // важка операція
+  postMessage(result);
+});
+```
+
+#### Використання в Angular-компоненті
+
+```TypeScript
+if (typeof Worker !== 'undefined') {
+  const worker = new Worker(
+    new URL('./app.worker', import.meta.url)
+  );
+
+  worker.onmessage = ({ data }) => {
+    console.log('Result:', data);
+  };
+
+  worker.postMessage(10);
+}
+```
+
+#### Обмеження Web Workers
+
+**Немає доступу до:**
+
+- DOM
+- window, document
+- Angular DI
+- Services, HttpClient
+
+**Доступно:**
+
+- Чистий JS/TS
+- Message passing
+- Pure logic
+
+#### Best practices
+
+- Передавайте простi данi (structured clone)
+- Тримайте логіку pure
+- Не створюйте багато workers
+- Для async IO → RxJS (не worker)
+- Для UI state → signals
+
+#### Angular 20+ контекст
+
+- Працює з standalone components
+- Не залежить від zones / zoneless
+- Добре поєднується з RxJS (fromEvent)
+
+**Коротко**
+
+Web Workers в Angular використовуються для виконання важких обчислень у фоновому
+потоці, створюються через Angular CLI і спілкуються з застосунком через
+postMessage, покращуючи продуктивність UI.
 
 </details>
 
@@ -6471,3 +6563,4 @@ interface Env { production: boolean; apiUrl: string; }
 #### Angular
 
 </details>
+```
