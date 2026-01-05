@@ -6177,9 +6177,115 @@ ng update @angular/core@20 @angular/cli@20
 </details>
 
 <details>
-<summary>90. </summary>
+<summary>90. Як можна інтегрувати сторонні бібліотеки в застосунок Angular?</summary>
 
 #### Angular
+
+1. Встановлення через npm (основний спосіб)
+
+```bash
+npm install lodash
+```
+
+```TypeScript
+import { debounce } from 'lodash';
+```
+
+- Tree-shaking
+- Типізація (якщо є)
+- Рекомендований підхід
+
+2. Бібліотеки з Angular-обгорткою (preferred)
+
+**Приклад: Angular Material, ngx-translate, NgRx**
+
+```bash
+npm install @angular/material
+```
+
+```TypeScript
+import { MatButtonModule } from '@angular/material/button';
+```
+
+- Нативна інтеграція з Angular
+- DI, change detection, SSR-friendly
+
+3. Глобальні JS-бібліотеки (legacy)
+
+**Додавання через angular.json**
+
+```json
+"scripts": ["node_modules/some-lib/lib.js"]
+```
+
+Використання
+
+```TypeScript
+declare const SomeLib: any;
+```
+
+- Не tree-shakable
+- Не рекомендовано для нових проєктів
+
+4. Типізація бібліотек
+
+**Якщо типів немає:**
+
+```bash
+npm install -D @types/library-name
+```
+
+або створити вручну:
+
+```TypeScript
+declare module 'legacy-lib';
+```
+
+5. Dynamic import (для важких бібліотек)
+
+```TypeScript
+async loadChart() {
+  const { Chart } = await import('chart.js');
+}
+```
+
+- Code splitting
+- Менший initial bundle
+
+6. Інтеграція через сервіс (best practice)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class ChartService {
+  async load() {
+    const lib = await import('chart.js');
+    return lib.Chart;
+  }
+}
+```
+
+- Інкапсуляція + testability
+
+7. Angular 20+ рекомендації
+
+- Віддавати перевагу npm + ES modules
+- Lazy-load важкі бібліотеки
+- Не підключати глобальні скрипти без потреби
+- Обгортати бібліотеки у сервіси
+- Перевіряти SSR-сумісність
+
+#### Типові помилки
+
+- Підключення через `<script>` у index.html
+- Відсутність типів
+- Використання browser-only API без перевірки платформи
+- Імпорт всієї бібліотеки замість named imports
+
+**Коротко**
+
+Сторонні бібліотеки в Angular найкраще інтегрувати через npm + ES imports, за
+потреби — lazy loading, обгортати у сервіси та уникати глобальних скриптів для
+кращої продуктивності й підтримуваності.
 
 </details>
 
