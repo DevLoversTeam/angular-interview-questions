@@ -7072,9 +7072,134 @@ Angular: він показує дерево компонентів, частот
 </details>
 
 <details>
-<summary>98. </summary>
+<summary>98. Як інтегрувати Angular з іншими фреймворками або бібліотеками, такими як React або Vue.js?</summary>
 
 #### Angular
+
+#### Коли взагалі потрібна інтеграція
+
+- Міграція legacy-застосунку
+- Micro-frontend архітектура
+- Спільне використання UI між різними командами
+- Вставка ізольованого віджета (widget)
+- Поступовий перехід між фреймворками
+
+1. Web Components (рекомендований підхід)
+
+Кожен фреймворк експортує UI як **custom element**, незалежний від реалізації.
+
+**Angular → Web Component**
+
+```TypeScript
+import { createCustomElement } from '@angular/elements';
+
+const element = createCustomElement(AppComponent, { injector });
+customElements.define('my-angular-app', element);
+```
+
+```HTML
+<my-angular-app></my-angular-app>
+```
+
+**Переваги**
+
+- Повна ізоляція
+- Працює з Angular / React / Vue
+- Незалежні деплои
+- Framework-agnostic
+
+**Недоліки**
+
+- Більший bundle
+- Обмежений shared state
+
+2. Micro-frontends (Module Federation)
+
+Кожен фреймворк — окремий remote app.
+
+```text
+Shell (Angular)
+ ├─ Angular remote
+ ├─ React remote
+ └─ Vue remote
+```
+
+**Інструменти**
+
+- Webpack Module Federation
+- Nx
+- Single-SPA
+
+**Переваги**
+
+- Enterprise-ready
+- Незалежні команди
+- Незалежні релізи
+
+**Недоліки**
+
+- Висока складність
+- Архітектурна дисципліна
+
+3. Вбудовування через iframe (простий, але грубий)
+
+```HTML
+<iframe src="https://react-app.example.com"></iframe>
+```
+
+**Плюси**
+
+- Максимальна ізоляція
+- Мінімум інтеграції
+
+**Мінуси**
+
+- Поганий UX
+- Складний communication
+- SEO проблеми
+
+4. Використання сторонніх бібліотек (не фреймворків)
+
+**Приклад: React-based library в Angular**
+
+Не рекомендовано напряму
+
+**Краще:**
+
+- знайти framework-agnostic версію
+- або wrapper
+- або винести в Web Component
+
+5. Shared state між фреймворками
+
+**Варіанти**
+
+- Custom events
+- postMessage
+- URL / Router state
+- Shared backend (API-driven state)
+
+Не ділити напряму Angular Store / Signals з React
+
+#### Angular 20+ рекомендації
+
+- Web Components — default choice
+- Micro-frontends — для enterprise
+- Не змішувати Angular і React в одному runtime
+- Не імпортувати React у Angular напряму
+- Чіткі boundaries між системами
+
+#### Типові anti-patterns
+
+- Angular component всередині React tree напряму
+- Спільний глобальний state між фреймворками
+- Tight coupling між lifecycle фреймворків
+
+**Коротко**
+
+Angular можна інтегрувати з React або Vue через Web Components або
+micro-frontends. Найкращий підхід — ізоляція, а не пряме змішування фреймворків
+у одному runtime.
 
 </details>
 
