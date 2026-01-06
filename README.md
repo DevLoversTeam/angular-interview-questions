@@ -6614,9 +6614,108 @@ runtime-завантаження + DI; вибір залежить від вим
 </details>
 
 <details>
-<summary>94. </summary>
+<summary>94. Опишіть процес обміну даними між непов'язаними компонентами.</summary>
 
 #### Angular
+
+1. Shared Service + Signals (рекомендовано)
+
+- UI- або app-level стан
+- Мінімальний boilerplate
+- Висока продуктивність
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class UiStateService {
+  sidebarOpen = signal(false);
+}
+```
+
+```TypeScript
+// будь-який компонент
+this.ui.sidebarOpen.set(true);
+```
+
+```HTML
+<div *ngIf="ui.sidebarOpen()">...</div>
+```
+
+- Простий, типобезпечний
+- Ідеально для Angular 20+
+
+2. Shared Service + RxJS (events / async)
+
+- Подієва модель
+- Асинхронні потоки
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class RefreshService {
+  private refresh$ = new Subject<void>();
+  refresh = this.refresh$.asObservable();
+
+  trigger() {
+    this.refresh$.next();
+  }
+}
+```
+
+```TypeScript
+this.refreshService.refresh.subscribe(() => reload());
+```
+
+- Не використовувати як глобальний state
+- Завжди asObservable()
+
+3. NgRx Store (глобальний стан)
+
+- Дані потрібні у багатьох фічах
+- Складна бізнес-логіка
+- Потрібен time-travel debugging
+
+```TypeScript
+this.store.dispatch(loadUser());
+user$ = this.store.select(selectUser);
+```
+
+- Масштабованість
+- Великий boilerplate
+
+4. Router State / Params (контекст навігації)
+
+- Дані повʼязані з навігацією
+
+```TypeScript
+this.router.navigate(['/details'], {
+  state: { id: 1 }
+});
+```
+
+```TypeScript
+const id = history.state.id;
+```
+
+- Тимчасово, не для довготривалого стану
+
+#### Чого НЕ робити (anti-patterns)
+
+- Передавати дані через багато рівнів (prop drilling)
+- Викликати методи іншого компонента
+- Використовувати глобальні mutable сервіси
+- Змішувати events і state в одному Subject
+
+#### Angular 20+ рекомендації
+
+- Signals — default для стану
+- RxJS — для асинхронних потоків
+- NgRx — лише коли виправдано складністю
+- Компоненти мають бути dumb, логіка — в сервісах
+
+**Коротко**
+
+Для обміну даними між неповʼязаними компонентами в Angular використовують shared
+services (signals або RxJS), global state (NgRx) або router state, уникаючи
+жорстких залежностей між компонентами.
 
 </details>
 
