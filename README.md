@@ -6509,9 +6509,107 @@ postMessage, покращуючи продуктивність UI.
 </details>
 
 <details>
-<summary>93. </summary>
+<summary>93. Як обробляти налаштування конфігурації в Angular?</summary>
 
 #### Angular
+
+1. Build-time конфігурація (стандарт Angular)
+
+**Environment файли**
+
+```txt
+src/environments/
+ ├─ environment.ts
+ └─ environment.prod.ts
+```
+
+```TypeScript
+// environment.ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000',
+};
+```
+
+```TypeScript
+// використання
+import { environment } from '../environments/environment';
+this.http.get(`${environment.apiUrl}/users`);
+```
+
+**Плюси:** простота, оптимізація **Мінуси:** значення «зашиті» в білд (потрібен
+rebuild)
+
+2. Runtime конфігурація (enterprise / SSR / Docker)
+
+**Завантаження конфігурації при старті**
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class AppConfigService {
+  config!: { apiUrl: string };
+
+  load() {
+    return fetch('/assets/config.json')
+      .then(r => r.json())
+      .then(c => (this.config = c));
+  }
+}
+```
+
+```TypeScript
+// app.config.ts
+providers: [{
+  provide: APP_INITIALIZER,
+  useFactory: (cfg: AppConfigService) => () => cfg.load(),
+  deps: [AppConfigService],
+  multi: true,
+}]
+```
+
+**Плюси:** один білд → різні середовища **Мінуси:** трохи більше складності
+
+3. Dependency Injection для конфігурації
+
+```TypeScript
+export const API_URL = new InjectionToken<string>('API_URL');
+
+providers: [{ provide: API_URL, useValue: environment.apiUrl }]
+```
+
+```TypeScript
+constructor(@Inject(API_URL) private apiUrl: string) {}
+```
+
+**Плюси:** типобезпечно, тестабельно
+
+4. Feature flags (рекомендовано через Signals)
+
+```TypeScript
+@Injectable({ providedIn: 'root' })
+export class FeatureFlags {
+  newUI = signal(false);
+}
+```
+
+```HTML
+<section *ngIf="flags.newUI()">...</section>
+```
+
+#### Best practices
+
+- Environment — для build-time конфігів
+- Runtime config — для enterprise/SSR
+- DI tokens — для доступу до конфігів
+- Не зберігати секрети у фронтенді
+- Типізувати конфігурацію
+- Ініціалізувати до старту (APP_INITIALIZER)
+
+**Коротко**
+
+В Angular конфігурацію керують через environment файли (build-time) або
+runtime-завантаження + DI; вибір залежить від вимог до деплою, SSR та
+масштабування.
 
 </details>
 
