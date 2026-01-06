@@ -7204,9 +7204,101 @@ micro-frontends. Найкращий підхід — ізоляція, а не �
 </details>
 
 <details>
-<summary>99. </summary>
+<summary>99. Чи можна вбудувати застосунок Angular в інший застосунок?</summary>
 
 #### Angular
+
+**Так, можна.** Існує кілька підходів залежно від рівня інтеграції та вимог до
+ізоляції.
+
+1. Web Components (Angular Elements) — **рекомендовано**
+
+Angular app/компонент експортується як **custom element** і використовується в
+будь-якому середовищі.
+
+```TypeScript
+import { createCustomElement } from '@angular/elements';
+
+const el = createCustomElement(AppComponent, { injector });
+customElements.define('my-angular-app', el);
+```
+
+```HTML
+<my-angular-app></my-angular-app>
+```
+
+**Плюси**
+
+- Framework-agnostic
+- Ізоляція
+- Просте вбудовування
+
+**Мінуси**
+
+- Більший bundle
+- Обмежений shared state
+
+2. Micro-frontends (Module Federation / single-spa)
+
+**Коли**
+
+- Великий enterprise
+- Незалежні команди/релізи
+
+**Плюси**
+
+- Незалежні деплои
+- Масштабованість
+
+**Мінуси**
+
+- Висока складність
+- Потрібна архітектурна дисципліна
+
+3. iframe (простий, але грубий)
+
+```HTML
+<iframe src="https://angular-app.example.com"></iframe>
+```
+
+**Плюси**
+
+- Максимальна ізоляція
+- Мінімум інтеграції
+
+**Мінуси**
+
+- Гірший UX
+- Складний обмін даними
+- SEO/перформанс обмеження
+
+4. Вбудований віджет (script + bootstrap)
+
+- Angular app завантажується як віджет
+- Комунікація через Custom Events
+
+Менш рекомендовано, ніж Web Components
+
+#### Обмін даними між хостом і Angular
+
+- Custom Events
+- postMessage
+- URL params
+- API (backend як джерело правди)
+
+Не ділити напряму Angular state (Signals/NgRx) з хостом
+
+#### Angular 20+ рекомендації
+
+- Web Components — default
+- Micro-frontends — для enterprise
+- Не змішувати runtime різних фреймворків напряму
+- Чіткі boundaries та контракти
+
+**Коротко**
+
+Angular-застосунок можна вбудувати в інший застосунок. Найкращі підходи — Web
+Components або micro-frontends; iframe — лише для простих або legacy кейсів.
 
 </details>
 
