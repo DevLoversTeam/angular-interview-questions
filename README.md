@@ -6976,9 +6976,98 @@ debugger; у Angular 20+ signals і standalone значно спрощують �
 </details>
 
 <details>
-<summary>97. </summary>
+<summary>97. Поясніть, як використовувати Angular DevTools.</summary>
 
 #### Angular
+
+**Angular DevTools** — це browser extension (Chrome / Edge), який дозволяє:
+
+- інспектувати дерево компонентів
+- аналізувати **change detection**
+- профілювати **performance**
+- переглядати **signals / inputs / outputs**
+
+**Встановлення**
+
+- Chrome Web Store → **Angular DevTools**
+- Працює у dev-режимі Angular
+
+#### Основні інструменти для профілювання
+
+1. Components Tree
+
+**Дозволяє:**
+
+- переглянути ієрархію компонентів
+- побачити `OnPush` / Default CD
+- швидко знайти “важкі” компоненти
+
+**Корисно для:**
+
+- пошуку надмірної вкладеності
+- аналізу архітектури
+
+2. Change Detection Profiler (ключовий)
+
+**Як використовувати**
+
+1. Відкрити **Profiler**
+2. Натиснути **Start profiling**
+3. Взаємодіяти з UI
+4. Натиснути **Stop**
+
+**Що показує**
+
+- Скільки разів кожен компонент перевірявся
+- Час виконання CD
+- Компоненти, які перерендерюються без потреби
+
+**Типові висновки:**
+
+- де потрібен `OnPush`
+- де мутації state
+- де відсутній `trackBy`
+
+3. Signals Debugging (Angular 16+ / 20+)
+
+- Перегляд значень `signal()`
+- Відстеження, що тригерить `computed()`
+- Пошук зайвих recompute
+
+Значно простіше, ніж RxJS debugging
+
+4. Performance + Browser DevTools
+
+**Angular DevTools добре комбінується з:**
+
+- Chrome Performance tab
+- Timeline
+- FPS / scripting time
+
+Можна звʼязати Angular CD з browser repaint
+
+#### Типові performance-проблеми, які знаходять через DevTools
+
+- Відсутній `ChangeDetectionStrategy.OnPush`
+- Мутація обʼєктів замість immutability
+- Відсутній `trackBy` у `*ngFor`
+- Impure pipes
+- Зайві subscriptions
+- Великий global state
+
+#### Angular 20+ best practices для профілювання
+
+- Використовувати **signals** для UI-стану
+- `OnPush` — default
+- Lazy loading фіч
+- Мінімізувати global change detection
+- Zoneless → простіший performance model
+
+**Коротко**
+
+**Angular DevTools (Augury)** — ключовий інструмент для аналізу продуктивності
+Angular: він показує дерево компонентів, частоту change detection та дозволяє
+швидко знайти performance bottlenecks у сучасних Angular-застосунках.
 
 </details>
 
@@ -7002,4 +7091,3 @@ debugger; у Angular 20+ signals і standalone значно спрощують �
 #### Angular
 
 </details>
-```
