@@ -6720,9 +6720,135 @@ services (signals або RxJS), global state (NgRx) або router state, уни�
 </details>
 
 <details>
-<summary>95. </summary>
+<summary>95. Які популярні IDE для розробки Angular є та які функції вони пропонують для розробників?</summary>
 
 #### Angular
+
+1. Visual Studio Code (VS Code)
+
+**Найпопулярніший вибір для Angular**
+
+#### Основні можливості
+
+- **TypeScript IntelliSense** (автодоповнення, перевірка типів)
+- **Angular Language Service**
+  - Автодоповнення для шаблонів (`*ngFor`, `ngIf`, `async`)
+  - Перехід до визначення (`Go to Definition`)
+  - Error reporting у HTML-шаблонах
+- **Emmet**
+- **Debugger** для Chrome/Edge
+- **Extensions**
+  - Angular Snippets
+  - ESLint
+  - Prettier
+  - Nx / Nrwl support
+  - Jest / Vitest
+- **Terminal / Git / Tasks** вбудовані
+
+**Інтеграції та зручності**
+
+- Hotkeys, Refactoring
+- Workspace settings
+- Multi-root support
+- Remote Development
+
+2. WebStorm (JetBrains)
+
+**Потужний комерційний IDE з глибокою підтримкою Angular**
+
+#### Основні можливості
+
+- Вбудований Angular support
+- Advanced refactorings
+- Code analysis & inspections
+- Navigation & find usages
+- Smart imports
+- Live templates
+- Integrated debugger
+
+**Переваги**
+
+- Більш “все-в-одному” ніж VS Code
+- Краща підтримка великих проєктів
+
+Потрібна ліцензія
+
+3. IntelliJ IDEA Ultimate
+
+**Розширена версія WebStorm плюс backend support**
+
+#### Можливості
+
+- Angular + full-stack (Node / Java / Spring) support
+- Unified development experience
+- Built-in REST client
+- Database tools
+
+Ідеально для enterprise-команд
+
+4. Sublime Text
+
+**Легкий редактор з плагінами для Angular**
+
+#### Можливості через плагіни
+
+- TypeScript support
+- Angular snippets
+- Build system integration
+
+Менше “розумних” фіч, ніж у VS Code/WebStorm
+
+5. Vim / Neovim
+
+**Максимальна кастомізація через конфіг та плагіни**
+
+#### Можливості
+
+- coc.nvim / LSP (TypeScript + Angular Language Service)
+- Snippets
+- Fuzzy finder
+- Git integration
+
+Підходить профі; steep learning curve
+
+6. Emacs
+
+**Гнучкий редактор із LSP підтримкою**
+
+#### Можливості
+
+- TypeScript + Angular LSP integration
+- Smart completion
+- Custom workflows
+
+Потрібне налаштування
+
+7. StackBlitz / GitHub Codespaces
+
+**Онлайн-середовища для Angular**
+
+#### Переваги
+
+- Немає локального оточення
+- Швидкий прототип
+- Live preview
+- Інтеграція з GitHub
+
+#### Angular 20+ контекст
+
+- Modern editors/IDEs чудово працюють з:
+  - Standalone components
+  - Signals
+  - Vite-based builds
+  - RxJS patterns
+- Розширення CLI інтегрується з Hotkeys / Tasks
+
+**Коротко**
+
+Найчастіше Angular-розробники використовують **VS Code** (light, extensible) або
+**WebStorm/IntelliJ** (потужний IDE). Обидва дають автодоповнення, підтримку
+Angular Language Service, refactoring, debugger, інтеграцію з Git, тестами та
+TypeScript.
 
 </details>
 
