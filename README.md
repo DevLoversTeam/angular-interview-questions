@@ -6853,9 +6853,125 @@ TypeScript.
 </details>
 
 <details>
-<summary>96. </summary>
+<summary>96. Як налагоджувати застосунки Angular?</summary>
 
 #### Angular
+
+1. Browser DevTools (основа)
+
+**Console**
+
+- `console.log / warn / error`
+- Логи в компонентах, сервісах, effects
+
+```TypeScript
+console.log('User:', this.user());
+```
+
+**Sources**
+
+- Breakpoints у TS (source maps)
+- Step over / into
+
+2. Debugger у IDE (VS Code / WebStorm)
+
+- Запуск ng serve
+- Attach до Chrome/Edge
+- Breakpoints у TypeScript
+
+```json
+// .vscode/launch.json (спрощено)
+{
+  "type": "chrome",
+  "request": "attach",
+  "port": 9222
+}
+```
+
+3. Angular DevTools (обовʼязково)
+
+**Можливості**
+
+- Component tree
+- Inputs / Outputs
+- Signals state
+- Change Detection cycles
+- Performance profiling
+
+Працює для standalone, signals, OnPush
+
+4. Debugging Change Detection
+
+- Перевіряти зайві ререндери
+- Використовувати OnPush
+
+```TypeScript
+changeDetection: ChangeDetectionStrategy.OnPush
+```
+
+- У signals — дивитись, що тригерить `computed()`
+
+5. RxJS Debugging
+
+**tap для логування**
+
+```TypeScript
+this.users$
+  .pipe(tap(v => console.log(v)))
+  .subscribe();
+```
+
+**Контроль підписок**
+
+```TypeScript
+.pipe(takeUntilDestroyed())
+```
+
+6. HTTP Debugging
+
+- Network tab (requests / headers / payload)
+- Http Interceptors для логів
+
+```TypeScript
+export const logInterceptor = (req, next) => {
+  console.log(req.url);
+  return next(req);
+};
+```
+
+7. Template Debugging
+
+```HTML
+<pre>{{ user() | json }}</pre>
+```
+
+- Перевірка `*ngIf`, `*ngFor`, `trackBy`
+
+8. Production Debugging
+
+- Source maps (обережно)
+- Centralized logging (Sentry, LogRocket)
+- Feature flags для safe toggles
+
+#### Angular 20+ поради
+
+- Signals → легше відстежувати state
+- Zoneless → менше “магії”, простіше дебажити
+- Standalone → менше контексту, швидше пошук проблем
+- inject() → прозорий DI
+
+#### Типові помилки
+
+- Debug через console.log без breakpoints
+- Відсутні source maps
+- Ручні subscribe() без lifecycle-контролю
+- Немає trackBy у великих списках
+
+**Коротко**
+
+Angular-дебагінг базується на Browser DevTools + Angular DevTools + IDE
+debugger; у Angular 20+ signals і standalone значно спрощують відстеження стану
+та change detection.
 
 </details>
 
