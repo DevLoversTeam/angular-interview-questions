@@ -7325,7 +7325,7 @@ Components або micro-frontends; iframe - лише для простих аб�
 </details>
 
 <details>
-<summary>100. Які проблеми можуть бути під час оновлення Angular-застосунку до новішої версії</summary>
+<summary>100. Які проблеми можуть бути під час оновлення Angular-застосунку до новішої версії?</summary>
 
 #### Angular
 
