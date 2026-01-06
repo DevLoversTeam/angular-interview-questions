@@ -4,8 +4,6 @@
 
 <h2>Найпопулярніші запитання та відповіді на співбесіді з Angular</h2>
 
-### Основи Angular
-
 <details>
 <summary>1. Що таке Angular та які його ключові особливості?</summary>
 
@@ -33,9 +31,11 @@
 - **Оптимізований рендер** - швидкий change detection, підготовка до zoneless
   архітектури.
 
-Коротко: Angular - це full-fledged фреймворк із вбудованим DI, реактивністю
-через signals та сучасними standalone підходами, що дозволяють писати
-масштабовані додатки без зайвої складності
+**Коротко**
+
+Angular - це full-fledged фреймворк із вбудованим DI, реактивністю через signals
+та сучасними standalone підходами, що дозволяють писати масштабовані додатки без
+зайвої складності
 
 </details>
 
@@ -74,8 +74,10 @@
 <input [(ngModel)]="email" />
 ```
 
-Коротко: в Angular доступні 4 основні типи зв’язування даних - interpolation,
-property binding, event binding, two-way binding.
+**Коротко**
+
+В Angular доступні 4 основні типи зв’язування даних - interpolation, property
+binding, event binding, two-way binding.
 
 </details>
 
@@ -152,7 +154,9 @@ export class UserCardComponent {
 <app-user-card></app-user-card>
 ```
 
-Коротко: Компонент = ізольований блок UI + логіка. В Angular він створюється як
+**Коротко**
+
+Компонент = ізольований блок UI + логіка. В Angular він створюється як
 standalone, без NgModules.
 
 </details>
@@ -186,7 +190,9 @@ standalone, без NgModules.
 - **Custom directives** - можна створювати свої для повторного використання
   логіки.
 
-Коротко: директиви в Angular = спосіб керувати DOM. Найчастіше - `@if`, `@for`,
+**Коротко**
+
+Директиви в Angular = спосіб керувати DOM. Найчастіше - `@if`, `@for`,
 `ngClass`, `ngStyle`, `ngModel`.
 
 </details>
@@ -240,8 +246,10 @@ export class HeaderComponent {
 }
 ```
 
-Коротко: сервіс створюють через `@Injectable`, а використовують для
-бізнес-логіки та спільного стану між компонентами.
+**Коротко**
+
+Сервіс створюють через `@Injectable`, а використовують для бізнес-логіки та
+спільного стану між компонентами.
 
 </details>
 
@@ -292,8 +300,10 @@ export class ListComponent {
 }
 ```
 
-Коротко: DI в Angular = автоматичне надання залежностей (наприклад, сервісів)
-компонентам без `new`.
+**Коротко**
+
+DI в Angular = автоматичне надання залежностей (наприклад, сервісів) компонентам
+без `new`.
 
 </details>
 
@@ -333,9 +343,11 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-Коротко: модулі в Angular зараз - це легасі-інструмент, який замінено на
-standalone компоненти. Їхня головна роль сьогодні - лише для підтримки старого
-коду чи бібліотек.
+**Коротко**
+
+Модулі в Angular зараз - це легасі-інструмент, який замінено на standalone
+компоненти. Їхня головна роль сьогодні - лише для підтримки старого коду чи
+бібліотек.
 
 </details>
 
@@ -442,8 +454,10 @@ export class InputComponent {
 }
 ```
 
-Коротко: two-way binding = синхронізація стану між UI та компонентом. В Angular
-20 можна робити через [(ngModel)] або signals для сучасної реактивності.
+**Коротко**
+
+two-way binding = синхронізація стану між UI та компонентом. В Angular 20 можна
+робити через [(ngModel)] або signals для сучасної реактивності.
 
 </details>
 
@@ -490,8 +504,9 @@ export class HighlightDirective {
 <p highlight>Text with highlight</p>
 ```
 
-Коротко: компонент = директива + шаблон, а директива = поведінка без власного
-UI.
+**Коротко**
+
+компонент = директива + шаблон, а директива = поведінка без власного UI.
 
 </details>
 
@@ -543,8 +558,10 @@ export class ExclaimPipe implements PipeTransform {
 <!-- Hello! -->
 ```
 
-Коротко: Pipes потрібні для форматування та трансформації даних у шаблоні, щоб
-не захаращувати логіку компонента.
+**Коротко**
+
+Pipes потрібні для форматування та трансформації даних у шаблоні, щоб не
+захаращувати логіку компонента.
 
 </details>
 
@@ -553,7 +570,7 @@ export class ExclaimPipe implements PipeTransform {
 
 #### Angular
 
-В Angular є два основні підходи:
+**В Angular є два основні підходи:**
 
 1. **Template-driven forms** (простий варіант, з `ngModel`):
 
@@ -598,9 +615,11 @@ export class LoginComponent {
 }
 ```
 
-Коротко: форми в Angular обробляються через (`ngSubmit`) і бувають
-template-driven та reactive. Для простих форм можна брати `ngModel`, для великих
-і складних - reactive forms.
+**Коротко**
+
+Форми в Angular обробляються через (`ngSubmit`) і бувають template-driven та
+reactive. Для простих форм можна брати `ngModel`, для великих і складних -
+reactive forms.
 
 </details>
 
@@ -688,7 +707,9 @@ export class UsersComponent {
 }
 ```
 
-Коротко: в Angular 20 HTTP-запити робляться через HttpClient, а результат часто
+**Коротко**
+
+В Angular 20 HTTP-запити робляться через HttpClient, а результат часто
 обробляється в шаблоні через async pipe.
 
 </details>
@@ -789,8 +810,10 @@ export class ParentComponent {
 }
 ```
 
-Коротко: передача даних child → parent відбувається через @Output() і (event)
-binding. Дитина емітить подію, батько слухає.
+**Коротко**
+
+Передача даних child → parent відбувається через `@Output()` і
+`(event) binding`. Дитина емітить подію, батько слухає.
 
 </details>
 
@@ -836,8 +859,10 @@ export class DemoComponent implements OnInit, OnDestroy {
 }
 ```
 
-Коротко: Lifecycle hooks - це хуки життєвого циклу компонента, які дають змогу
-реагувати на створення, оновлення та знищення елемента.
+**Коротко**
+
+Lifecycle hooks - це хуки життєвого циклу компонента, які дають змогу реагувати
+на створення, оновлення та знищення елемента.
 
 </details>
 
@@ -2597,8 +2622,8 @@ export class AppIfDirective {
 
 **Коротко**
 
-Власні директиви створюються через @Directive, бувають attribute та structural і
-в Angular 20+ зазвичай є standalone з реактивністю на signals.
+Власні директиви створюються через `@Directive`, бувають attribute та structural
+і в Angular 20+ зазвичай є standalone з реактивністю на signals.
 
 </details>
 
@@ -2752,9 +2777,9 @@ onHover() {
 
 - Використовувати Renderer2
 
-- Для стилів і класів - @HostBinding
+- Для стилів і класів - `@HostBinding`
 
-- Для подій - @HostListener
+- Для подій - `@HostListener`
 
 - Для реактивності - signals + effect
 
@@ -2832,10 +2857,10 @@ export class HighlightDirective {
 
 #### Коли НЕ варто використовувати `Renderer2`
 
-- Для простого керування класами → краще ngClass
-- Для обробки подій → краще @HostListener
-- Для стилів → @HostBinding
-- Для читання значень (read-only) → допустимо ElementRef
+- Для простого керування класами → краще `ngClass`
+- Для обробки подій → краще `@HostListener`
+- Для стилів → `@HostBinding`
+- Для читання значень (read-only) → допустимо `ElementRef`
 
 #### Angular 20+ рекомендації
 
@@ -3198,20 +3223,17 @@ ofType(loadUsers), switchMap(() => this.api.getUsers()) ) );
 
 #### Angular 20+ контекст
 
-- NgRx не замінює signals
+NgRx не замінює signals
 
-- Часто комбінується:
+- **Часто комбінується:**
 
   - NgRx Store → глобальний стан
-
   - Signals → локальний UI-стан
 
-- Для простіших кейсів:
+- **Для простіших кейсів:**
 
   - Signals
-
   - Component Store
-
   - Services + RxJS
 
 **Коротко**
@@ -3241,7 +3263,7 @@ export const loadUsersSuccess = createAction(
 );
 ```
 
-####Призначення
+#### Призначення
 
 - Тригерять зміну стану
 - Сигналізують про події (UI, API, router)
