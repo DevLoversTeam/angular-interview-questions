@@ -7447,7 +7447,7 @@ someValue!.property
 <details>
 <summary>101. Що таке Signals в Angular і які їх основні типи?</summary>
 
-**Signals** — це нова реактивна примітивна модель в Angular, яка дозволяє
+**Signals** - це нова реактивна примітивна модель в Angular, яка дозволяє
 відслідковувати залежності між станом і UI на рівні окремих виразів
 (fine-grained reactivity).
 
@@ -7455,7 +7455,7 @@ Signals замінюють імперативний change detection і змен
 
 #### Основні типи signals:
 
-**signal()** — writable signal для зберігання стану
+**signal()** - writable signal для зберігання стану
 
 ```TypeScript
 count = signal(0);
@@ -7463,13 +7463,13 @@ count.set(1);
 count.update(v => v + 1);
 ```
 
-**computed()** — derived signal, що залежить від інших signals
+**computed()** - derived signal, що залежить від інших signals
 
 ```TypeScript
 doubleCount = computed(() => this.count() * 2);
 ```
 
-**effect()** — side effects при зміні сигналів
+**effect()** - side effects при зміні сигналів
 
 ```TypeScript
 effect(() => {
@@ -7479,9 +7479,9 @@ effect(() => {
 
 #### Signal-based inputs / outputs:
 
-- `input()` — реактивна альтернатива @Input
-- `output()` — signal-based події
-- `model()` — двосторонній binding на основі signals
+- `input()` - реактивна альтернатива @Input
+- `output()` - signal-based події
+- `model()` - двосторонній binding на основі signals
 
 ```TypeScript
 value = input<number>();
@@ -7491,7 +7491,7 @@ state = model<string>();
 
 **Коротко:**
 
-**Signals** — це основа сучасної реактивності Angular і ключ до zoneless
+**Signals** - це основа сучасної реактивності Angular і ключ до zoneless
 архітектури.
 
 </details>
@@ -7499,7 +7499,7 @@ state = model<string>();
 <details>
 <summary>102. Що таке @defer і як він використовується в Angular?</summary>
 
-**@defer** — це механізм відкладеного рендерингу шаблонів, який дозволяє
+**@defer** - це механізм відкладеного рендерингу шаблонів, який дозволяє
 завантажувати та відображати контент лише за певних умов.
 
 **Використовується для:**
@@ -7527,14 +7527,14 @@ state = model<string>();
 
 **Коротко:**
 
-`@defer` — declarative lazy rendering для компонентів і DOM.
+`@defer` - declarative lazy rendering для компонентів і DOM.
 
 </details>
 
 <details>
 <summary>103. Які особливості @for у порівнянні з *ngFor?</summary>
 
-**@for** — це новий control flow синтаксис, оптимізований для сучасного Angular.
+**@for** - це новий control flow синтаксис, оптимізований для сучасного Angular.
 
 #### Основні відмінності:
 
@@ -7561,6 +7561,47 @@ state = model<string>();
 
 **Коротко:**
 
-`@for` — більш явний, безпечний та продуктивний механізм рендерингу списків.
+`@for` - більш явний, безпечний та продуктивний механізм рендерингу списків.
+
+</details>
+
+<details>
+<summary>104. Що таке Content Projection в Angular?</summary>
+
+**Content Projection** - це механізм вставки зовнішнього контенту всередину
+компонента.
+
+#### Основні інструменти:
+
+**ng-content** - projection слот
+
+```HTML
+<ng-content></ng-content>
+```
+
+**select** - множинні слоти
+
+```HTML
+<ng-content select="[header]"></ng-content>
+<ng-content select="[body]"></ng-content>
+```
+
+**ng-template** - шаблони для умовного або відкладеного рендерингу
+
+```HTML
+<ng-template #tpl>
+  <p>Projected template</p>
+</ng-template>
+```
+
+#### Використовується для:
+
+- reusable UI components
+- layout components
+- design systems
+
+**Коротко:**
+
+Content Projection дозволяє будувати гнучкі, композиційні компоненти.
 
 </details>
