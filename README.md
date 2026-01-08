@@ -7443,3 +7443,55 @@ someValue!.property
 оновленням, офіційними міграціями та хорошим тест-покриттям.
 
 </details>
+
+<details>
+<summary>101. Що таке Signals в Angular і які їх основні типи?</summary>
+
+**Signals** — це нова реактивна примітивна модель в Angular, яка дозволяє
+відслідковувати залежності між станом і UI на рівні окремих виразів
+(fine-grained reactivity).
+
+Signals замінюють імперативний change detection і зменшують потребу у Zone.js.
+
+#### Основні типи signals:
+
+**signal()** — writable signal для зберігання стану
+
+```TypeScript
+count = signal(0);
+count.set(1);
+count.update(v => v + 1);
+```
+
+**computed()** — derived signal, що залежить від інших signals
+
+```TypeScript
+doubleCount = computed(() => this.count() * 2);
+```
+
+**effect()** — side effects при зміні сигналів
+
+```TypeScript
+effect(() => {
+  console.log(this.count());
+});
+```
+
+#### Signal-based inputs / outputs:
+
+- input() — реактивна альтернатива @Input
+- output() — signal-based події
+- model() — двосторонній binding на основі signals
+
+```TypeScript
+value = input<number>();
+changed = output<number>();
+state = model<string>();
+```
+
+**Коротко:**
+
+Signals — це основа сучасної реактивності Angular і ключ до zoneless
+архітектури.
+
+</details>
