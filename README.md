@@ -7479,9 +7479,9 @@ effect(() => {
 
 #### Signal-based inputs / outputs:
 
-- input() — реактивна альтернатива @Input
-- output() — signal-based події
-- model() — двосторонній binding на основі signals
+- `input()` — реактивна альтернатива @Input
+- `output()` — signal-based події
+- `model()` — двосторонній binding на основі signals
 
 ```TypeScript
 value = input<number>();
@@ -7491,7 +7491,42 @@ state = model<string>();
 
 **Коротко:**
 
-Signals — це основа сучасної реактивності Angular і ключ до zoneless
+**Signals** — це основа сучасної реактивності Angular і ключ до zoneless
 архітектури.
+
+</details>
+
+<details>
+<summary>102. Що таке @defer і як він використовується в Angular?</summary>
+
+**@defer** — це механізм відкладеного рендерингу шаблонів, який дозволяє
+завантажувати та відображати контент лише за певних умов.
+
+**Використовується для:**
+
+- покращення performance
+- зменшення initial load
+- оптимізації роботи з DOM
+
+```HTML
+@defer {
+  <heavy-component />
+} @placeholder {
+  <p>Loading...</p>
+} @error {
+  <p>Error loading content</p>
+}
+```
+
+#### Підтримувані тригери:
+
+- on viewport
+- on idle
+- on interaction
+- on timer
+
+**Коротко:**
+
+`@defer` — declarative lazy rendering для компонентів і DOM.
 
 </details>
