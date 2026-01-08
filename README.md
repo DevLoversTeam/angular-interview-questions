@@ -7530,3 +7530,37 @@ state = model<string>();
 `@defer` — declarative lazy rendering для компонентів і DOM.
 
 </details>
+
+<details>
+<summary>103. Які особливості @for у порівнянні з *ngFor?</summary>
+
+**@for** — це новий control flow синтаксис, оптимізований для сучасного Angular.
+
+#### Основні відмінності:
+
+**Обовʼязковий track**
+
+```HTML
+@for (item of items; track item.id) {
+  <div>{{ item.name }}</div>
+}
+```
+
+**Підтримка @empty**
+
+```HTML
+@for (item of items; track item.id) {
+  <div>{{ item.name }}</div>
+} @empty {
+  <p>No items</p>
+}
+```
+
+- Краща інтеграція з signals
+- Менше runtime overhead
+
+**Коротко:**
+
+`@for` — більш явний, безпечний та продуктивний механізм рендерингу списків.
+
+</details>
