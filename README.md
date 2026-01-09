@@ -420,15 +420,17 @@ export class ChildComponent {
 
 </details>
 
-<details>
 <summary>10. Що таке двостороннє зв’язування (two-way binding) і як його реалізувати в Angular?</summary>
 
 #### Angular
 
-Двостороннє зв’язування - це синхронізація стану між компонентом і шаблоном,
-коли зміни в UI автоматично оновлюють дані компонента і навпаки.
+Двостороннє зв’язування (two-way binding) - це синхронізація стану між
+компонентом і шаблоном, коли:
 
-#### Класичний підхід (з ngModel):
+- зміни в UI оновлюють стан компонента,
+- зміни в компоненті автоматично відображаються в UI.
+
+#### Класичний підхід (ngModel, template-driven forms):
 
 ```HTML
 <input [(ngModel)]="name" />
@@ -436,19 +438,17 @@ export class ChildComponent {
 ```
 
 ```TypeScript
-import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-input',
   standalone: true,
   template: `<input [(ngModel)]="name" />`
 })
 export class InputComponent {
-  name = 'Viktor';
+  name = 'Evan';
 }
 ```
 
-#### Сучасний Angular 20 з signals:
+#### Сучасний підхід з Signals (локальний стан):
 
 ```TypeScript
 import { Component, signal } from '@angular/core';
@@ -456,17 +456,51 @@ import { Component, signal } from '@angular/core';
 @Component({
   selector: 'app-input',
   standalone: true,
-  template: `<input [value]="name()" (input)="name.set($any($event.target).value)" />`
+  template: `
+    <input
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+    />
+    <p>Hello, {{ name() }}</p>
+  `
 })
 export class InputComponent {
-  name = signal('Viktor');
+  name = signal('Evan');
 }
+```
+
+Signals забезпечують реактивність, але two-way binding тут реалізується вручну
+через event → set().
+
+#### Two-way binding між компонентами з model():
+
+```TypeScript
+import { Component, model } from '@angular/core';
+
+@Component({
+  selector: 'app-input',
+  standalone: true,
+  template: `
+    <input
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+    />
+  `
+})
+export class InputComponent {
+  name = model('Evan');
+}
+```
+
+```HTML
+<app-input [(name)]="userName"></app-input>
 ```
 
 **Коротко**
 
-two-way binding = синхронізація стану між UI та компонентом. В Angular 20 можна
-робити через [(ngModel)] або signals для сучасної реактивності.
+- `ngModel` - legacy two-way binding
+- `signal()` - сучасна реактивність (локальний стан)
+- `model()` - рекомендований спосіб two-way binding у сучасному Angular
 
 </details>
 
