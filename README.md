@@ -425,10 +425,12 @@ export class ChildComponent {
 #### Angular
 
 Двостороннє зв’язування (two-way binding) - це синхронізація стану між
-компонентом і шаблоном, коли зміни в UI автоматично оновлюють дані компонента і
-навпаки.
+компонентом і шаблоном, коли:
 
-#### Класичний підхід (з ngModel):
+- зміни в UI оновлюють стан компонента,
+- зміни в компоненті автоматично відображаються в UI.
+
+#### Класичний підхід (ngModel, template-driven forms):
 
 ```HTML
 <input [(ngModel)]="name" />
@@ -436,33 +438,20 @@ export class ChildComponent {
 ```
 
 ```TypeScript
-import { Component } from '@angular/core';
-
 @Component({
   selector: 'app-input',
   standalone: true,
   template: `<input [(ngModel)]="name" />`
 })
 export class InputComponent {
-  name = 'Viktor';
+  name = 'Evan';
 }
 ```
 
-#### Класичний Angular-підхід (Input / Output):
-
-```HTML
-<app-input [(value)]="name"></app-input>
-```
+#### Сучасний підхід з Signals (локальний стан):
 
 ```TypeScript
-@Input() value!: string;
-@Output() valueChange = new EventEmitter<string>();
-```
-
-#### Сучасний Angular з model():
-
-```TypeScript
-import { Component, model } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-input',
@@ -476,15 +465,42 @@ import { Component, model } from '@angular/core';
   `
 })
 export class InputComponent {
-  name = model('Viktor');
+  name = signal('Evan');
 }
+```
+
+Signals забезпечують реактивність, але two-way binding тут реалізується вручну
+через event → set().
+
+#### Two-way binding між компонентами з model():
+
+```TypeScript
+import { Component, model } from '@angular/core';
+
+@Component({
+  selector: 'app-input',
+  standalone: true,
+  template: `
+    <input
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+    />
+  `
+})
+export class InputComponent {
+  name = model('Evan');
+}
+```
+
+```HTML
+<app-input [(name)]="userName"></app-input>
 ```
 
 **Коротко**
 
-Two-way binding - це синхронізація стану між UI та компонентом. У сучасному
-Angular рекомендовано використовувати `model()` (signals-based), тоді як
-`[(ngModel)]` вважається legacy-підходом.
+- `ngModel` - legacy two-way binding
+- `signal()` - сучасна реактивність (локальний стан)
+- `model()` - рекомендований спосіб two-way binding у сучасному Angular
 
 </details>
 
