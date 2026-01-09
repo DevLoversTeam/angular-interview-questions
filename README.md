@@ -420,13 +420,13 @@ export class ChildComponent {
 
 </details>
 
-<details>
 <summary>10. Що таке двостороннє зв’язування (two-way binding) і як його реалізувати в Angular?</summary>
 
 #### Angular
 
-Двостороннє зв’язування - це синхронізація стану між компонентом і шаблоном,
-коли зміни в UI автоматично оновлюють дані компонента і навпаки.
+Двостороннє зв’язування (two-way binding) - це синхронізація стану між
+компонентом і шаблоном, коли зміни в UI автоматично оновлюють дані компонента і
+навпаки.
 
 #### Класичний підхід (з ngModel):
 
@@ -448,25 +448,43 @@ export class InputComponent {
 }
 ```
 
-#### Сучасний Angular 20 з signals:
+#### Класичний Angular-підхід (Input / Output):
+
+```HTML
+<app-input [(value)]="name"></app-input>
+```
 
 ```TypeScript
-import { Component, signal } from '@angular/core';
+@Input() value!: string;
+@Output() valueChange = new EventEmitter<string>();
+```
+
+#### Сучасний Angular з model():
+
+```TypeScript
+import { Component, model } from '@angular/core';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  template: `<input [value]="name()" (input)="name.set($any($event.target).value)" />`
+  template: `
+    <input
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+    />
+    <p>Hello, {{ name() }}</p>
+  `
 })
 export class InputComponent {
-  name = signal('Viktor');
+  name = model('Viktor');
 }
 ```
 
 **Коротко**
 
-two-way binding = синхронізація стану між UI та компонентом. В Angular 20 можна
-робити через [(ngModel)] або signals для сучасної реактивності.
+Two-way binding - це синхронізація стану між UI та компонентом. У сучасному
+Angular рекомендовано використовувати `model()` (signals-based), тоді як
+`[(ngModel)]` вважається legacy-підходом.
 
 </details>
 
