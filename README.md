@@ -420,6 +420,7 @@ export class ChildComponent {
 
 </details>
 
+<details>
 <summary>10. Що таке двостороннє зв’язування (two-way binding) і як його реалізувати в Angular?</summary>
 
 #### Angular
